@@ -3,9 +3,12 @@ const Calculation               = require('../calculation');
 
 
 router.post('/get_data', (req, res) => {
-    Calculation
+    Calculation(req.body)
         .then((data) => {
             res.send(data);
+        })
+        .catch((error) => {
+            res.status(500).send(error);
         })
 });
 
