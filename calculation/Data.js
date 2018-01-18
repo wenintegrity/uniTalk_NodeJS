@@ -1,27 +1,24 @@
-const file                                  = require('./file');
 const summaryStatistics                     = require('summary-statistics');
 
 
 class Data {
-    constructor(pathTimeData, pathIPadData) {
-        let arrTimes = file.getDataFromFile(pathTimeData);
-        let arrIPads = file.getDataFromFile(pathIPadData);
-        this.arrElements = this.createElementsData(arrTimes, arrIPads);
-        this.quartileForIPad = this.getQuartileForIPad(arrIPads);
+    constructor(timeData, iPadData) {
+        this.arrElements = this.createElementsData(timeData, iPadData);
+        this.quartileForIPad = this.getQuartileForIPad(iPadData);
         this.arrOutMicM50 = [];
-        this.getOutMic0edAndQuartile(arrTimes);
-        this.getOutMicFilteredAndQuartile(arrTimes);
-        this.getOutMicNrmalz(arrTimes);
-        this.getOutMicM50(arrTimes);
+        this.getOutMic0edAndQuartile(timeData);
+        this.getOutMicFilteredAndQuartile(timeData);
+        this.getOutMicNrmalz(timeData);
+        this.getOutMicM50(timeData);
     }
 
-    createElementsData(arrTimes, arrIPads) {
+    createElementsData(timeData, iPadData) {
         let arrElements = [];
 
-        for (let i = 0; i <= arrTimes.length - 1; i++) {
+        for (let i = 0; i <= timeData.length - 1; i++) {
             let newEl = {
-                'time': arrTimes[i],
-                'iPad': arrIPads[i]
+                'time': timeData[i],
+                'iPad': iPadData[i]
             };
 
             arrElements.push(newEl);
@@ -29,14 +26,14 @@ class Data {
         return arrElements;
     }
 
-    getQuartileForIPad(arrIPads) {
-        return summaryStatistics(arrIPads);
+    getQuartileForIPad(iPadData) {
+        return summaryStatistics(iPadData);
     }
 
-    getOutMic0edAndQuartile(arrTimes) {
+    getOutMic0edAndQuartile(timeData) {
         let arrOutMic0ed = [];
 
-        for (let i = 0; i <= arrTimes.length - 1; i++) {
+        for (let i = 0; i <= timeData.length - 1; i++) {
             let outMic0ed = this.arrElements[i].iPad - this.quartileForIPad.min;
 
             this.arrElements[i].outMic0ed = outMic0ed;
@@ -46,11 +43,11 @@ class Data {
         this.quartileForOutMic0ed = summaryStatistics(arrOutMic0ed);
     }
 
-    getOutMicFilteredAndQuartile(arrTimes) {
+    getOutMicFilteredAndQuartile(timeData) {
         let medianOM = this.quartileForOutMic0ed.median;
         let arrOutMicFiltered = [];
 
-        for (let i = 0; i <= arrTimes.length - 1; i++) {
+        for (let i = 0; i <= timeData.length - 1; i++) {
             if (this.arrElements[i].outMic0ed < (medianOM - (Math.abs(1 * medianOM)))) {
                 this.arrElements[i].outMicFiltered = medianOM - (Math.abs(1 * medianOM));
             } else {
@@ -66,10 +63,10 @@ class Data {
         this.quartileForOutMicFilt = summaryStatistics(arrOutMicFiltered);
     }
 
-    getOutMicNrmalz(arrTimes) {
+    getOutMicNrmalz(timeData) {
         let arrOutMicNrmalz = [];
 
-        for (let i = 0; i <= arrTimes.length - 1; i++) {
+        for (let i = 0; i <= timeData.length - 1; i++) {
             let result = this.arrElements[i].outMicFiltered / this.quartileForOutMicFilt.median * 50;
 
             this.arrElements[i].outMicNrmalz = result;
@@ -79,9 +76,9 @@ class Data {
         this.quartileForOutMicNrmalz = summaryStatistics(arrOutMicNrmalz);
     }
 
-    getOutMicM50(arrTimes) {
+    getOutMicM50(timeData) {
         let outMicM50;
-        for (let i = 0; i <= arrTimes.length - 1; i++) {
+        for (let i = 0; i <= timeData.length - 1; i++) {
             let element = this.arrElements[i];
             outMicM50 = (element.outMicNrmalz - this.quartileForOutMicNrmalz.min)
                 / (this.quartileForOutMicNrmalz.max - this.quartileForOutMicNrmalz.min);

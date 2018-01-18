@@ -27,30 +27,30 @@ class TremorSpectrum {
         this.meanD23_635 = summary(arrForResult).mean();
         this.stanDotClone = this.getStanDotClone(arrForResult);
 
-        this.divisionMeanValuesFftMag_23_404_405_635 = this.getDivisionMeanValuesFftMag_23_404_405_635();
-        this.divisionMeanValuesFftMag_23_329_329_635 = this.getDivisionMeanValuesFftMag_23_329_329_635();
-
-        this.quartileFftMag_23_635 = this.getQuartile(this.arrFftMag, 2, 615);
-        this.divisionQuartOnMaxFftMag = this.quartileFftMag_23_635.q3 / this.quartileFftMag_23_635.max;
-        this.division_q3_average = this.quartileFftMag_23_635.q3 / this.meanD23_635;
-
-        this.objSolfg = this.getArrSolfeggio();
-
-        this.arrConstAbsNormal = this.getArrConstFreq(this.arrConstABS, this.maxConstAbs);
-        this.arrConstAbsNormal_NO = this.getArrConstFreq(this.arrConstABS_NO, this.maxConstAbs_NO);
-        this.arrFreqMagNormal = this.getArrConstFreq(this.arrFreqMag, this.maxFreqMag);
-        this.arrFreqMagNormal_NO = this.getArrConstFreq(this.arrFreqMag_NO, this.maxFreqMag_NO);
-        this.arrFreqMagDiff = this.getFreqMagDiffAnd_NO(this.arrFreqMagNormal, this.arrConstAbsNormal);
-        this.arrFreqMagDiff_NO = this.getFreqMagDiffAnd_NO(this.arrFreqMagNormal_NO, this.arrConstAbsNormal_NO);
-
-        this.maxFreqMagDiff = this.getMaxValue(this.getSliceArr(this.arrFreqMagDiff, 2, 364));
-        this.maxFreqMagDiff_NO = this.getMaxValue(this.getSliceArr(this.arrFreqMagDiff_NO, 2, 364));
-
-        this.arrFreqMagDiffNormal = this.getArrConstFreq(this.arrFreqMagDiff, this.maxFreqMagDiff);
-        this.arrFreqMagDiffNormal_NO = this.getArrConstFreq(this.arrFreqMagDiff_NO, this.maxFreqMagDiff_NO);
-
-        this.powerOctaves = this.getPowerOctaves();
-        this.avgPowerOctaves = this.getAvgPowerOctaves();
+        // this.divisionMeanValuesFftMag_23_404_405_635 = this.getDivisionMeanValuesFftMag_23_404_405_635();
+        // this.divisionMeanValuesFftMag_23_329_329_635 = this.getDivisionMeanValuesFftMag_23_329_329_635();
+        //
+        // this.quartileFftMag_23_635 = this.getQuartile(this.arrFftMag, 2, 615);
+        // this.divisionQuartOnMaxFftMag = this.quartileFftMag_23_635.q3 / this.quartileFftMag_23_635.max;
+        // this.division_q3_average = this.quartileFftMag_23_635.q3 / this.meanD23_635;
+        //
+        // this.objSolfg = this.getArrSolfeggio();
+        //
+        // this.arrConstAbsNormal = this.getArrConstFreq(this.arrConstABS, this.maxConstAbs);
+        // this.arrConstAbsNormal_NO = this.getArrConstFreq(this.arrConstABS_NO, this.maxConstAbs_NO);
+        // this.arrFreqMagNormal = this.getArrConstFreq(this.arrFreqMag, this.maxFreqMag);
+        // this.arrFreqMagNormal_NO = this.getArrConstFreq(this.arrFreqMag_NO, this.maxFreqMag_NO);
+        // this.arrFreqMagDiff = this.getFreqMagDiffAnd_NO(this.arrFreqMagNormal, this.arrConstAbsNormal);
+        // this.arrFreqMagDiff_NO = this.getFreqMagDiffAnd_NO(this.arrFreqMagNormal_NO, this.arrConstAbsNormal_NO);
+        //
+        // this.maxFreqMagDiff = this.getMaxValue(this.getSliceArr(this.arrFreqMagDiff, 2, 364));
+        // this.maxFreqMagDiff_NO = this.getMaxValue(this.getSliceArr(this.arrFreqMagDiff_NO, 2, 364));
+        //
+        // this.arrFreqMagDiffNormal = this.getArrConstFreq(this.arrFreqMagDiff, this.maxFreqMagDiff);
+        // this.arrFreqMagDiffNormal_NO = this.getArrConstFreq(this.arrFreqMagDiff_NO, this.maxFreqMagDiff_NO);
+        //
+        // this.powerOctaves = this.getPowerOctaves();
+        // this.avgPowerOctaves = this.getAvgPowerOctaves();
     }
 
     getAvgPowerOctaves() {

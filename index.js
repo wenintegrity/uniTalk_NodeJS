@@ -1,11 +1,17 @@
 "use strict";
 
-let express                     = require('express');
-let config                      = require('./config');
-let app                         = express();
+const express                     = require('express');
+const app                         = express();
+const bodyParser                  = require('body-parser');
 
-let router                     = require('./router');
+const config                      = require('./config');
+const router                      = require('./router');
+const db                          = require('./db');
 
+
+db.connect();
+
+app.use(bodyParser.json());
 
 Object.keys(router).forEach(component => {
     app.use('/', router[component]);

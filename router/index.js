@@ -1,6 +1,6 @@
 let router = {};
 
-router['data'] = require('./data');
+router['data']                  = require('./data');
 
 
 module.exports = router;
