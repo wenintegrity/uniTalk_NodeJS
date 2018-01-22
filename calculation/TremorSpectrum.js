@@ -13,44 +13,164 @@ class TremorSpectrum {
         this.arrFftMag = this.getArrFftMag();
         this.getFreqMagAndConst(arrConst);
 
-        this.maxConstAbs = this.getMaxValue(this.getSliceArr(this.arrConstABS, 2, 364));
-        this.maxConstAbs_NO = this.getMaxValue(this.getSliceArr(this.arrConstABS_NO, 2, 364));
-        this.maxFreqMag = this.getMaxValue(this.getSliceArr(this.arrFreqMag, 2, 364));
-        this.maxFreqMag_NO = this.getMaxValue(this.getSliceArr(this.arrFreqMag_NO, 2, 364));
+        this.maxConstAbs = this.getMaxValue(this.getSliceArr(this.arrConstABS, 3, 365));
+        this.maxConstAbs_NO = this.getMaxValue(this.getSliceArr(this.arrConstABS_NO, 3, 365));
+        this.maxFreqMag = this.getMaxValue(this.getSliceArr(this.arrFreqMag, 3, 365));
+        this.maxFreqMag_NO = this.getMaxValue(this.getSliceArr(this.arrFreqMag_NO, 3, 365));
 
-        this.meanConstAbs = this.getMeanValue(this.getSliceArr(this.arrConstABS, 2, 364));
-        this.meanConstAbs_NO = this.getMeanValue(this.getSliceArr(this.arrConstABS_NO, 2, 364));
-        this.meanFreqMag = this.getMeanValue(this.getSliceArr(this.arrFreqMag, 2, 364));
-        this.meanFreqMag_NO = this.getMeanValue(this.getSliceArr(this.arrFreqMag_NO, 2, 364));
+        this.meanConstAbs = this.getMeanValue(this.getSliceArr(this.arrConstABS, 3, 365));
+        this.meanConstAbs_NO = this.getMeanValue(this.getSliceArr(this.arrConstABS_NO, 3, 365));
+        this.meanFreqMag = this.getMeanValue(this.getSliceArr(this.arrFreqMag, 3, 365));
+        this.meanFreqMag_NO = this.getMeanValue(this.getSliceArr(this.arrFreqMag_NO, 3, 365));
 
-        let arrForResult = this.getArrForResult();
-        this.meanD23_635 = summary(arrForResult).mean();
-        this.stanDotClone = this.getStanDotClone(arrForResult);
+        this.meanD23_635 = summary(this.getSliceArr(this.arrFftMag, 2)).mean();
+        this.stanDotClone = this.getStanDotClone(this.getSliceArr(this.arrFftMag, 2, 615));
 
-        // this.divisionMeanValuesFftMag_23_404_405_635 = this.getDivisionMeanValuesFftMag_23_404_405_635();
-        // this.divisionMeanValuesFftMag_23_329_329_635 = this.getDivisionMeanValuesFftMag_23_329_329_635();
-        //
-        // this.quartileFftMag_23_635 = this.getQuartile(this.arrFftMag, 2, 615);
-        // this.divisionQuartOnMaxFftMag = this.quartileFftMag_23_635.q3 / this.quartileFftMag_23_635.max;
-        // this.division_q3_average = this.quartileFftMag_23_635.q3 / this.meanD23_635;
-        //
-        // this.objSolfg = this.getArrSolfeggio();
-        //
-        // this.arrConstAbsNormal = this.getArrConstFreq(this.arrConstABS, this.maxConstAbs);
-        // this.arrConstAbsNormal_NO = this.getArrConstFreq(this.arrConstABS_NO, this.maxConstAbs_NO);
-        // this.arrFreqMagNormal = this.getArrConstFreq(this.arrFreqMag, this.maxFreqMag);
-        // this.arrFreqMagNormal_NO = this.getArrConstFreq(this.arrFreqMag_NO, this.maxFreqMag_NO);
-        // this.arrFreqMagDiff = this.getFreqMagDiffAnd_NO(this.arrFreqMagNormal, this.arrConstAbsNormal);
-        // this.arrFreqMagDiff_NO = this.getFreqMagDiffAnd_NO(this.arrFreqMagNormal_NO, this.arrConstAbsNormal_NO);
-        //
-        // this.maxFreqMagDiff = this.getMaxValue(this.getSliceArr(this.arrFreqMagDiff, 2, 364));
-        // this.maxFreqMagDiff_NO = this.getMaxValue(this.getSliceArr(this.arrFreqMagDiff_NO, 2, 364));
-        //
-        // this.arrFreqMagDiffNormal = this.getArrConstFreq(this.arrFreqMagDiff, this.maxFreqMagDiff);
-        // this.arrFreqMagDiffNormal_NO = this.getArrConstFreq(this.arrFreqMagDiff_NO, this.maxFreqMagDiff_NO);
-        //
-        // this.powerOctaves = this.getPowerOctaves();
-        // this.avgPowerOctaves = this.getAvgPowerOctaves();
+        this.divisionMeanValuesFftMag_23_404_405_635 = this.getDivisionMeanValuesFftMag_23_404_405_635();
+        this.divisionMeanValuesFftMag_23_329_329_635 = this.getDivisionMeanValuesFftMag_23_329_329_635();
+
+        this.quartileFftMag_23_635 = this.getQuartile(this.arrFftMag, 2, 615);
+        this.divisionQuartOnMaxFftMag = this.quartileFftMag_23_635.q3 / this.quartileFftMag_23_635.max;
+        this.division_q3_average = this.quartileFftMag_23_635.q3 / this.meanD23_635;
+
+        this.objSolfg = this.getArrSolfeggio();
+
+        this.arrConstAbsNormal = this.getArrConstFreq(this.arrConstABS, this.maxConstAbs);
+        this.arrConstAbsNormal_NO = this.getArrConstFreq(this.arrConstABS_NO, this.maxConstAbs_NO);
+        this.arrFreqMagNormal = this.getArrConstFreq(this.arrFreqMag, this.maxFreqMag);
+        this.arrFreqMagNormal_NO = this.getArrConstFreq(this.arrFreqMag_NO, this.maxFreqMag_NO);
+        this.arrFreqMagDiff = this.getFreqMagDiffAnd_NO(this.arrFreqMagNormal, this.arrConstAbsNormal);
+        this.arrFreqMagDiff_NO = this.getFreqMagDiffAnd_NO(this.arrFreqMagNormal_NO, this.arrConstAbsNormal_NO);
+
+        this.maxFreqMagDiff = this.getMaxValue(this.getSliceArr(this.arrFreqMagDiff, 2, 364));
+        this.maxFreqMagDiff_NO = this.getMaxValue(this.getSliceArr(this.arrFreqMagDiff_NO, 2, 364));
+
+        this.arrFreqMagDiffNormal = this.getArrConstFreq(this.arrFreqMagDiff, this.maxFreqMagDiff);
+        this.arrFreqMagDiffNormal_NO = this.getArrConstFreq(this.arrFreqMagDiff_NO, this.maxFreqMagDiff_NO);
+
+        this.powerOctaves = this.getPowerOctaves();
+        this.avgPowerOctaves = this.getAvgPowerOctaves();
+
+        /* calculation tables after read line */
+
+        /* data for 3 finish table */
+
+        let maxFftMagNormalized = this.getMaxValue(this.getSliceArr(this.arrFftMag, 1, 615));
+        let arrFftMagNormalized = this.getFftMagNormalized(maxFftMagNormalized);
+
+        let colSumRaw = this.getColTotalPowerNote(this.arrFftMag);
+        let colSumNormalized = this.getColTotalPowerNote(arrFftMagNormalized);
+
+        let arrFftMagRawSmoothed = this.getArrFftMagRawSmoothed();
+        let colSumSmoothed = this.getColTotalPowerNote(arrFftMagRawSmoothed);
+
+        this.totalMusicRaw = colSumRaw.avgNotesMusic;
+        this.totalMusicRawStDev = colSumRaw.stDevNotesMusic;
+
+        this.totalMusicSmth = colSumSmoothed.avgNotesMusic;
+        this.totalMusicSmthStDev = colSumNormalized.stDevNotesMusic;
+
+        this.totalMusicRaw_Smth = (this.totalMusicRaw - this.totalMusicSmth) / (this.totalMusicRaw + this.totalMusicSmth);
+
+        /* /data for 3 finish table */
+
+        /* data for other finish table */
+
+        let arrFftMagNormalizedSmoothed = this.getArrFftMagNormalizedSmoothed(arrFftMagRawSmoothed);
+
+        this.sumSmthNormed = this.getColTotalPowerNote(arrFftMagNormalizedSmoothed);
+    }
+
+    getArrFftMagNormalizedSmoothed(arr) {
+        let maxValArr = this.getMaxValue(this.getSliceArr(arr, 7, 615));
+        let arrForResult = [];
+
+        arr.forEach((element) => {
+            if (element !== null) {
+                arrForResult.push(element / maxValArr);
+            } else {
+                arrForResult.push(null);
+            }
+        });
+
+        return arrForResult;
+    }
+
+    getArrFftMagRawSmoothed() {
+        let arrForResult = [null, null, null, null, null, null, null];
+
+        for (let i = 1, c = 8; c <= this.arrFftMag.length; i++, c++) {
+            arrForResult.push(this.getMeanValue(this.getSliceArr(this.arrFftMag, i, c)))
+        }
+
+        return arrForResult;
+    }
+
+    getColTotalPowerNote(arr) {
+        let result = {};
+        let arrForResult = [];
+
+        arrForResult.push((this.getSumArrEl(this.getSliceArr(arr, 32, 34)) + this.getSumArrEl(this.getSliceArr(arr, 64, 68)) +
+            this.getSumArrEl(this.getSliceArr(arr, 128, 135)) + this.getSumArrEl(this.getSliceArr(arr, 255, 270))) / 28);
+
+        arrForResult.push((this.getSumArrEl(this.getSliceArr(arr, 34, 36)) + this.getSumArrEl(this.getSliceArr(arr, 68, 72)) +
+            this.getSumArrEl(this.getSliceArr(arr, 135, 143)) + this.getSumArrEl(this.getSliceArr(arr, 270, 286))) / 30);
+
+        arrForResult.push((this.getSumArrEl(this.getSliceArr(arr, 36, 38)) + this.getSumArrEl(this.getSliceArr(arr, 72, 76)) +
+            this.getSumArrEl(this.getSliceArr(arr, 143, 152)) + this.getSumArrEl(this.getSliceArr(arr, 286, 303))) / 31);
+
+        arrForResult.push((this.getSumArrEl(this.getSliceArr(arr, 38, 40)) + this.getSumArrEl(this.getSliceArr(arr, 76, 81)) +
+            this.getSumArrEl(this.getSliceArr(arr, 152, 161)) + this.getSumArrEl(this.getSliceArr(arr, 303, 320))) / 33);
+
+        arrForResult.push((this.getSumArrEl(this.getSliceArr(arr, 40, 43)) + this.getSumArrEl(this.getSliceArr(arr, 81, 86)) +
+            this.getSumArrEl(this.getSliceArr(arr, 161, 171)) + this.getSumArrEl(this.getSliceArr(arr, 320, 339))) / 37);
+
+        arrForResult.push((this.getSumArrEl(this.getSliceArr(arr, 43, 46)) + this.getSumArrEl(this.getSliceArr(arr, 86, 91)) +
+            this.getSumArrEl(this.getSliceArr(arr, 171, 181)) + this.getSumArrEl(this.getSliceArr(arr, 339, 360))) / 39);
+
+        arrForResult.push((this.getSumArrEl(this.getSliceArr(arr, 46, 48)) + this.getSumArrEl(this.getSliceArr(arr, 91, 96)) +
+            this.getSumArrEl(this.getSliceArr(arr, 181, 191)) + this.getSumArrEl(this.getSliceArr(arr, 360, 381))) / 39);
+
+        arrForResult.push((this.getSumArrEl(this.getSliceArr(arr, 48, 51)) + this.getSumArrEl(this.getSliceArr(arr, 96, 101)) +
+            this.getSumArrEl(this.getSliceArr(arr, 191, 202)) + this.getSumArrEl(this.getSliceArr(arr, 382, 405))) / 42);
+
+        arrForResult.push((this.getSumArrEl(this.getSliceArr(arr, 51, 54)) + this.getSumArrEl(this.getSliceArr(arr, 101, 107)) +
+            this.getSumArrEl(this.getSliceArr(arr, 202, 215)) + this.getSumArrEl(this.getSliceArr(arr, 405, 429))) / 46);
+
+        arrForResult.push((this.getSumArrEl(this.getSliceArr(arr, 54, 57)) + this.getSumArrEl(this.getSliceArr(arr, 107, 114)) +
+            this.getSumArrEl(this.getSliceArr(arr, 215, 227)) + this.getSumArrEl(this.getSliceArr(arr, 429, 453))) / 46);
+
+        arrForResult.push((this.getSumArrEl(this.getSliceArr(arr, 57, 60)) + this.getSumArrEl(this.getSliceArr(arr, 114, 121)) +
+            this.getSumArrEl(this.getSliceArr(arr, 227, 241)) + this.getSumArrEl(this.getSliceArr(arr, 453, 481))) / 52);
+
+        arrForResult.push((this.getSumArrEl(this.getSliceArr(arr, 60, 64)) + this.getSumArrEl(this.getSliceArr(arr, 121, 128)) +
+            this.getSumArrEl(this.getSliceArr(arr, 241, 255)) + this.getSumArrEl(this.getSliceArr(arr, 481, 510))) / 54);
+
+        result.arr = arrForResult;
+        result.avgNotesMusic = summary(arrForResult).mean();
+        result.stDevNotesMusic = this.getStanDotClone(arrForResult);
+
+        return result;
+    }
+
+    getSumArrEl(arr) {
+        let result = 0;
+
+        for (let i = 0; i <= arr.length - 1; i++) {
+            result += arr[i];
+        }
+
+        return result;
+    }
+
+    getFftMagNormalized(maxN) {
+        let arrResult = [];
+
+        for (let i = 0; i <= this.arrFftMag.length - 1; i++) {
+            arrResult.push(this.arrFftMag[i] / maxN);
+        }
+
+        return arrResult;
     }
 
     getAvgPowerOctaves() {
@@ -156,10 +276,6 @@ class TremorSpectrum {
         return arrFftMag;
     }
 
-    getArrForResult() {
-        return this.arrFftMag.slice(2)
-    }
-
     getSliceArr(arr, from, to) {
         return arr.slice(from, to);
     }
@@ -192,7 +308,6 @@ class TremorSpectrum {
 
     getStanDotClone(arrForResult) {
         let sumX = 0;
-        let meanX;
 
         for (let i = 0; i <= arrForResult.length - 1; i++) {
             if (!isNaN(arrForResult[i])) {
@@ -200,7 +315,7 @@ class TremorSpectrum {
             }
         }
 
-        meanX = sumX / (arrForResult.length - 3);
+        let meanX = sumX / (arrForResult.length);
 
 
         let sumNumerators = 0;

@@ -9,7 +9,7 @@ router.post('/calculations', (req, res) => {
         .then((data) => {
             queries.insertDoc(db.getConnect(), data)
                 .then(() => {
-                    res.send({"result": data.sheet_tremorSpectrum_1.meanD23_635});
+                    res.send(data);
                 });
         })
         .catch((error) => {
@@ -26,5 +26,6 @@ router.get('/calculations', (req, res) => {
             res.status(500).send(error);
         });
 });
+
 
 module.exports = router;

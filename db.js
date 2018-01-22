@@ -1,26 +1,18 @@
-const MongoClient               = require('mongodb').MongoClient;
-const assert                    = require('assert');
+const MongoClient = require('mongodb').MongoClient;
 
-const url                       = 'mongodb://localhost:27017';
-const dbName                    = 'data';
-
-let connect;
+const url = 'mongodb://localhost:27017';
+let db;
 
 module.exports = {
     connect: () => {
-        MongoClient.connect(url, (err, client) => {
-            if (err) {
-                console.error(err);
+        db = MongoClient.connect(url)
+            .catch((error) => {
+                console.error(error);
                 process.exit(1);
-            } else {
-                console.log("Connected successfully to server");
-
-                connect = client.db(dbName);
-            }
-        });
+            });
     },
 
     getConnect: () => {
-        return connect;
+        return db;
     }
 };
