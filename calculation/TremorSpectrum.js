@@ -55,14 +55,14 @@ class TremorSpectrum {
 
         /* data for 3 finish table */
 
-        let maxFftMagNormalized = this.getMaxValue(this.getSliceArr(this.arrFftMag, 1, 615));
-        let arrFftMagNormalized = this.getFftMagNormalized(maxFftMagNormalized);
+        let maxFftMagNormalized = this.getMaxValue(this.getSliceArr(this.arrFftMag, 1, 615));  //let
+        let arrFftMagNormalized = this.getFftMagNormalized(maxFftMagNormalized);            //let
 
-        let colSumRaw = this.getColTotalPowerNote(this.arrFftMag);
-        let colSumNormalized = this.getColTotalPowerNote(arrFftMagNormalized);
+        let colSumRaw = this.getColTotalPowerNote(this.arrFftMag);                          //let
+        let colSumNormalized = this.getColTotalPowerNote(arrFftMagNormalized);              //let
 
-        let arrFftMagRawSmoothed = this.getArrFftMagRawSmoothed();
-        let colSumSmoothed = this.getColTotalPowerNote(arrFftMagRawSmoothed);
+        let arrFftMagRawSmoothed = this.getArrFftMagRawSmoothed();                         //let
+        let colSumSmoothed = this.getColTotalPowerNote(arrFftMagRawSmoothed);               //let
 
         this.totalMusicRaw = colSumRaw.avgNotesMusic;
         this.totalMusicRawStDev = colSumRaw.stDevNotesMusic;
@@ -76,9 +76,12 @@ class TremorSpectrum {
 
         /* data for other finish table */
 
-        let arrFftMagNormalizedSmoothed = this.getArrFftMagNormalizedSmoothed(arrFftMagRawSmoothed);
+        let arrFftMagNormalizedSmoothed = this.getArrFftMagNormalizedSmoothed(arrFftMagRawSmoothed);  //let
+        let colSumSmthNormed = this.getColTotalPowerNote(arrFftMagNormalizedSmoothed);                //let
 
-        this.sumSmthNormed = this.getColTotalPowerNote(arrFftMagNormalizedSmoothed);
+        this.sumSmoothedStDev = colSumSmoothed.stDevNotesMusic;
+        this.sumNormalizedAvg = colSumNormalized.avgNotesMusic;
+        this.sumSmthNormedAvg = colSumSmthNormed.avgNotesMusic;
     }
 
     getArrFftMagNormalizedSmoothed(arr) {
@@ -257,7 +260,7 @@ class TremorSpectrum {
 
     getArrFftFreq() {
         let constForArr = 4000 / 1024;
-        let arrFftFreq = [0, 4000 / 1024, constForArr + constForArr];
+        let arrFftFreq = [0, constForArr, constForArr + constForArr];
 
         for (let i = 3; i <= 615 - 1; i++) {
             arrFftFreq.push(arrFftFreq[i - 1] + constForArr);

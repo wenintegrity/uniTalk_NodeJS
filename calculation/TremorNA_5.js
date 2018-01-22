@@ -1,23 +1,21 @@
-class TremorNA_1 {
+class TremorNA_5 {
     constructor(ts1, ts2, ts3) {
-        this.tableName = '1';
+        this.tableName = '5';
         this.cells = [];
 
-        this.getData(ts3.meanD23_635, ts2.meanD23_635, ts1.meanD23_635, 'K10', 'L10', 'M10');
-        this.getData(ts3.stanDotClone, ts2.stanDotClone, ts1.stanDotClone, 'N10', 'O10', 'P10');
-        this.getData(ts3.divisionMeanValuesFftMag_23_404_405_635, ts2.divisionMeanValuesFftMag_23_404_405_635, ts1.divisionMeanValuesFftMag_23_404_405_635, 'Q10', 'R10', 'S10');
-        this.getData(ts3.divisionMeanValuesFftMag_23_329_329_635, ts2.divisionMeanValuesFftMag_23_329_329_635, ts1.divisionMeanValuesFftMag_23_329_329_635, 'T10', 'U10', 'V10');
-        this.getData(ts3.divisionQuartOnMaxFftMag, ts2.divisionQuartOnMaxFftMag, ts1.divisionQuartOnMaxFftMag, 'W10', 'X10', 'Y10');
-        this.getData(ts3.division_q3_average, ts2.division_q3_average, ts1.division_q3_average, 'Z10', 'AA10', 'AB10');
+        this.getData(ts3.totalMusicRaw, ts2.totalMusicRaw, ts1.totalMusicRaw, 'CL', 'CM', 'CN');
+        this.getData(ts3.totalMusicRawStDev, ts2.totalMusicRawStDev, ts1.totalMusicRawStDev, 'CO', 'CP', 'CQ');
+        this.getData(ts3.totalMusicSmth, ts2.totalMusicSmth, ts1.totalMusicSmth, 'CR', 'CS', 'CT');
+        this.getData(ts3.sumSmoothedStDev, ts2.sumSmoothedStDev, ts1.sumSmoothedStDev, 'CU', 'CV', 'CW');
 
         this.result = [
             {
-                address: 'M12',
-                value: this.getResult(1)
+                address: 'CM12',
+                value: this.getResult(0)
             },
             {
-                address: 'L12',
-                value: this.getResult(0)
+                address: 'CN12',
+                value: this.getResult(1)
             }
         ];
     }
@@ -25,7 +23,7 @@ class TremorNA_1 {
     getData(data_3, data_2, data_1, link_3, link_2, link_1) {
         let arrResult = [
             {
-                title: 'RHYTHMIC Spectral (2H AFTER)',
+                title: 'Mix VH SPECTRUM    3-Part',
                 line9: {
                     address: link_3 + 9,
                     value: data_3
@@ -37,7 +35,7 @@ class TremorNA_1 {
             },
             {
                 title:
-                    'RHYTHMIC Spectral (2H PRE)',
+                    'Mix VH SPECTRUM    2-Part',
                 line9: {
                     address: link_2 + 9,
                     value: data_2
@@ -49,7 +47,7 @@ class TremorNA_1 {
             },
             {
                 title:
-                    'RHYTHMIC Spectral (EARTH VIB)',
+                    'Mix VH SPECTRUM    1-Part',
                 line9: {
                     address: link_1 + 9,
                     value: data_1
@@ -67,13 +65,13 @@ class TremorNA_1 {
     getResult(index) {
         let amount = 0;
 
-        this.cells.forEach((element) => {
-            amount += element[index].line10.value;
-        });
+        for (let i = 0; i <= this.cells.length - 1; i++) {
+            amount += this.cells[i][index].line10.value;
+        }
 
         return (amount / this.cells.length) - 100;
     }
 }
 
 
-module.exports = TremorNA_1;
+module.exports = TremorNA_5;

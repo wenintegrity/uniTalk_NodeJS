@@ -2,6 +2,10 @@ const Data                              = require('./Data');
 const TremorSpectrum                    = require('./TremorSpectrum');
 const TremorNA_1                        = require('./TremorNA_1');
 const TremorNA_2                        = require('./TremorNA_2');
+const TremorNA_3                        = require('./TremorNA_3');
+const TremorNA_4                        = require('./TremorNA_4');
+const TremorNA_5                        = require('./TremorNA_5');
+const TremorNA_6                        = require('./TremorNA_6');
 const timeData                          = require('./timeData');
 
 
@@ -23,6 +27,11 @@ calculation.getData = (body) => {
             data.sheet_tremorNegentropicAlgorithm = [];
             data.sheet_tremorNegentropicAlgorithm.push(new TremorNA_1(data.sheet_tremorSpectrum_1, data.sheet_tremorSpectrum_2, data.sheet_tremorSpectrum_3));
             data.sheet_tremorNegentropicAlgorithm.push(new TremorNA_2(data.sheet_tremorSpectrum_1, data.sheet_tremorSpectrum_2, data.sheet_tremorSpectrum_3));
+            data.sheet_tremorNegentropicAlgorithm.push(new TremorNA_3(data.sheet_tremorSpectrum_1, data.sheet_tremorSpectrum_2, data.sheet_tremorSpectrum_3));
+            data.sheet_tremorNegentropicAlgorithm.push(new TremorNA_4(data.sheet_tremorSpectrum_1, data.sheet_tremorSpectrum_2, data.sheet_tremorSpectrum_3));
+            data.sheet_tremorNegentropicAlgorithm.push(new TremorNA_5(data.sheet_tremorSpectrum_1, data.sheet_tremorSpectrum_2, data.sheet_tremorSpectrum_3));
+            data.sheet_tremorNegentropicAlgorithm.push(new TremorNA_6(data.sheet_tremorSpectrum_1, data.sheet_tremorSpectrum_2, data.sheet_tremorSpectrum_3));
+
 
             resolve(data);
         } catch (error) {
