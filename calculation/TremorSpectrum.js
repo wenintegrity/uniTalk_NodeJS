@@ -7,11 +7,11 @@ const summary                   = require('summary');
 
 class TremorSpectrum {
     constructor(data) {
-        let arrConst = file.getDataFromFile('./data/constant.json');
+        this.arrConst = file.getDataFromFile('./data/constant.json');      //let
         this.arrFftComplex = fft(data.arrOutMicM50);
         this.arrFftFreq = this.getArrFftFreq();
         this.arrFftMag = this.getArrFftMag();
-        this.getFreqMagAndConst(arrConst);
+        this.getFreqMagAndConst(this.arrConst);
 
         this.maxConstAbs = this.getMaxValue(this.getSliceArr(this.arrConstABS, 3, 365));
         this.maxConstAbs_NO = this.getMaxValue(this.getSliceArr(this.arrConstABS_NO, 3, 365));
@@ -55,20 +55,20 @@ class TremorSpectrum {
 
         /* data for 3 finish table */
 
-        let maxFftMagNormalized = this.getMaxValue(this.getSliceArr(this.arrFftMag, 1, 615));  //let
-        let arrFftMagNormalized = this.getFftMagNormalized(maxFftMagNormalized);            //let
+        this.maxFftMagNormalized = this.getMaxValue(this.getSliceArr(this.arrFftMag, 1, 615));  //let
+        this.arrFftMagNormalized = this.getFftMagNormalized(this.maxFftMagNormalized);            //let
 
-        let colSumRaw = this.getColTotalPowerNote(this.arrFftMag);                          //let
-        let colSumNormalized = this.getColTotalPowerNote(arrFftMagNormalized);              //let
+        this.colSumRaw = this.getColTotalPowerNote(this.arrFftMag);                          //let
+        this.colSumNormalized = this.getColTotalPowerNote(this.arrFftMagNormalized);              //let
 
-        let arrFftMagRawSmoothed = this.getArrFftMagRawSmoothed();                         //let
-        let colSumSmoothed = this.getColTotalPowerNote(arrFftMagRawSmoothed);               //let
+        this.arrFftMagRawSmoothed = this.getArrFftMagRawSmoothed();                         //let
+        this.colSumSmoothed = this.getColTotalPowerNote(this.arrFftMagRawSmoothed);               //let
 
-        this.totalMusicRaw = colSumRaw.avgNotesMusic;
-        this.totalMusicRawStDev = colSumRaw.stDevNotesMusic;
+        this.totalMusicRaw = this.colSumRaw.avgNotesMusic;
+        this.totalMusicRawStDev = this.colSumRaw.stDevNotesMusic;
 
-        this.totalMusicSmth = colSumSmoothed.avgNotesMusic;
-        this.totalMusicSmthStDev = colSumNormalized.stDevNotesMusic;
+        this.totalMusicSmth = this.colSumSmoothed.avgNotesMusic;
+        this.totalMusicSmthStDev = this.colSumNormalized.stDevNotesMusic;
 
         this.totalMusicRaw_Smth = (this.totalMusicRaw - this.totalMusicSmth) / (this.totalMusicRaw + this.totalMusicSmth);
 
@@ -76,15 +76,17 @@ class TremorSpectrum {
 
         /* data for other finish table */
 
-        let arrFftMagNormalizedSmoothed = this.getArrFftMagNormalizedSmoothed(arrFftMagRawSmoothed);  //let
-        let colSumSmthNormed = this.getColTotalPowerNote(arrFftMagNormalizedSmoothed);                //let
+        this.arrFftMagNormalizedSmoothed = this.getArrFftMagNormalizedSmoothed(this.arrFftMagRawSmoothed);  //let
+        this.colSumSmthNormed = this.getColTotalPowerNote(this.arrFftMagNormalizedSmoothed);                //let
 
-        this.sumSmoothedStDev = colSumSmoothed.stDevNotesMusic;
-        this.sumNormalizedAvg = colSumNormalized.avgNotesMusic;
-        this.sumSmthNormedAvg = colSumSmthNormed.avgNotesMusic;
+        this.sumSmoothedStDev = this.colSumSmoothed.stDevNotesMusic;
+        this.sumNormalizedAvg = this.colSumNormalized.avgNotesMusic;
+        this.sumSmthNormedAvg = this.colSumSmthNormed.avgNotesMusic;
 
-        let arrSumSmthNorm_1 = this.getArrSumSmthNorm_1(colSumSmthNormed);
-        this.colSumSmthNorm_1Avg = arrSumSmthNorm_1.avgNotesMusic;
+        this.arrSumSmthNorm_1 = this.getArrSumSmthNorm_1(this.colSumSmthNormed);
+        this.colSumSmthNorm_1Avg = this.arrSumSmthNorm_1.avgNotesMusic;
+
+        /*  /data for other finish table */
     }
 
     getArrSumSmthNorm_1(cols) {
