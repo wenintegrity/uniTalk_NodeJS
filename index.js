@@ -3,6 +3,7 @@
 const express                     = require('express');
 const app                         = express();
 const bodyParser                  = require('body-parser');
+const compression                 = require('compression');
 
 const config                      = require('./config');
 const router                      = require('./router');
@@ -11,6 +12,7 @@ const db                          = require('./db');
 
 db.connect();
 
+app.use(compression());
 app.use(bodyParser.json());
 
 Object.keys(router).forEach(component => {

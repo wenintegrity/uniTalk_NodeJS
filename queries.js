@@ -1,5 +1,4 @@
-const assert = require('assert');
-const dbName = 'data';
+const dbName                    = 'data';
 
 
 module.exports = {
@@ -12,9 +11,6 @@ module.exports = {
 
                     collection.insertOne(data, (error, result) => {
                         if (error) {
-                            assert.equal(error, null);
-                            assert.equal(1, result.result.n);
-                            assert.equal(1, result.ops.length);
                             reject(error);
                         } else {
                             console.log("Inserted 1 documents into the collection");
@@ -25,6 +21,7 @@ module.exports = {
                 })
                 .catch((error) => {
                     console.error(error);
+                    reject(error);
                 })
         });
     },
@@ -46,6 +43,7 @@ module.exports = {
                 })
                 .catch((error) => {
                     console.error(error);
+                    reject(error);
                 })
         });
     }

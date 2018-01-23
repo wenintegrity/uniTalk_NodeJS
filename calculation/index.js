@@ -34,7 +34,6 @@ calculation.getData = (body) => {
             data.sheet_tremorNegentropicAlgorithm.push(new TremorNA_6(data.sheet_tremorSpectrum_1, data.sheet_tremorSpectrum_2, data.sheet_tremorSpectrum_3));
             data.sheet_tremorNegentropicAlgorithm.push(new TremorNA_7(data.sheet_tremorSpectrum_1, data.sheet_tremorSpectrum_2, data.sheet_tremorSpectrum_3));
 
-
             resolve(data);
         } catch (error) {
             console.error(error);
