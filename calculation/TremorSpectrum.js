@@ -82,6 +82,24 @@ class TremorSpectrum {
         this.sumSmoothedStDev = colSumSmoothed.stDevNotesMusic;
         this.sumNormalizedAvg = colSumNormalized.avgNotesMusic;
         this.sumSmthNormedAvg = colSumSmthNormed.avgNotesMusic;
+
+        let arrSumSmthNorm_1 = this.getArrSumSmthNorm_1(colSumSmthNormed);
+        this.colSumSmthNorm_1Avg = arrSumSmthNorm_1.avgNotesMusic;
+    }
+
+    getArrSumSmthNorm_1(cols) {
+        let maxValArr = summary(cols.arr).max();
+        let result = {};
+        result.arrResult = [];
+
+        cols.arr.forEach((element) => {
+            result.arrResult.push(element / maxValArr);
+        });
+
+        result.avgNotesMusic = summary(result.arrResult).mean();
+        result.stDevNotesMusic = this.getStanDotClone(result.arrResult);
+
+        return result;
     }
 
     getArrFftMagNormalizedSmoothed(arr) {

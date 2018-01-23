@@ -1,11 +1,9 @@
-class TremorNA_6 {
+class TremorNA_7 {
     constructor(ts1, ts2, ts3) {
-        this.tableName = '6';
+        this.tableName = '7';
         this.cells = [];
 
-        this.getData(ts3.sumNormalizedAvg, ts2.sumNormalizedAvg, ts1.sumNormalizedAvg, 'BG', 'BH', 'BI');
-        this.getData(ts3.sumSmthNormedAvg, ts2.sumSmthNormedAvg, ts1.sumSmthNormedAvg, 'BJ', 'BK', 'BL');
-        this.getData(ts3.sumNormalizedAvg - ts3.sumSmthNormedAvg, ts2.sumNormalizedAvg - ts2.sumSmthNormedAvg, ts1.sumNormalizedAvg - ts1.sumSmthNormedAvg, 'BS', 'BT', 'BU');
+        this.getData(ts3.colSumSmthNorm_1Avg, ts2.colSumSmthNorm_1Avg, ts1.colSumSmthNorm_1Avg, 'BJ', 'BK', 'BL');
     }
 
     getData(data_3, data_2, data_1, link_3, link_2, link_1) {
@@ -52,4 +50,4 @@ class TremorNA_6 {
 }
 
 
-module.exports = TremorNA_6;
+module.exports = TremorNA_7;
