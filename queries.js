@@ -37,6 +37,8 @@ module.exports = {
                         if (error) {
                             reject(error);
                         } else {
+                            console.log("Get 1 last document from the collection");
+
                             resolve(docs[docs.length - 1])
                         }
                     });
