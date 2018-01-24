@@ -279,7 +279,7 @@ class TremorSpectrum {
     }
 
     getArrFftFreq() {
-        let constForArr = 8018 / 1024;
+        let constForArr = 8018 / 2052.608;
         let arrFftFreq = [0, constForArr, constForArr + constForArr];
 
         for (let i = 3; i <= 615 - 1; i++) {
