@@ -325,7 +325,7 @@ class TremorSpectrum {
     }
 
     getDivisionMeanValuesFftMag_23_404_405_635() {
-        let arrFftMag_23_404 = this.getSliceArr(this.arrFftMag, 3, 384);
+        let arrFftMag_23_404 = this.getSliceArr(this.arrFftMag, 2, 384);
         let arrFftMag_405_635 = this.getSliceArr(this.arrFftMag, 384, 615);
 
         return summary(arrFftMag_23_404).mean() / summary(arrFftMag_405_635).mean();
