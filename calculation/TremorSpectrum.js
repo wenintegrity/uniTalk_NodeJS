@@ -109,21 +109,27 @@ class TremorSpectrum {
 
 
         let arrForResult = [];
-        arrForResult[27] = {
+        arrForResult[56] = {
             freq: startFreq,
             mag: startMag
         };
 
-        for (let i = 26; i >= 0; i--) {
+        for (let i = 55; i >= 0; i--) {
             let freq = arrForResult[i + 1].freq / constDelta;
-
-            arrForResult[i] = {
-                freq: freq,
-                mag: getNearNumber(freq)
-            };
+            if(i >= 29) {
+                arrForResult[i] = {
+                    freq: freq,
+                    mag: getNearNumber(freq)
+                };
+            }else{
+                arrForResult[i] = {
+                    freq: freq,
+                    mag: null
+                };
+            }
         }
 
-        for (let i = 28; i <= 47; i++) {
+        for (let i = 57; i <= 76; i++) {
             let freq = arrForResult[i - 1].freq * constDelta;
 
             arrForResult[i] = {
