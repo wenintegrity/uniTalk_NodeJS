@@ -13,10 +13,10 @@ class TremorSpectrum {
         this.arrFftMag = this.getArrFftMag();
         this.getFreqMagAndConst(this.arrConst);
 
-        this.maxConstAbs = this.getMaxValue(this.getSliceArr(this.arrConstABS, 3, 365));
-        this.maxConstAbs_NO = this.getMaxValue(this.getSliceArr(this.arrConstABS_NO, 3, 365));
-        this.maxFreqMag = this.getMaxValue(this.getSliceArr(this.arrFreqMag, 3, 365));
-        this.maxFreqMag_NO = this.getMaxValue(this.getSliceArr(this.arrFreqMag_NO, 3, 365));
+        this.maxConstAbs = summary(this.getSliceArr(this.arrConstABS, 3, 365)).max();
+        this.maxConstAbs_NO = summary(this.getSliceArr(this.arrConstABS_NO, 3, 365)).max();
+        this.maxFreqMag = summary(this.getSliceArr(this.arrFreqMag, 3, 365)).max();
+        this.maxFreqMag_NO = summary(this.getSliceArr(this.arrFreqMag_NO, 3, 365)).max();
 
         this.meanConstAbs = this.getMeanValue(this.getSliceArr(this.arrConstABS, 3, 365));
         this.meanConstAbs_NO = this.getMeanValue(this.getSliceArr(this.arrConstABS_NO, 3, 365));
@@ -42,8 +42,8 @@ class TremorSpectrum {
         this.arrFreqMagDiff = this.getFreqMagDiffAnd_NO(this.arrFreqMagNormal, this.arrConstAbsNormal);
         this.arrFreqMagDiff_NO = this.getFreqMagDiffAnd_NO(this.arrFreqMagNormal_NO, this.arrConstAbsNormal_NO);
 
-        this.maxFreqMagDiff = this.getMaxValue(this.getSliceArr(this.arrFreqMagDiff, 2, 364));
-        this.maxFreqMagDiff_NO = this.getMaxValue(this.getSliceArr(this.arrFreqMagDiff_NO, 2, 364));
+        this.maxFreqMagDiff = summary(this.getSliceArr(this.arrFreqMagDiff, 2, 364)).max();
+        this.maxFreqMagDiff_NO = summary(this.getSliceArr(this.arrFreqMagDiff_NO, 2, 364)).max();
 
         this.arrFreqMagDiffNormal = this.getArrConstFreq(this.arrFreqMagDiff, this.maxFreqMagDiff);
         this.arrFreqMagDiffNormal_NO = this.getArrConstFreq(this.arrFreqMagDiff_NO, this.maxFreqMagDiff_NO);
@@ -55,7 +55,7 @@ class TremorSpectrum {
 
         /* data for 3 finish table */
 
-        this.maxFftMagNormalized = this.getMaxValue(this.getSliceArr(this.arrFftMag, 1, 615));  //let
+        this.maxFftMagNormalized = summary(this.getSliceArr(this.arrFftMag, 1, 615)).max();  //let
         this.arrFftMagNormalized = this.getFftMagNormalized(this.maxFftMagNormalized);            //let
 
         this.colSumRaw = this.getColTotalPowerNote(this.arrFftMag);                          //let
@@ -87,6 +87,66 @@ class TremorSpectrum {
         this.colSumSmthNorm_1Avg = this.arrSumSmthNorm_1.avgNotesMusic;
 
         /*  /data for other finish table */
+
+        /* two tables after read line wich don't use  */
+
+        this.lowerAndHigherFreq_1 = this.getLowerAndHigherFreq(this.arrFftFreq, this.arrFftMag, this.arrFftMagNormalized);
+        this.lowerAndHigherFreq_2 = this.getLowerAndHigherFreq(this.arrFftFreq, this.arrFftMag, this.arrFftMagNormalizedSmoothed);
+    }
+
+    getLowerAndHigherFreq(arrFftFreq, arrFftMag, arrFftMagNormalized) {
+        let maxFftMag = summary(this.getSliceArr(arrFftMag, 1)).max();
+        let constDelta = Math.pow(2, (1 / 12));
+        let startFreq;
+        let startMag;
+
+        for (let i = 1; i <= arrFftMag.length - 1; i++) {
+            if (arrFftMag[i] == maxFftMag) {
+                startFreq = arrFftFreq[i];
+                startMag = arrFftMagNormalized[i];
+            }
+        }
+
+
+        let arrForResult = [];
+        arrForResult[56] = {
+            freq: startFreq,
+            mag: startMag
+        };
+
+        for (let i = 55; i >= 0; i--) {
+            let freq = arrForResult[i + 1].freq / constDelta;
+            if(i >= 29) {
+                arrForResult[i] = {
+                    freq: freq,
+                    mag: getNearNumber(freq)
+                };
+            }else{
+                arrForResult[i] = {
+                    freq: freq,
+                    mag: null
+                };
+            }
+        }
+
+        for (let i = 57; i <= 76; i++) {
+            let freq = arrForResult[i - 1].freq * constDelta;
+
+            arrForResult[i] = {
+                freq: freq,
+                mag: getNearNumber(freq)
+            };
+        }
+
+        function getNearNumber(number) {
+            for (let i = 0; i <= arrFftFreq.length - 1; i++) {
+                if (arrFftFreq[i] > number) {
+                    return arrFftMagNormalized[i - 1];
+                }
+            }
+        }
+
+        return arrForResult;
     }
 
     getArrSumSmthNorm_1(cols) {
@@ -105,7 +165,7 @@ class TremorSpectrum {
     }
 
     getArrFftMagNormalizedSmoothed(arr) {
-        let maxValArr = this.getMaxValue(this.getSliceArr(arr, 7, 615));
+        let maxValArr = summary(this.getSliceArr(arr, 7, 615)).max();
         let arrForResult = [];
 
         arr.forEach((element) => {
@@ -218,7 +278,7 @@ class TremorSpectrum {
             if (arr_1[i] * (1 - arr_2[i])) {
                 arrResult.push(arr_1[i] * (1 - arr_2[i]));
             } else {
-                arrResult.push('');
+                arrResult.push(null);
             }
         }
 
@@ -232,7 +292,7 @@ class TremorSpectrum {
             if (arr[i] / maxVal) {
                 arrResult.push(arr[i] / maxVal);
             } else {
-                arrResult.push('');
+                arrResult.push(null);
             }
         }
 
@@ -308,25 +368,13 @@ class TremorSpectrum {
         let index = 0;
 
         for (let i = 0; i <= arr.length - 1; i++) {
-            if (arr[i] !== null && arr[i] !== '') {
+            if (arr[i] !== null && arr[i] !== null) {
                 result = result + arr[i];
                 index++;
             }
         }
 
         return result / index;
-    }
-
-    getMaxValue(arr) {
-        let result = 0;
-
-        for (let i = 0; i <= arr.length - 1; i++) {
-            if (result < arr[i]) {
-                result = arr[i];
-            }
-        }
-
-        return result;
     }
 
     getStanDotClone(arrForResult) {
@@ -374,5 +422,6 @@ class TremorSpectrum {
         }
     }
 }
+
 
 module.exports = TremorSpectrum;
