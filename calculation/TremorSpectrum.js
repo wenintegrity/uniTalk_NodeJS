@@ -119,7 +119,7 @@ class TremorSpectrum {
 
             arrForResult[i] = {
                 freq: freq,
-                mag: getNearNumber.call(this, freq)
+                mag: getNearNumber(freq)
             };
         }
 
@@ -128,7 +128,7 @@ class TremorSpectrum {
 
             arrForResult[i] = {
                 freq: freq,
-                mag: getNearNumber.call(this, freq)
+                mag: getNearNumber(freq)
             };
         }
 
