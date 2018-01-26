@@ -1,6 +1,6 @@
 class TremorNA_1 {
     constructor(ts1, ts2, ts3) {
-        this.tableName = '1';
+        this.tableName = 'Variability of Spectrum';
         this.cells = [];
 
         this.getData(ts3.meanD23_635, ts2.meanD23_635, ts1.meanD23_635, 'K10', 'L10', 'M10');

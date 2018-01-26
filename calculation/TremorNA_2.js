@@ -1,6 +1,6 @@
 class TremorNA_2 {
     constructor(ts1, ts2, ts3) {
-        this.tableName = '2';
+        this.tableName = 'Presence of Environmental and Cosmic Frequencies';
         this.cells = [];
 
         let solfg_1 = ts1.objSolfg;

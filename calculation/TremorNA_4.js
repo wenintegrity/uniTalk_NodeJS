@@ -1,6 +1,6 @@
 class TremorNA_4 {
     constructor(ts1, ts2, ts3) {
-        this.tableName = '4';
+        this.tableName = 'Music According to Fundamental FORMANT:MaxMin Notes';
         this.cells = [];
 
         this.getData(ts3.powerOctaves, ts2.powerOctaves, ts1.powerOctaves, 'BW', 'BX', 'BY');

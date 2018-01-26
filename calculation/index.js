@@ -34,6 +34,26 @@ calculation.getData = (body) => {
             data.sheet_tremorNegentropicAlgorithm.push(new TremorNA_6(data.sheet_tremorSpectrum_1, data.sheet_tremorSpectrum_2, data.sheet_tremorSpectrum_3));
             data.sheet_tremorNegentropicAlgorithm.push(new TremorNA_7(data.sheet_tremorSpectrum_1, data.sheet_tremorSpectrum_2, data.sheet_tremorSpectrum_3));
 
+
+            // let i = 0;
+            //
+            // function show(element) {
+            //     console.log(i);
+            //     console.log(element.value + "===" + resultFromExcel[i]);
+            //     console.log(parseFloat(element.value.toFixed(10)) === parseFloat(resultFromExcel[i].toFixed(10)));
+            //     i++;
+            //
+            // }
+            //
+            // data.sheet_tremorNegentropicAlgorithm.forEach((element) => {
+            //     element.cells.forEach((element) => {
+            //         element.forEach((element) => {
+            //             show(element.line9);
+            //         })
+            //     })
+            // });
+
+
             resolve(data);
         } catch (error) {
             console.error(error);

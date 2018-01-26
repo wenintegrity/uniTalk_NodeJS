@@ -1,6 +1,6 @@
 class TremorNA_5 {
     constructor(ts1, ts2, ts3) {
-        this.tableName = '5';
+        this.tableName = 'Formant\'s Variability';
         this.cells = [];
 
         this.getData(ts3.totalMusicRaw, ts2.totalMusicRaw, ts1.totalMusicRaw, 'CL', 'CM', 'CN');

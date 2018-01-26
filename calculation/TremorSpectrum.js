@@ -116,12 +116,12 @@ class TremorSpectrum {
 
         for (let i = 55; i >= 0; i--) {
             let freq = arrForResult[i + 1].freq / constDelta;
-            if(i >= 29) {
+            if (i >= 29) {
                 arrForResult[i] = {
                     freq: freq,
                     mag: getNearNumber(freq)
                 };
-            }else{
+            } else {
                 arrForResult[i] = {
                     freq: freq,
                     mag: null
@@ -257,8 +257,9 @@ class TremorSpectrum {
     }
 
     getAvgPowerOctaves() {
-        let arr_1 = this.getSliceArr(this.arrFreqMagDiffNormal_NO, 1, 127);
-        let arr_2 = this.getSliceArr(this.arrFreqMagDiffNormal_NO, 128, 256);
+        let arr_1 = this.getSliceArr(this.arrFreqMagDiffNormal_NO, 2, 128);
+        let arr_2 = this.getSliceArr(this.arrFreqMagDiffNormal_NO, 129, 257);
+
         let meanForResult = this.getMeanValue(arr_1.concat(arr_2));
 
         return this.powerOctaves / (meanForResult + this.powerOctaves);
@@ -268,7 +269,7 @@ class TremorSpectrum {
         let arr = this.arrFreqMagDiffNormal;
         let arrNo = this.arrFreqMagDiffNormal_NO;
 
-        return (Number(arr[1]) + Number(arr[3]) + Number(arr[7]) + Number(arr[15]) + Number(arr[31]) + Number(arr[63]) + Number(arrNo[127]) + Number(arrNo[256])) / 8;
+        return (Number(arr[2]) + Number(arr[4]) + Number(arr[8]) + Number(arr[16]) + Number(arr[32]) + Number(arr[64]) + Number(arrNo[128]) + Number(arrNo[257])) / 8;
     }
 
     getFreqMagDiffAnd_NO(arr_1, arr_2) {
@@ -368,7 +369,7 @@ class TremorSpectrum {
         let index = 0;
 
         for (let i = 0; i <= arr.length - 1; i++) {
-            if (arr[i] !== null && arr[i] !== null) {
+            if (arr[i] !== null && arr[i] !== '') {
                 result = result + arr[i];
                 index++;
             }
@@ -406,14 +407,14 @@ class TremorSpectrum {
         this.arrConstABS_NO = [];
 
         for (let i = 0; i <= arrConst.length - 1; i++) {
-            if (arrConst[i]['constABS'] !== '') {
-                this.arrFreqMag.push(this.arrFftMag[i + 1]);
+            if (arrConst[i]['constABS'] !== '' && arrConst[i]['constABS'] < 0.6) {
+                this.arrFreqMag.push(this.arrFftMag[i]);
                 this.arrFreqMag_NO.push(null);
 
                 this.arrConstABS.push(arrConst[i]['constABS']);
                 this.arrConstABS_NO.push(null);
             } else {
-                this.arrFreqMag_NO.push(this.arrFftMag[i + 1]);
+                this.arrFreqMag_NO.push(this.arrFftMag[i]);
                 this.arrFreqMag.push(null);
 
                 this.arrConstABS_NO.push(arrConst[i]['constABS_No']);
