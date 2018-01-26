@@ -7,7 +7,7 @@ const TremorNA_4                        = require('./TremorNA_4');
 const TremorNA_5                        = require('./TremorNA_5');
 const TremorNA_6                        = require('./TremorNA_6');
 const TremorNA_7                        = require('./TremorNA_7');
-const timeData                          = require('./timeData');
+const timeData                          = require('../data/timeData');
 
 
 let calculation = {};
