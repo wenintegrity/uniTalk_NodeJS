@@ -7,16 +7,16 @@ const summary                   = require('summary');
 
 class TremorSpectrum {
     constructor(data) {
-        this.arrConst = file.getDataFromFile('./data/constant.json');      //let
+        this.arrConst = file.getDataFromFile('./data/constant.json');
         this.arrFftComplex = fft(data.arrOutMicM50);
         this.arrFftFreq = this.getArrFftFreq();
         this.arrFftMag = this.getArrFftMag();
         this.getFreqMagAndConst(this.arrConst);
 
-        this.maxConstAbs = summary(this.getSliceArr(this.arrConstABS, 3, 365)).max();
-        this.maxConstAbs_NO = summary(this.getSliceArr(this.arrConstABS_NO, 3, 365)).max();
-        this.maxFreqMag = summary(this.getSliceArr(this.arrFreqMag, 3, 365)).max();
-        this.maxFreqMag_NO = summary(this.getSliceArr(this.arrFreqMag_NO, 3, 365)).max();
+        this.maxConstAbs = Math.max.apply(null, this.getSliceArr(this.arrConstABS, 3, 365));
+        this.maxConstAbs_NO = Math.max.apply(null, this.getSliceArr(this.arrConstABS_NO, 3, 365));
+        this.maxFreqMag = Math.max.apply(null, this.getSliceArr(this.arrFreqMag, 3, 365));
+        this.maxFreqMag_NO = Math.max.apply(null, this.getSliceArr(this.arrFreqMag_NO, 3, 365));
 
         this.meanConstAbs = this.getMeanValue(this.getSliceArr(this.arrConstABS, 3, 365));
         this.meanConstAbs_NO = this.getMeanValue(this.getSliceArr(this.arrConstABS_NO, 3, 365));
@@ -42,8 +42,8 @@ class TremorSpectrum {
         this.arrFreqMagDiff = this.getFreqMagDiffAnd_NO(this.arrFreqMagNormal, this.arrConstAbsNormal);
         this.arrFreqMagDiff_NO = this.getFreqMagDiffAnd_NO(this.arrFreqMagNormal_NO, this.arrConstAbsNormal_NO);
 
-        this.maxFreqMagDiff = summary(this.getSliceArr(this.arrFreqMagDiff, 2, 364)).max();
-        this.maxFreqMagDiff_NO = summary(this.getSliceArr(this.arrFreqMagDiff_NO, 2, 364)).max();
+        this.maxFreqMagDiff = Math.max.apply(null, this.getSliceArr(this.arrFreqMagDiff, 2, 364));
+        this.maxFreqMagDiff_NO = Math.max.apply(null, this.getSliceArr(this.arrFreqMagDiff_NO, 2, 364));
 
         this.arrFreqMagDiffNormal = this.getArrConstFreq(this.arrFreqMagDiff, this.maxFreqMagDiff);
         this.arrFreqMagDiffNormal_NO = this.getArrConstFreq(this.arrFreqMagDiff_NO, this.maxFreqMagDiff_NO);
@@ -55,14 +55,14 @@ class TremorSpectrum {
 
         /* data for 3 finish table */
 
-        this.maxFftMagNormalized = summary(this.getSliceArr(this.arrFftMag, 1, 615)).max();  //let
-        this.arrFftMagNormalized = this.getFftMagNormalized(this.maxFftMagNormalized);            //let
+        this.maxFftMagNormalized = Math.max.apply(null, this.getSliceArr(this.arrFftMag, 1, 615));
+        this.arrFftMagNormalized = this.getFftMagNormalized(this.maxFftMagNormalized);
 
-        this.colSumRaw = this.getColTotalPowerNote(this.arrFftMag);                          //let
-        this.colSumNormalized = this.getColTotalPowerNote(this.arrFftMagNormalized);              //let
+        this.colSumRaw = this.getColTotalPowerNote(this.arrFftMag);
+        this.colSumNormalized = this.getColTotalPowerNote(this.arrFftMagNormalized);
 
-        this.arrFftMagRawSmoothed = this.getArrFftMagRawSmoothed();                         //let
-        this.colSumSmoothed = this.getColTotalPowerNote(this.arrFftMagRawSmoothed);               //let
+        this.arrFftMagRawSmoothed = this.getArrFftMagRawSmoothed();
+        this.colSumSmoothed = this.getColTotalPowerNote(this.arrFftMagRawSmoothed);
 
         this.totalMusicRaw = this.colSumRaw.avgNotesMusic;
         this.totalMusicRawStDev = this.colSumRaw.stDevNotesMusic;
@@ -76,8 +76,8 @@ class TremorSpectrum {
 
         /* data for other finish table */
 
-        this.arrFftMagNormalizedSmoothed = this.getArrFftMagNormalizedSmoothed(this.arrFftMagRawSmoothed);  //let
-        this.colSumSmthNormed = this.getColTotalPowerNote(this.arrFftMagNormalizedSmoothed);                //let
+        this.arrFftMagNormalizedSmoothed = this.getArrFftMagNormalizedSmoothed(this.arrFftMagRawSmoothed);
+        this.colSumSmthNormed = this.getColTotalPowerNote(this.arrFftMagNormalizedSmoothed);
 
         this.sumSmoothedStDev = this.colSumSmoothed.stDevNotesMusic;
         this.sumNormalizedAvg = this.colSumNormalized.avgNotesMusic;
@@ -95,7 +95,7 @@ class TremorSpectrum {
     }
 
     getLowerAndHigherFreq(arrFftFreq, arrFftMag, arrFftMagNormalized) {
-        let maxFftMag = summary(this.getSliceArr(arrFftMag, 1)).max();
+        let maxFftMag = Math.max.apply(null, this.getSliceArr(arrFftMag, 1));
         let constDelta = Math.pow(2, (1 / 12));
         let startFreq;
         let startMag;
@@ -150,7 +150,7 @@ class TremorSpectrum {
     }
 
     getArrSumSmthNorm_1(cols) {
-        let maxValArr = summary(cols.arr).max();
+        let maxValArr = Math.max.apply(null, cols.arr);
         let result = {};
         result.arrResult = [];
 
@@ -165,7 +165,7 @@ class TremorSpectrum {
     }
 
     getArrFftMagNormalizedSmoothed(arr) {
-        let maxValArr = summary(this.getSliceArr(arr, 7, 615)).max();
+        let maxValArr = Math.max.apply(null, this.getSliceArr(arr, 7, 615));
         let arrForResult = [];
 
         arr.forEach((element) => {
