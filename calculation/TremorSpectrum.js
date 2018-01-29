@@ -7,11 +7,10 @@ const summary                   = require('summary');
 
 class TremorSpectrum {
     constructor(data) {
-        this.arrConst = file.getDataFromFile('./data/constant.json');
         this.arrFftComplex = fft(data.arrOutMicM50);
         this.arrFftFreq = this.getArrFftFreq();
         this.arrFftMag = this.getArrFftMag();
-        this.getFreqMagAndConst(this.arrConst);
+        this.getFreqMagAndConst(file.getDataFromFile('./data/constant.json'));
 
         this.maxConstAbs = Math.max.apply(null, this.getSliceArr(this.arrConstABS, 3, 365));
         this.maxConstAbs_NO = Math.max.apply(null, this.getSliceArr(this.arrConstABS_NO, 3, 365));

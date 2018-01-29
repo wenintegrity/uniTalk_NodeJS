@@ -8,6 +8,7 @@ const TremorNA_5                        = require('./TremorNA_5');
 const TremorNA_6                        = require('./TremorNA_6');
 const TremorNA_7                        = require('./TremorNA_7');
 const timeData                          = require('../data/timeData');
+const headers_TremorSpectrum            = require('../data/headers_TremorSpectrum');
 
 
 let calculation = {};
@@ -24,6 +25,7 @@ calculation.getData = (body) => {
             data.sheet_tremorSpectrum_1 = new TremorSpectrum(data.sheet_data_1);
             data.sheet_tremorSpectrum_2 = new TremorSpectrum(data.sheet_data_2);
             data.sheet_tremorSpectrum_3 = new TremorSpectrum(data.sheet_data_3);
+            data.headers_sheet_tremorSpectrum = headers_TremorSpectrum;
 
             data.sheet_tremorNegentropicAlgorithm = [];
             data.sheet_tremorNegentropicAlgorithm.push(new TremorNA_1(data.sheet_tremorSpectrum_1, data.sheet_tremorSpectrum_2, data.sheet_tremorSpectrum_3));
