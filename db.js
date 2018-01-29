@@ -6,7 +6,6 @@ let db;
 module.exports = {
     connect: () => {
         db = MongoClient.connect(url)
-            .then(console.log('Connected successfully to server mongoDB'))
             .catch((error) => {
                 console.error(error);
                 process.exit(1);

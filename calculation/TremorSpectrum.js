@@ -17,20 +17,20 @@ class TremorSpectrum {
         this.maxFreqMag = Math.max.apply(null, this.getSliceArr(this.arrFreqMag, 3, 365));
         this.maxFreqMag_NO = Math.max.apply(null, this.getSliceArr(this.arrFreqMag_NO, 3, 365));
 
-        this.meanConstAbs = this.getMeanValue(this.getSliceArr(this.arrConstABS, 3, 365));
-        this.meanConstAbs_NO = this.getMeanValue(this.getSliceArr(this.arrConstABS_NO, 3, 365));
-        this.meanFreqMag = this.getMeanValue(this.getSliceArr(this.arrFreqMag, 3, 365));
-        this.meanFreqMag_NO = this.getMeanValue(this.getSliceArr(this.arrFreqMag_NO, 3, 365));
+        this.averageConstAbs = this.getAverageValue(this.getSliceArr(this.arrConstABS, 3, 365));
+        this.averageConstAbs_NO = this.getAverageValue(this.getSliceArr(this.arrConstABS_NO, 3, 365));
+        this.averageFreqMag = this.getAverageValue(this.getSliceArr(this.arrFreqMag, 3, 365));
+        this.averageFreqMag_NO = this.getAverageValue(this.getSliceArr(this.arrFreqMag_NO, 3, 365));
 
-        this.meanD23_635 = summary(this.getSliceArr(this.arrFftMag, 2)).mean();
+        this.averageD23_635 = summary(this.getSliceArr(this.arrFftMag, 2)).mean();
         this.stanDotClone = this.getStanDotClone(this.getSliceArr(this.arrFftMag, 2, 615));
 
-        this.divisionMeanValuesFftMag_23_404_405_635 = this.getDivisionMeanValuesFftMag_23_404_405_635();
-        this.divisionMeanValuesFftMag_23_329_329_635 = this.getDivisionMeanValuesFftMag_23_329_329_635();
+        this.divisionAverageValuesFftMag_23_404_405_635 = this.getdivisionAverageValuesFftMag_23_404_405_635();
+        this.divisionAverageValuesFftMag_23_329_329_635 = this.getdivisionAverageValuesFftMag_23_329_329_635();
 
         this.quartileFftMag_23_635 = this.getQuartile(this.arrFftMag, 2, 615);
         this.divisionQuartOnMaxFftMag = this.quartileFftMag_23_635.q3 / this.quartileFftMag_23_635.max;
-        this.division_q3_average = this.quartileFftMag_23_635.q3 / this.meanD23_635;
+        this.division_q3_average = this.quartileFftMag_23_635.q3 / this.averageD23_635;
 
         this.objSolfg = this.getArrSolfeggio();
 
@@ -182,7 +182,7 @@ class TremorSpectrum {
         let arrForResult = [null, null, null, null, null, null, null];
 
         for (let i = 1, c = 8; c <= this.arrFftMag.length; i++, c++) {
-            arrForResult.push(this.getMeanValue(this.getSliceArr(this.arrFftMag, i, c)))
+            arrForResult.push(this.getAverageValue(this.getSliceArr(this.arrFftMag, i, c)))
         }
 
         return arrForResult;
@@ -259,7 +259,7 @@ class TremorSpectrum {
         let arr_1 = this.getSliceArr(this.arrFreqMagDiffNormal_NO, 2, 128);
         let arr_2 = this.getSliceArr(this.arrFreqMagDiffNormal_NO, 129, 257);
 
-        let meanForResult = this.getMeanValue(arr_1.concat(arr_2));
+        let meanForResult = this.getAverageValue(arr_1.concat(arr_2));
 
         return this.powerOctaves / (meanForResult + this.powerOctaves);
     }
@@ -324,14 +324,14 @@ class TremorSpectrum {
         };
     }
 
-    getDivisionMeanValuesFftMag_23_404_405_635() {
+    getdivisionAverageValuesFftMag_23_404_405_635() {
         let arrFftMag_23_404 = this.getSliceArr(this.arrFftMag, 2, 384);
         let arrFftMag_405_635 = this.getSliceArr(this.arrFftMag, 384, 615);
 
         return summary(arrFftMag_23_404).mean() / summary(arrFftMag_405_635).mean();
     }
 
-    getDivisionMeanValuesFftMag_23_329_329_635() {
+    getdivisionAverageValuesFftMag_23_329_329_635() {
         let arrFftMag_23_329 = this.getSliceArr(this.arrFftMag, 2, 309);
         let arrFftMag_329_635 = this.getSliceArr(this.arrFftMag, 308, 615);
 
@@ -363,7 +363,7 @@ class TremorSpectrum {
         return arr.slice(from, to);
     }
 
-    getMeanValue(arr) {
+    getAverageValue(arr) {
         let result = 0;
         let index = 0;
 

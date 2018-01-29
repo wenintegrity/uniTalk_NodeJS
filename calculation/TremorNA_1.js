@@ -3,10 +3,10 @@ class TremorNA_1 {
         this.tableName = 'Variability of Spectrum';
         this.cells = [];
 
-        this.getData(ts3.meanD23_635, ts2.meanD23_635, ts1.meanD23_635, 'K10', 'L10', 'M10');
+        this.getData(ts3.averageD23_635, ts2.averageD23_635, ts1.averageD23_635, 'K10', 'L10', 'M10');
         this.getData(ts3.stanDotClone, ts2.stanDotClone, ts1.stanDotClone, 'N10', 'O10', 'P10');
-        this.getData(ts3.divisionMeanValuesFftMag_23_404_405_635, ts2.divisionMeanValuesFftMag_23_404_405_635, ts1.divisionMeanValuesFftMag_23_404_405_635, 'Q10', 'R10', 'S10');
-        this.getData(ts3.divisionMeanValuesFftMag_23_329_329_635, ts2.divisionMeanValuesFftMag_23_329_329_635, ts1.divisionMeanValuesFftMag_23_329_329_635, 'T10', 'U10', 'V10');
+        this.getData(ts3.divisionAverageValuesFftMag_23_404_405_635, ts2.divisionAverageValuesFftMag_23_404_405_635, ts1.divisionAverageValuesFftMag_23_404_405_635, 'Q10', 'R10', 'S10');
+        this.getData(ts3.divisionAverageValuesFftMag_23_329_329_635, ts2.divisionAverageValuesFftMag_23_329_329_635, ts1.divisionAverageValuesFftMag_23_329_329_635, 'T10', 'U10', 'V10');
         this.getData(ts3.divisionQuartOnMaxFftMag, ts2.divisionQuartOnMaxFftMag, ts1.divisionQuartOnMaxFftMag, 'W10', 'X10', 'Y10');
         this.getData(ts3.division_q3_average, ts2.division_q3_average, ts1.division_q3_average, 'Z10', 'AA10', 'AB10');
 
