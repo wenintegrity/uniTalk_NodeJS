@@ -118,12 +118,12 @@ class TremorSpectrum {
             if (i >= 29) {
                 arrForResult[i] = {
                     freq: freq,
-                    mag: getNearNumber(freq)
+                    power: getNearNumber(freq)
                 };
             } else {
                 arrForResult[i] = {
                     freq: freq,
-                    mag: null
+                    power: null
                 };
             }
         }

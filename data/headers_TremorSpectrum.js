@@ -64,7 +64,7 @@ module.exports = [
     },
     {
         name: 'lowerAndHigherFreq_1',
-        nameCol: 'Freq'
+        nameCol: 'Freq and power'
     },
     {
         name: 'colSumRaw',
@@ -84,7 +84,7 @@ module.exports = [
     },
     {
         name: 'lowerAndHigherFreq_2',
-        nameCol: 'Freq'
+        nameCol: 'Freq and power'
     },
     {
         name: 'colSumSmoothed',
