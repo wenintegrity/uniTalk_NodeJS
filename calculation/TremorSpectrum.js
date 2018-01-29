@@ -133,7 +133,7 @@ class TremorSpectrum {
 
             arrForResult[i] = {
                 freq: freq,
-                mag: getNearNumber(freq)
+                power: getNearNumber(freq)
             };
         }
 
