@@ -110,7 +110,7 @@ class TremorSpectrum {
         let arrForResult = [];
         arrForResult[56] = {
             freq: startFreq,
-            mag: startMag
+            power: startMag
         };
 
         for (let i = 55; i >= 0; i--) {
