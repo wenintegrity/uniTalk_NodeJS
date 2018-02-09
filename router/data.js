@@ -4,16 +4,20 @@ const queries                           = require('../queries');
 const db                                = require('../db');
 const {check, validationResult}         = require('express-validator/check');
 
+
 const arrValidation = [
     check('data.data_1')
         .not().isEmpty()
-        .exists(),
+        .exists()
+        .custom(value => Array.isArray(value)),
     check('data.data_2')
         .not().isEmpty()
-        .exists(),
+        .exists()
+        .custom(value => Array.isArray(value)),
     check('data.data_3')
         .not().isEmpty()
         .exists()
+        .custom(value => Array.isArray(value))
 ];
 
 
@@ -27,9 +31,12 @@ router.post('/calculations', arrValidation, (req, res, next) => {
 
     Calculation(req.body.data)
         .then((data) => {
-            return queries.insertDoc(db.getConnect(), data)
-                .then(() => {
-                    return res.json(data);
+            return queries.insertDoc(db.getConnect(), {
+                reqBody: req.body,
+                calcData: data
+            })
+                .then((saveData) => {
+                    return res.json(saveData);
                 });
         })
         .catch(next);

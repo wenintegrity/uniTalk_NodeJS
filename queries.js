@@ -1,4 +1,4 @@
-const dbName = 'data';
+const dbName                    = 'data';
 
 
 module.exports = {
@@ -10,8 +10,8 @@ module.exports = {
                     const collection = db.collection('documents');
 
                     return collection.insertOne(data)
-                        .then(result => {
-                            resolve(result);
+                        .then(() => {
+                            resolve(data);
                         })
                 })
                 .catch((error) => {

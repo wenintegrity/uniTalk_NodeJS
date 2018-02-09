@@ -1,26 +1,27 @@
 const fftLib                    = require('fft-js');
 const fft                       = fftLib.fft;
-const file                      = require('./file');
 const complex                   = require('complex');
 const summary                   = require('summary');
+const constants                 = require('../data/constants');
 
 
 class TremorSpectrum {
     constructor(data) {
+        this.constants = constants;
         this.arrFftComplex = fft(data.arrOutMicM50);
         this.arrFftFreq = this.getArrFftFreq();
         this.arrFftMag = this.getArrFftMag();
-        this.getFreqMagAndConst(file.getDataFromFile('./data/constant.json'));
+        this.getFreqMagAndConst(constants);
 
-        this.maxConstAbs = Math.max.apply(null, this.getSliceArr(this.arrConstABS, 3, 365));
-        this.maxConstAbs_NO = Math.max.apply(null, this.getSliceArr(this.arrConstABS_NO, 3, 365));
-        this.maxFreqMag = Math.max.apply(null, this.getSliceArr(this.arrFreqMag, 3, 365));
-        this.maxFreqMag_NO = Math.max.apply(null, this.getSliceArr(this.arrFreqMag_NO, 3, 365));
+        this.maxConstAbs = Math.max.apply(null, this.getSliceArr(this.arrConstABSLess_1, 3, 365));
+        this.maxConstAbs_NO = Math.max.apply(null, this.getSliceArr(this.arrConstABSMore_1, 3, 365));
+        this.maxFreqMag = Math.max.apply(null, this.getSliceArr(this.arrFreqMagLess_1, 3, 365));
+        this.maxFreqMag_NO = Math.max.apply(null, this.getSliceArr(this.arrFreqMagMore_1, 3, 365));
 
-        this.averageConstAbs = this.getAverageValue(this.getSliceArr(this.arrConstABS, 3, 365));
-        this.averageConstAbs_NO = this.getAverageValue(this.getSliceArr(this.arrConstABS_NO, 3, 365));
-        this.averageFreqMag = this.getAverageValue(this.getSliceArr(this.arrFreqMag, 3, 365));
-        this.averageFreqMag_NO = this.getAverageValue(this.getSliceArr(this.arrFreqMag_NO, 3, 365));
+        this.averageConstAbs = this.getAverageValue(this.getSliceArr(this.arrConstABSLess_1, 3, 365));
+        this.averageConstAbs_NO = this.getAverageValue(this.getSliceArr(this.arrConstABSMore_1, 3, 365));
+        this.averageFreqMag = this.getAverageValue(this.getSliceArr(this.arrFreqMagLess_1, 3, 365));
+        this.averageFreqMag_NO = this.getAverageValue(this.getSliceArr(this.arrFreqMagMore_1, 3, 365));
 
         this.averageD23_635 = summary(this.getSliceArr(this.arrFftMag, 2)).mean();
         this.stanDotClone = this.getStanDotClone(this.getSliceArr(this.arrFftMag, 2, 615));
@@ -34,10 +35,10 @@ class TremorSpectrum {
 
         this.objSolfg = this.getArrSolfeggio();
 
-        this.arrConstAbsNormal = this.getArrConstFreq(this.arrConstABS, this.maxConstAbs);
-        this.arrConstAbsNormal_NO = this.getArrConstFreq(this.arrConstABS_NO, this.maxConstAbs_NO);
-        this.arrFreqMagNormal = this.getArrConstFreq(this.arrFreqMag, this.maxFreqMag);
-        this.arrFreqMagNormal_NO = this.getArrConstFreq(this.arrFreqMag_NO, this.maxFreqMag_NO);
+        this.arrConstAbsNormal = this.getArrConstFreq(this.arrConstABSLess_1, this.maxConstAbs);
+        this.arrConstAbsNormal_NO = this.getArrConstFreq(this.arrConstABSMore_1, this.maxConstAbs_NO);
+        this.arrFreqMagNormal = this.getArrConstFreq(this.arrFreqMagLess_1, this.maxFreqMag);
+        this.arrFreqMagNormal_NO = this.getArrConstFreq(this.arrFreqMagMore_1, this.maxFreqMag_NO);
         this.arrFreqMagDiff = this.getFreqMagDiffAnd_NO(this.arrFreqMagNormal, this.arrConstAbsNormal);
         this.arrFreqMagDiff_NO = this.getFreqMagDiffAnd_NO(this.arrFreqMagNormal_NO, this.arrConstAbsNormal_NO);
 
@@ -399,25 +400,31 @@ class TremorSpectrum {
     }
 
     getFreqMagAndConst(arrConst) {
-        this.arrFreqMag = [];
+        this.arrFreqMagLess_1 = [];
+        this.arrFreqMagMore_1 = [];
+
+        this.arrConstABSLess_1 = [];
+        this.arrConstABSMore_1 = [];
+
         this.arrFreqMag_NO = [];
 
-        this.arrConstABS = [];
-        this.arrConstABS_NO = [];
-
         for (let i = 0; i <= arrConst.length - 1; i++) {
-            if (arrConst[i]['constABS'] !== '' && arrConst[i]['constABS'] < 0.6) {
-                this.arrFreqMag.push(this.arrFftMag[i]);
-                this.arrFreqMag_NO.push(null);
+            if (arrConst[i] >= 1) {
+                this.arrFreqMagMore_1.push(this.arrFftMag[i]);
+                this.arrFreqMagLess_1.push(null);
 
-                this.arrConstABS.push(arrConst[i]['constABS']);
-                this.arrConstABS_NO.push(null);
+                this.arrConstABSMore_1.push(arrConst[i]);
+                this.arrConstABSLess_1.push(null);
+
+                arrConst[i] >= 8 && arrConst[i] <= 12 ? this.arrFreqMag_NO.push(this.arrFftMag[i]) : this.arrFreqMag_NO.push(null);
             } else {
-                this.arrFreqMag_NO.push(this.arrFftMag[i]);
-                this.arrFreqMag.push(null);
+                this.arrFreqMagLess_1.push(this.arrFftMag[i]);
+                this.arrFreqMagMore_1.push(null);
 
-                this.arrConstABS_NO.push(arrConst[i]['constABS_No']);
-                this.arrConstABS.push(null);
+                this.arrConstABSLess_1.push(arrConst[i]);
+                this.arrConstABSMore_1.push(null);
+
+                this.arrFreqMag_NO.push(null);
             }
         }
     }
