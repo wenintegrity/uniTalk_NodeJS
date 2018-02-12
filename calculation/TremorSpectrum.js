@@ -7,12 +7,12 @@ const constants                 = require('../data/constants');
 
 class TremorSpectrum {
     constructor(data) {
-        this.constants = constants;
         this.arrFftComplex = fft(data.arrOutMicM50);
         this.arrFftFreq = this.getArrFftFreq();
         this.arrFftMag = this.getArrFftMag();
         this.getFreqMagAndConst(constants);
 
+        this.maxConsts = Math.max.apply(null, this.getSliceArr(constants, 3, 615));
         this.maxConstAbs = Math.max.apply(null, this.getSliceArr(this.arrConstABSLess_1, 3, 365));
         this.maxConstAbs_NO = Math.max.apply(null, this.getSliceArr(this.arrConstABSMore_1, 3, 365));
         this.maxFreqMag = Math.max.apply(null, this.getSliceArr(this.arrFreqMagLess_1, 3, 365));
@@ -35,7 +35,7 @@ class TremorSpectrum {
 
         this.objSolfg = this.getArrSolfeggio();
 
-        this.arrConstAbsNormal = this.getArrConstFreq(this.arrConstABSLess_1, this.maxConstAbs);
+        this.arrConstAbsNormal = this.getArrConstFreq(this.arrConstABSLess_1, this.maxConsts);
         this.arrConstAbsNormal_NO = this.getArrConstFreq(this.arrConstABSMore_1, this.maxConstAbs_NO);
         this.arrFreqMagNormal = this.getArrConstFreq(this.arrFreqMagLess_1, this.maxFreqMag);
         this.arrFreqMagNormal_NO = this.getArrConstFreq(this.arrFreqMagMore_1, this.maxFreqMag_NO);
