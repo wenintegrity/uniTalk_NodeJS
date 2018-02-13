@@ -35,11 +35,11 @@ module.exports = [
         name: 'arrConstAbsNormal_NO',
         nameCol: 'Constant Abs Dif of NO7.83 Hz Harmoni (Normal 0 to 1) '
     }, {
-        name: 'arrFreqMagNormal',
+        name: 'arrFreqMagNormalMore_1',
         nameCol: 'Freq Mag 7.83Hz (Normal 0 to 1)'
     },
     {
-        name: 'arrFreqMagNormal_NO',
+        name: 'arrFreqMagNormalLess_1',
         nameCol: 'Freq Mag NO7.83Hz (Normal 0 to 1)'
     },
     {
@@ -47,15 +47,15 @@ module.exports = [
         nameCol: 'Freq Mag * Diff  7.83Hz'
     },
     {
-        name: 'arrFreqMagDiff_NO',
+        name: 'arrFreqMagDifDiff_NO',
         nameCol: 'Freq Mag * Diff  NO7.83Hz'
     },
     {
-        name: 'arrFreqMagDiffNormal',
+        name: 'arrFreqMagDifDiffNormal',
         nameCol: 'Freq Mag * Diff  7.83Hz (Normal 0 to 1)'
     },
     {
-        name: 'arrFreqMagDiffNormal_NO',
+        name: 'arrFreqMagDifDiffNormal_NO',
         nameCol: 'Freq Mag * Diff  NO7.83Hz (Normal 0 to 1)'
     },
     {
