@@ -13,7 +13,7 @@ const db                          = require('./db');
 db.connect()
     .then(() => {
         app.use(compression());
-        app.use(bodyParser.json());
+        app.use(bodyParser.json({limit: '2mb'}));
 
         Object.keys(router).forEach(component => {
             app.use('/', router[component]);

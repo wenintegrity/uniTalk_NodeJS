@@ -10,8 +10,8 @@ class TremorNA_4 {
         let title1 = 'Mix VH SPECTRUM    1-Part';
 
         this.cells = [];
-        this.cells.push(getData(title3, title2, title1,ts3.powerOctaves, ts2.powerOctaves, ts1.powerOctaves, 'BW', 'BX', 'BY'));
-        this.cells.push(getData(title3, title2, title1,ts3.avgPowerOctaves, ts2.avgPowerOctaves, ts1.avgPowerOctaves, 'BZ', 'CA', 'CB'));
+        this.cells.push(getData(title3, title2, title1, ts3.norm.avgPowerDifDifNo, ts2.norm.avgPowerDifScale, ts1.normScaled.avgPowerHigherOctaves, 'BW', 'BX', 'BY'));
+        this.cells.push(getData(title3, title2, title1, ts3.norm.avgPowerDifAllScale, ts2.norm.avgPowerDifDifNoMore_1, ts1.normScaled.avgPowerOctNo, 'BZ', 'CA', 'CB'));
 
         this.result = [
             {

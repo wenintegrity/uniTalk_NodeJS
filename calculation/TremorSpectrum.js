@@ -93,8 +93,7 @@ class TremorSpectrum {
         this.arrFftMagNormalizedSmoothed = this.getArrFftMagNormalizedSmoothed(this.arrFftMagRawSmoothed);
         this.colSumSmthNormed = this.getColTotalPowerNote(this.arrFftMagNormalizedSmoothed);
 
-        this.arrSumSmthNorm_1 = this.getArrSumSmthNorm_1(this.colSumSmthNormed);
-        this.colSumSmthNorm_1Avg = this.arrSumSmthNorm_1.avgNotesMusic;
+        this.colSumSmthNorm_1 = this.getArrSumSmthNorm_1(this.colSumSmthNormed);
         /*  -------------------- /data for other finish table  -------------------- */
 
         /* --------------------  two tables after read line wich don't use ---------- */

@@ -10,10 +10,10 @@ class TremorNA_5 {
         let title1 = 'Mix VH SPECTRUM    1-Part';
 
         this.cells = [];
-        this.cells.push(getData(title3, title2, title1,ts3.totalMusicRaw, ts2.totalMusicRaw, ts1.totalMusicRaw, 'CL', 'CM', 'CN'));
-        this.cells.push(getData(title3, title2, title1,ts3.totalMusicRawStDev, ts2.totalMusicRawStDev, ts1.totalMusicRawStDev, 'CO', 'CP', 'CQ'));
-        this.cells.push(getData(title3, title2, title1,ts3.totalMusicSmth, ts2.totalMusicSmth, ts1.totalMusicSmth, 'CR', 'CS', 'CT'));
-        this.cells.push(getData(title3, title2, title1,ts3.sumSmoothedStDev, ts2.sumSmoothedStDev, ts1.sumSmoothedStDev, 'CU', 'CV', 'CW'));
+        this.cells.push(getData(title3, title2, title1, ts3.colSumRaw.avgNotesMusic, ts2.colSumRaw.avgNotesMusic, ts1.colSumRaw.avgNotesMusic, 'CL', 'CM', 'CN'));
+        this.cells.push(getData(title3, title2, title1, ts3.colSumRaw.stDevNotesMusic, ts2.colSumRaw.stDevNotesMusic, ts1.colSumRaw.stDevNotesMusic, 'CO', 'CP', 'CQ'));
+        this.cells.push(getData(title3, title2, title1, ts3.colSumSmoothed.avgNotesMusic, ts2.colSumSmoothed.avgNotesMusic, ts1.colSumSmoothed.avgNotesMusic, 'CR', 'CS', 'CT'));
+        this.cells.push(getData(title3, title2, title1, ts3.colSumSmoothed.stDevNotesMusic, ts2.colSumSmoothed.stDevNotesMusic, ts1.colSumSmoothed.stDevNotesMusic, 'CU', 'CV', 'CW'));
 
         this.result = [
             {

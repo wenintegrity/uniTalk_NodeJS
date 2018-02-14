@@ -10,9 +10,12 @@ class TremorNA_6 {
         let title1 = 'Mix VH SPECTRUM    1-Part';
 
         this.cells = [];
-        this.cells.push(getData(title3, title2, title1,ts3.sumNormalizedAvg, ts2.sumNormalizedAvg, ts1.sumNormalizedAvg, 'BG', 'BH', 'BI'));
-        this.cells.push(getData(title3, title2, title1,ts3.sumSmthNormedAvg, ts2.sumSmthNormedAvg, ts1.sumSmthNormedAvg, 'BJ', 'BK', 'BL'));
-        this.cells.push(getData(title3, title2, title1,ts3.sumNormalizedAvg - ts3.sumSmthNormedAvg, ts2.sumNormalizedAvg - ts2.sumSmthNormedAvg, ts1.sumNormalizedAvg - ts1.sumSmthNormedAvg, 'BS', 'BT', 'BU'));
+        this.cells.push(getData(title3, title2, title1, ts3.colSumNormalized.avgNotesMusic, ts2.colSumNormalized.avgNotesMusic, ts1.colSumNormalized.avgNotesMusic, 'BG', 'BH', 'BI'));
+        this.cells.push(getData(title3, title2, title1, ts3.colSumSmthNormed.avgNotesMusic, ts2.colSumSmthNormed.avgNotesMusic, ts1.colSumSmthNormed.avgNotesMusic, 'BJ', 'BK', 'BL'));
+        this.cells.push(getData(title3, title2, title1,
+            ts3.colSumNormalized.avgNotesMusic - ts3.colSumSmthNormed.avgNotesMusic,
+            ts2.colSumNormalized.avgNotesMusic - ts2.colSumSmthNormed.avgNotesMusic,
+            ts1.colSumNormalized.avgNotesMusic - ts1.colSumSmthNormed.avgNotesMusic, 'BS', 'BT', 'BU'));
     }
 }
 

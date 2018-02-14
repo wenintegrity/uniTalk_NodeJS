@@ -25,6 +25,13 @@ calculation.getData = (body) => {
             data.sheet_tremorSpectrum_1 = new TremorSpectrum(data.sheet_data_1);
             data.sheet_tremorSpectrum_2 = new TremorSpectrum(data.sheet_data_2);
             data.sheet_tremorSpectrum_3 = new TremorSpectrum(data.sheet_data_3);
+
+            data.rawSmooth = {
+                ts1: data.sheet_tremorSpectrum_1.colSumRaw.avgNotesMusic - data.sheet_tremorSpectrum_1.colSumSmoothed.avgNotesMusic,
+                ts2: data.sheet_tremorSpectrum_2.colSumRaw.avgNotesMusic - data.sheet_tremorSpectrum_2.colSumSmoothed.avgNotesMusic,
+                ts3: data.sheet_tremorSpectrum_3.colSumRaw.avgNotesMusic - data.sheet_tremorSpectrum_3.colSumSmoothed.avgNotesMusic
+            };
+
             data.headers_sheet_tremorSpectrum = headers_TremorSpectrum;
 
             data.sheet_tremorNegentropicAlgorithm = [];
@@ -36,10 +43,11 @@ calculation.getData = (body) => {
             data.sheet_tremorNegentropicAlgorithm.push(new TremorNA_6(data.sheet_tremorSpectrum_1, data.sheet_tremorSpectrum_2, data.sheet_tremorSpectrum_3));
             data.sheet_tremorNegentropicAlgorithm.push(new TremorNA_7(data.sheet_tremorSpectrum_1, data.sheet_tremorSpectrum_2, data.sheet_tremorSpectrum_3));
 
+
             // let i = 0;
             //
             // function show(element) {
-            //     if(parseFloat(element.value.toFixed(10)) !== parseFloat(resultFromExcel[i].toFixed(10))){
+            //     if(parseFloat(element.value) !== parseFloat(resultFromExcel[i])){
             //         console.log(i);
             //         console.log(element.value);
             //         console.log(resultFromExcel[i]);
