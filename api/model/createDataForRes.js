@@ -1,4 +1,4 @@
-module.exports = () => {
+module.exports = (docs) => {
     return new Promise((resolve, reject) => {
         let objResult = {};
 
@@ -12,8 +12,7 @@ module.exports = () => {
                     time: element.reqBody.time
                 });
 
-                if(objResult[element.phone_id].)
-
+                filterLocations();
             }
 
             function addNewPhone() {
@@ -31,6 +30,25 @@ module.exports = () => {
                             arr_id: [element._id]
                         }
                     ]
+                }
+            }
+
+            function filterLocations() {
+                let isLocation = objResult[element.phone_id].locations.some(loc => {
+                    if ((loc.location.latitude + loc.location.latitude * 0.05) > element.reqBody.location.latitude &&
+                        (loc.location.latitude - loc.location.latitude * 0.05) < element.reqBody.location.latitude &&
+                        (loc.location.longitude - loc.location.longitude * 0.05) < element.reqBody.location.longitude &&
+                        (loc.location.longitude - loc.location.longitude * 0.05) < element.reqBody.location.longitude) {
+                        loc.arr_id.push(element._id);
+                        return true;
+                    }
+                });
+
+                if (!isLocation) {
+                    objResult[element.phone_id].locations.push({
+                        location: element.reqBody.location,
+                        arr_id: [element._id]
+                    });
                 }
             }
         });
