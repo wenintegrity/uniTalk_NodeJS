@@ -104,7 +104,7 @@ module.exports = [
         nameCol: 'Sum SmthNormed'
     },
     {
-        name: 'arrSumSmthNorm_1',
+        name: 'colSumSmthNorm_1',
         nameCol: 'Sum SmthNorm 1'
     }
 ];
