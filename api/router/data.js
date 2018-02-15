@@ -10,14 +10,17 @@ const arrValidation = [
         .not().isEmpty()
         .exists()
         .custom(value => Array.isArray(value)),
+    //.custom(value => value.length === 2048),
     check('data.data_2')
         .not().isEmpty()
         .exists()
         .custom(value => Array.isArray(value)),
+    //.custom(value => value.length === 2048),
     check('data.data_3')
         .not().isEmpty()
         .exists()
         .custom(value => Array.isArray(value))
+    //.custom(value => value.length === 2048)
 ];
 
 
@@ -37,6 +40,7 @@ router.post('/calculations', arrValidation, (req, res, next) => {
                 calcData: data
             })
                 .then((saveData) => {
+                    res.set('Access-Control-Allow-Origin', '*');
                     return res.json(saveData);
                 });
         })
@@ -46,6 +50,7 @@ router.post('/calculations', arrValidation, (req, res, next) => {
 router.get('/calculations/last', (req, res, next) => {
     queries.getLastDoc(db.getConnect())
         .then((document) => {
+            res.set('Access-Control-Allow-Origin', '*');
             return res.json(document);
         })
         .catch(next);
@@ -54,23 +59,20 @@ router.get('/calculations/last', (req, res, next) => {
 router.get('/calculations/all_info', (req, res, next) => {
     queries.findAllInfo(db.getConnect())
         .then((docs) => {
+            res.set('Access-Control-Allow-Origin', '*');
             return res.json(docs);
         })
         .catch(next);
 });
 
-// router.get('/calculations/:phoneId', (req, res, next) => {
-//     if(req.query.time || req.query.latitude && req.query.longitude) {
-//         console.log('find calculation with filter');
-//         return res.json({status: 'ok'});
-//     } else {
-//         queries.findAll(db.getConnect(), {phone_id: req.params.phoneId})
-//             .then((docs) => {
-//                 return res.json(docs);
-//             })
-//             .catch(next);
-//     }
-// });
+router.get('/calculations/:id', (req, res, next) => {
+    queries.getCalcWithId(db.getConnect(), req.params.id)
+        .then((document) => {
+            res.set('Access-Control-Allow-Origin', '*');
+            return res.json(document);
+        })
+        .catch(next);
+});
 
 
 module.exports = router;

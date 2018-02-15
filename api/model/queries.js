@@ -1,4 +1,5 @@
 const createDataForResult                   = require('./createDataForRes');
+const ObjectID                              = require('mongodb').ObjectID;
 const dbName                                = 'data';
 
 
@@ -18,6 +19,24 @@ module.exports = {
                 .catch((error) => {
                     reject(error);
                 });
+        })
+    },
+
+    getCalcWithId: (dbConnect, id) => {
+        return new Promise((resolve, reject) => {
+            return dbConnect
+                .then(connect => {
+                    let db = connect.db(dbName);
+                    const collection = db.collection('documents_2');
+
+                    return collection.findOne({'_id': new ObjectID(id)})
+                        .then(doc => {
+                            resolve(doc)
+                        })
+                })
+                .catch((error) => {
+                    reject(error);
+                })
         })
     },
 
