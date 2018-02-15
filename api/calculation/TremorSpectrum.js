@@ -10,6 +10,7 @@ class TremorSpectrum {
         this.arrFftComplex = fft(data.arrOutMicM50);
         this.arrFftFreq = this.getArrFftFreq();
         this.arrFftMag = this.getArrFftMag();
+        this.constants = constants;
         this.getFreqMagAndConst(constants);
 
         this.maxConsts = Math.max.apply(null, this.getSliceArr(constants, 3, 615));

@@ -1,62 +1,71 @@
 module.exports = [
     {
         name: 'arrFftFreq',
-        nameCol: 'FFT freq'
+        nameCol: 'FFT freq (SR=8009 NS=2048)'
     },
     {
         name: 'arrFftMag',
-        nameCol: 'FFT mag'
+        nameCol: 'FFT Mag 7.83 Hz Scale Raw Data'
     },
     {
-        name: 'arrFftComplex',
-        nameCol: 'FFT complex'
-    },
-    {
-        name: 'arrConstABS',
+        name: 'constants',
         nameCol: 'Constant Abs Dif of 7.83 Hz Harmoni'
     },
     {
-        name: 'arrFreqMag',
-        nameCol: 'Freq Mag 7.83 Hz'
+        name: 'arrFreqMagScaleNormalizedData',
+        nameCol: 'Freq Mag 7.83  Hz Scale Normalized (0-1) Data'
     },
     {
-        name: 'arrConstABS_NO',
-        nameCol: 'Constant Abs Dif of NO7.83 Hz Harmoni'
+        name: 'arrFreqMagInDifLess_1',
+        nameCol: 'Freq Mag 7.83 Hz in Dif<1'
+    },
+    {
+        name: 'arrFreqMagInDifMore_1',
+        nameCol: 'Freq Mag 7.83 Hz in Dif>1'
+    },
+    {
+        name: 'arrConstABSDifHarmoniMore_1',
+        nameCol: 'Constant Abs Dif of NO7.83 Hz Harmoni >=1'
     },
     {
         name: 'arrFreqMag_NO',
-        nameCol: 'Freq Mag NO7.83 Hz'
+        nameCol: 'Freq Mag NO7.83 Hz >=8 <=12'
     },
     {
-        name: 'arrConstAbsNormal',
+        name: 'arrConstAbsDifHarmoniNormalLess_1',
         nameCol: 'Constant Abs Dif of 7.83 Hz Harmoni (Normal 0 to 1)'
     },
     {
-        name: 'arrConstAbsNormal_NO',
-        nameCol: 'Constant Abs Dif of NO7.83 Hz Harmoni (Normal 0 to 1) '
-    }, {
         name: 'arrFreqMagNormalMore_1',
-        nameCol: 'Freq Mag 7.83Hz (Normal 0 to 1)'
+        nameCol: 'Freq Mag 7.83 Hz in Dif>1 (Normal 0 to 1)'
+    },
+    {
+        name: 'arrConstAbsDifHarmoniNormalMore_1',
+        nameCol: 'Constant Abs Dif of NO7.83 Hz Harmoni >=1 (Normal 0 to 1)'
     },
     {
         name: 'arrFreqMagNormalLess_1',
-        nameCol: 'Freq Mag NO7.83Hz (Normal 0 to 1)'
+        nameCol: 'Freq Mag 7.83Hz in Dif<1 (Normal 0 to 1)'
     },
     {
-        name: 'arrFreqMagDiff',
-        nameCol: 'Freq Mag * Diff  7.83Hz'
+        name: 'arrFreqMagInDifLess_12_More_8',
+        nameCol: 'Freq Mag NO7.83Hz >=8 <=12 (Normal 0 to 1)'
+    },
+    {
+        name: 'arrFreqMagDifDiffLess_1',
+        nameCol: 'Freq Mag in Dif<1 * Diff  7.83Hz'
     },
     {
         name: 'arrFreqMagDifDiff_NO',
-        nameCol: 'Freq Mag * Diff  NO7.83Hz'
+        nameCol: 'Freq Mag in Dif 8-12 * Diff  NO7.83Hz'
     },
     {
         name: 'arrFreqMagDifDiffNormal',
-        nameCol: 'Freq Mag * Diff  7.83Hz (Normal 0 to 1)'
+        nameCol: 'Freq Mag in Dif<1 * Diff  7.83Hz (Normal 0 to 1)'
     },
     {
         name: 'arrFreqMagDifDiffNormal_NO',
-        nameCol: 'Freq Mag * Diff  NO7.83Hz (Normal 0 to 1)'
+        nameCol: 'Freq Mag in Dif 8-12 * Diff  NO7.83Hz (Normal 0 to 1)'
     },
     {
         name: 'arrFftMagNormalized',
