@@ -7,7 +7,7 @@ const compression                 = require('compression');
 
 const config                      = require('./config');
 const router                      = require('./router');
-const db                          = require('./db');
+const db                          = require('./model/db');
 
 
 db.connect()

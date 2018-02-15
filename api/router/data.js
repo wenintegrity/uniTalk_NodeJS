@@ -32,6 +32,7 @@ router.post('/calculations', arrValidation, (req, res, next) => {
     Calculation(req.body.data)
         .then((data) => {
             return queries.insertDoc(db.getConnect(), {
+                phone_id: req.body.id,
                 reqBody: req.body,
                 calcData: data
             })
@@ -42,13 +43,34 @@ router.post('/calculations', arrValidation, (req, res, next) => {
         .catch(next);
 });
 
-router.get('/calculations', (req, res, next) => {
+router.get('/calculations/last', (req, res, next) => {
     queries.getLastDoc(db.getConnect())
         .then((document) => {
             return res.json(document);
         })
         .catch(next);
 });
+
+router.get('/calculations/all_info', (req, res, next) => {
+    queries.findAll(db.getConnect())
+        .then((docs) => {
+            return res.json(docs);
+        })
+        .catch(next);
+});
+
+// router.get('/calculations/:phoneId', (req, res, next) => {
+//     if(req.query.time || req.query.latitude && req.query.longitude) {
+//         console.log('find calculation with filter');
+//         return res.json({status: 'ok'});
+//     } else {
+//         queries.findAll(db.getConnect(), {phone_id: req.params.phoneId})
+//             .then((docs) => {
+//                 return res.json(docs);
+//             })
+//             .catch(next);
+//     }
+// });
 
 
 module.exports = router;
