@@ -1,7 +1,7 @@
 const router                            = require('express').Router();
 const Calculation                       = require('../calculation');
-const queries                           = require('../queries');
-const db                                = require('../db');
+const queries                           = require('../model/queries');
+const db                                = require('../model/db');
 const {check, validationResult}         = require('express-validator/check');
 
 
@@ -52,7 +52,7 @@ router.get('/calculations/last', (req, res, next) => {
 });
 
 router.get('/calculations/all_info', (req, res, next) => {
-    queries.findAll(db.getConnect())
+    queries.findAllInfo(db.getConnect())
         .then((docs) => {
             return res.json(docs);
         })
