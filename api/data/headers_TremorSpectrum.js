@@ -8,6 +8,10 @@ module.exports = [
         nameCol: 'FFT Mag 7.83 Hz Scale Raw Data'
     },
     {
+        name: 'arrFftComplex',
+        nameCol: 'FFT complex'
+    },
+    {
         name: 'constants',
         nameCol: 'Constant Abs Dif of 7.83 Hz Harmoni'
     },
