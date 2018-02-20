@@ -77,7 +77,6 @@ class TremorSpectrum {
         /* ---------------   /head file excel №2 -------------------- */
 
         /* ---------------- calculation tables after read line ------- */
-        /* ---------------- data last table ------------------ */
         this.max.fftMagNormalized = Math.max.apply(null, this.getSliceArr(this.arrFftMag, 1, 615));
 
         this.arrFftMagNormalized = this.getFftMagNormalized(this.max.fftMagNormalized);
@@ -102,9 +101,6 @@ class TremorSpectrum {
         this.totalMusic.stDevRawTM = this.colSum.raw.stDevNotesMusic;
         this.totalMusic.stDevSmthTM = this.colSum.smthNormed.stDevNotesMusic;
 
-        /* ----------------  /data last table ------------------------ */
-
-        /* --------------------  two tables after read line wich don't use ---------- */
         this.lowerAndHigher = {};
         this.lowerAndHigher.freq_1 = this.getLowerAndHigherFreq(this.arrFftFreq, this.arrFftMag, this.arrFftMagNormalized, Math.pow(2, (1 / 12)));
         this.lowerAndHigher.freq_2 = this.getLowerAndHigherFreq(this.arrFftFreq, this.arrFftMag, this.arrFftMagNormalized, Math.pow(2, (1 / 11.5)));
