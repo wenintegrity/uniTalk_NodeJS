@@ -17,17 +17,6 @@ class TremorNA_4 {
         this.cells.push(getData(title3, title2, title1, ts3.objSolfg.connect, ts2.objSolfg.connect, ts1.objSolfg.connect));
         this.cells.push(getData(title3, title2, title1, ts3.objSolfg.intuition, ts2.objSolfg.intuition, ts1.objSolfg.intuition));
         this.cells.push(getData(title3, title2, title1, ts3.objSolfg.spirorder, ts2.objSolfg.spirorder, ts1.objSolfg.spirorder));
-
-        this.result = [
-            {
-                address: 'BX12',
-                value: getResult(this.cells, 0)
-            },
-            {
-                address: 'BY12',
-                value: getResult(this.cells, 1)
-            }
-        ];
     }
 }
 

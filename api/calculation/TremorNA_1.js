@@ -14,7 +14,7 @@ class TremorNA_1 {
         this.cells.push(getData(title3, title2, title1, ts3.average.d23_635, ts2.average.d23_635, ts1.average.d23_635,));
         this.cells.push(getData(title3, title2, title1, ts3.stanDotClone, ts2.stanDotClone, ts1.stanDotClone));
         this.cells.push(getData(title3, title2, title1, ts3.divisionAverageValuesFftMag_23_329_329_635, ts2.divisionAverageValuesFftMag_23_329_329_635, ts1.divisionAverageValuesFftMag_23_329_329_635));
-        this.cells.push(getData(title3, title2, title1, ts3.divisionAverageValuesFftMag_23_404_405_635, ts2.divisionAverageValuesFftMag_23_404_405_635, ts1.divisionAverageValuesFftMag_23_404_405_635));
+        this.cells.push(getData(title3, title2, title1, ts3.divisionQuartOnMaxFftMag, ts2.divisionQuartOnMaxFftMag, ts1.divisionQuartOnMaxFftMag));
 
         this.result = [
             {

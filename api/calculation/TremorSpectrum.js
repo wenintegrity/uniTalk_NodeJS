@@ -118,15 +118,15 @@ class TremorSpectrum {
         this.musicalHarmonics.harmonicDevideAllFftPower = this.lowerAndHigher.freq_1.average / this.average.fftMag;
 
         this.allFftData = {};
-        this.allFftData.maxFrequencyHz = this.arrFftFreq[this.arrFftMag.indexOf(Math.max.apply(null, this.arrFftMag))];
+        this.allFftData.maxFrequencyHz = this.arrFftFreq[this.arrFftMag.indexOf(Math.max.apply(null, this.getSliceArr(this.arrFftMag, 1)))];
         this.allFftData.maxFrequencySmth = this.arrFftFreq[this.arrFftMagRawSmoothed.indexOf(Math.max.apply(null, this.arrFftMagRawSmoothed))];
         this.allFftData.maxFrequencySmthNr = this.arrFftFreq[this.arrFftMagNormalizedSmoothed.indexOf(Math.max.apply(null, this.arrFftMagNormalizedSmoothed))];
         this.allFftData.powerOfMaxRawFrequency = this.max.fftMag;
         this.allFftData.maxPowerSmth = Math.max.apply(null, this.getSliceArr(this.arrFftMagRawSmoothed, 1));
         this.allFftData.maxPowerSmthNr = Math.max.apply(null, this.getSliceArr(this.arrFftMagNormalizedSmoothed, 1));
         this.allFftData.averagePower = this.average.fftMag;
-        this.allFftData.averagePowerSmth = summary(this.getSliceArr(this.arrFftMagRawSmoothed, 1)).mean();
-        this.allFftData.averagePowerSmthNr = summary(this.getSliceArr(this.arrFftMagNormalizedSmoothed, 1)).mean();
+        this.allFftData.averagePowerSmth = this.getAverageValue(this.getSliceArr(this.arrFftMagRawSmoothed, 1));
+        this.allFftData.averagePowerSmthNr = this.getAverageValue(this.getSliceArr(this.arrFftMagNormalizedSmoothed, 1));
 
         let maxAndMinPowerNote = this.getPowerNoteName(this.colSum.raw);
         this.maxPowerNote = maxAndMinPowerNote.max;
