@@ -3,26 +3,19 @@ const getData                   = require('./Tremors').getData;
 
 class TremorNA_2 {
     constructor(ts1, ts2, ts3) {
-        this.tableName = 'Presence of Environmental and Cosmic Frequencies';
-
-        let solfg_1 = ts1.objSolfg;
-        let solfg_2 = ts2.objSolfg;
-        let solfg_3 = ts3.objSolfg;
+        this.tableName = '7.83Hz & Higher Octaves in FFT Ranges (Normalized Scaled to proximity to 7.83 Hz Eq Temp Musical Notes)';
 
         let title3 = 'Mix VH SPECTRUM    3-Part';
         let title2 = 'Mix VH SPECTRUM    2-Part';
         let title1 = 'Mix VH SPECTRUM    1-Part';
 
         this.cells = [];
-        this.cells.push(getData(title3, title2, title1,solfg_3.mixSolft, solfg_2.mixSolft, solfg_1.mixSolft, 'AE', 'AF', 'AG'));
-        this.cells.push(getData(title3, title2, title1,solfg_3.sideralDay, solfg_2.sideralDay, solfg_1.sideralDay, 'AH', 'AI', 'AJ'));
-        this.cells.push(getData(title3, title2, title1,solfg_3.liberating, solfg_2.liberating, solfg_1.liberating, 'AK', 'AL', 'AM'));
-
-        this.cells.push(getData(title3, title2, title1,solfg_3.breakemo, solfg_2.breakemo, solfg_1.breakemo, 'AN', 'AO', 'AP'));
-        this.cells.push(getData(title3, title2, title1,solfg_3.reprLove, solfg_2.reprLove, solfg_1.reprLove, 'AQ', 'AR', 'AS'));
-        this.cells.push(getData(title3, title2, title1,solfg_3.connect, solfg_2.connect, solfg_1.connect, 'AT', 'AU', 'AV'));
-        this.cells.push(getData(title3, title2, title1,solfg_3.intuition, solfg_2.intuition, solfg_1.intuition, 'AW', 'AX', 'AY'));
-        this.cells.push(getData(title3, title2, title1,solfg_3.spirorder, solfg_2.spirorder, solfg_1.spirorder, 'AZ', 'BA', 'BB'));
+        this.cells.push(getData(title3, title2, title1, ts3.normScaled.avgPowerHigherOctaves, ts2.normScaled.avgPowerHigherOctaves, ts1.normScaled.avgPowerHigherOctaves));
+        this.cells.push(getData(title3, title2, title1, ts3.normScaled.avgPowerDifScale, ts2.normScaled.avgPowerDifScale, ts1.normScaled.avgPowerDifScale));
+        this.cells.push(getData(title3, title2, title1, ts3.normScaled.avgPowerDifDifNo, ts2.normScaled.avgPowerDifDifNo, ts1.normScaled.avgPowerDifDifNo));
+        this.cells.push(getData(title3, title2, title1, ts3.normScaled.avgPowerOctNo, ts2.normScaled.avgPowerOctNo, ts1.normScaled.avgPowerOctNo));
+        this.cells.push(getData(title3, title2, title1, ts3.norm.avgPowerDifDifNoMore_1, ts2.norm.avgPowerDifDifNoMore_1, ts1.norm.avgPowerDifDifNoMore_1));
+        this.cells.push(getData(title3, title2, title1, ts3.norm.avgPowerDifAllScale, ts2.norm.avgPowerDifAllScale, ts1.norm.avgPowerDifAllScalet));
 
         this.result = [
             {

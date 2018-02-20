@@ -27,9 +27,9 @@ calculation.getData = (body) => {
             data.sheet_tremorSpectrum_3 = new TremorSpectrum(data.sheet_data_3);
 
             data.rawSmooth = {
-                ts1: data.sheet_tremorSpectrum_1.colSumRaw.avgNotesMusic - data.sheet_tremorSpectrum_1.colSumSmoothed.avgNotesMusic,
-                ts2: data.sheet_tremorSpectrum_2.colSumRaw.avgNotesMusic - data.sheet_tremorSpectrum_2.colSumSmoothed.avgNotesMusic,
-                ts3: data.sheet_tremorSpectrum_3.colSumRaw.avgNotesMusic - data.sheet_tremorSpectrum_3.colSumSmoothed.avgNotesMusic
+                ts1: data.sheet_tremorSpectrum_1.colSum.raw.avgNotesMusic - data.sheet_tremorSpectrum_1.colSum.smoothed.avgNotesMusic,
+                ts2: data.sheet_tremorSpectrum_2.colSum.raw.avgNotesMusic - data.sheet_tremorSpectrum_2.colSum.smoothed.avgNotesMusic,
+                ts3: data.sheet_tremorSpectrum_3.colSum.raw.avgNotesMusic - data.sheet_tremorSpectrum_3.colSum.smoothed.avgNotesMusic
             };
 
             data.headers_sheet_tremorSpectrum = headers_TremorSpectrum;
@@ -40,8 +40,8 @@ calculation.getData = (body) => {
             data.sheet_tremorNegentropicAlgorithm.push(new TremorNA_3(data.sheet_tremorSpectrum_1, data.sheet_tremorSpectrum_2, data.sheet_tremorSpectrum_3));
             data.sheet_tremorNegentropicAlgorithm.push(new TremorNA_4(data.sheet_tremorSpectrum_1, data.sheet_tremorSpectrum_2, data.sheet_tremorSpectrum_3));
             data.sheet_tremorNegentropicAlgorithm.push(new TremorNA_5(data.sheet_tremorSpectrum_1, data.sheet_tremorSpectrum_2, data.sheet_tremorSpectrum_3));
-            data.sheet_tremorNegentropicAlgorithm.push(new TremorNA_6(data.sheet_tremorSpectrum_1, data.sheet_tremorSpectrum_2, data.sheet_tremorSpectrum_3));
-            data.sheet_tremorNegentropicAlgorithm.push(new TremorNA_7(data.sheet_tremorSpectrum_1, data.sheet_tremorSpectrum_2, data.sheet_tremorSpectrum_3));
+            // data.sheet_tremorNegentropicAlgorithm.push(new TremorNA_6(data.sheet_tremorSpectrum_1, data.sheet_tremorSpectrum_2, data.sheet_tremorSpectrum_3));
+            // data.sheet_tremorNegentropicAlgorithm.push(new TremorNA_7(data.sheet_tremorSpectrum_1, data.sheet_tremorSpectrum_2, data.sheet_tremorSpectrum_3));
 
 
             // let i = 0;
