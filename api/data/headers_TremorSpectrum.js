@@ -76,16 +76,16 @@ module.exports = [
         nameCol: 'FFT mag Normalized'
     },
     {
-        name: 'lowerAndHigherFreq_1',
-        nameCol: 'Freq and power'
+        name: 'arrFftNote',
+        nameCol: 'FFT Note'
     },
     {
-        name: 'colSumRaw',
-        nameCol: 'Sum Raw'
+        name: 'lowerAndHigher.freq_1',
+        nameCol: 'Harmonics from Maximal Power Note'
     },
     {
-        name: 'colSumNormalized',
-        nameCol: 'Sum Normalized'
+        name: 'lowerAndHigher.freq_2',
+        nameCol: 'InHarmonics from Maximal Power Note'
     },
     {
         name: 'arrFftMagRawSmoothed',
@@ -96,19 +96,7 @@ module.exports = [
         nameCol: 'FFT mag Normalized Smoothed '
     },
     {
-        name: 'lowerAndHigherFreq_2',
-        nameCol: 'Freq and power'
+        name: 'lowerAndHigher.freq_3',
+        nameCol: 'Harmonics from Maximal Power Note'
     },
-    {
-        name: 'colSumSmoothed',
-        nameCol: 'Sum Smoothed'
-    },
-    {
-        name: 'colSumSmthNormed',
-        nameCol: 'Sum SmthNormed'
-    },
-    {
-        name: 'colSumSmthNorm_1',
-        nameCol: 'Sum SmthNorm 1'
-    }
 ];

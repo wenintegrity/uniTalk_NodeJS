@@ -258,23 +258,30 @@ class TremorSpectrum {
         let arrNorm = this.getSliceArr(arrFftMagNormalized, 1);
         let maxFftMag = {
             freq: arrFreq[arrMag.indexOf(Math.max.apply(null, arrMag))],
-            power: Math.max.apply(null, arrNorm)
+            power: Math.max.apply(null, arrNorm),
+            note: getNote(arrFreq[arrMag.indexOf(Math.max.apply(null, arrMag))])
         };
         let result = {
             arr: [maxFftMag]
         };
 
         for (let i = 0; result.arr.length < 39;) {
+            let freq = result.arr[i].freq / constDelta;
+
             result.arr.unshift({
-                freq: result.arr[i].freq / constDelta,
-                power: getNearNumber(result.arr[i].freq / constDelta)
+                freq: freq,
+                power: getNearNumber(freq),
+                note: getNote(freq)
             })
         }
 
         for (let i = 38; result.arr.length < 73; i++) {
+            let freq = result.arr[i].freq * constDelta;
+
             result.arr.push({
-                freq: result.arr[i].freq * constDelta,
-                power: getNearNumber(result.arr[i].freq * constDelta)
+                freq: freq,
+                power: getNearNumber(freq),
+                note: getNote(freq)
             })
         }
 
@@ -286,6 +293,14 @@ class TremorSpectrum {
                     if (arrFftFreq[i] > number) {
                         return arrFftMagNormalized[i - 1];
                     }
+                }
+            }
+        }
+
+        function getNote(elFft) {
+            for (let i = 0; i <= colorsFFTfreq.length - 1; i++) {
+                if (elFft >= colorsFFTfreq[i].moreOrEqually && elFft < colorsFFTfreq[i].less) {
+                    return colorsFFTfreq[i].name
                 }
             }
         }
