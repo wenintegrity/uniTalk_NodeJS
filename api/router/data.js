@@ -2,36 +2,9 @@ const router                            = require('express').Router();
 const Calculation                       = require('../calculation');
 const queries                           = require('../model/queries');
 const db                                = require('../model/db');
-const {check, validationResult}         = require('express-validator/check');
 
 
-const arrValidation = [
-    check('data.data_1')
-        .not().isEmpty()
-        .exists()
-        .custom(value => Array.isArray(value)),
-    //.custom(value => value.length === 2048),
-    check('data.data_2')
-        .not().isEmpty()
-        .exists()
-        .custom(value => Array.isArray(value)),
-    //.custom(value => value.length === 2048),
-    check('data.data_3')
-        .not().isEmpty()
-        .exists()
-        .custom(value => Array.isArray(value))
-    //.custom(value => value.length === 2048)
-];
-
-
-router.post('/calculations', arrValidation, (req, res, next) => {
-
-    if (!validationResult(req).isEmpty()) {
-        let _error = new Error('Input data have error');
-        _error.status = 400;
-        next(_error);
-    }
-
+router.post('/calculations', (req, res, next) => {
     Calculation(req.body.data)
         .then((data) => {
             return queries.insertDoc(db.getConnect(), {
