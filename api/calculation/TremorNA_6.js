@@ -12,7 +12,7 @@ class TremorNA_6 {
 
         this.cells = [];
         this.cells.push(getData(title3, title2, title1, ts3.musicalHarmonics.averageHarmonicPower, ts2.musicalHarmonics.averageHarmonicPower, ts1.musicalHarmonics.averageHarmonicPower));
-        this.cells.push(getData(title3, title2, title1, ts3.musicalHarmonics.averageInHarmonicPower, ts2.musicalHarmonics.averageInHarmonicPower, ts1.musicalHarmonics.averageInHarmonicPower));
+        this.cells.push(getData(title3, title2, title1, 1 / ts3.musicalHarmonics.averageInHarmonicPower, 1 / ts2.musicalHarmonics.averageInHarmonicPower, 1 / ts1.musicalHarmonics.averageInHarmonicPower));
         this.cells.push(getData(title3, title2, title1, ts3.musicalHarmonics.harmonikDevideInharmonikPower, ts2.musicalHarmonics.harmonikDevideInharmonikPower, ts1.musicalHarmonics.harmonikDevideInharmonikPower));
         this.cells.push(getData(title3, title2, title1, ts3.musicalHarmonics.harmonicDevideAllFftPower, ts2.musicalHarmonics.harmonicDevideAllFftPower, ts1.musicalHarmonics.harmonicDevideAllFftPower));
 

@@ -22,7 +22,7 @@ class TremorNA_5 {
             ts3.allFftData.powerOfMaxRawFrequency - ts3.allFftData.maxPowerSmth,
             ts2.allFftData.powerOfMaxRawFrequency - ts2.allFftData.maxPowerSmth,
             ts1.allFftData.powerOfMaxRawFrequency - ts1.allFftData.maxPowerSmth));
-        this.cells.push(getData(title3, title2, title1, ts3.allFftData.maxFrequencyHz, ts2.allFftData.maxFrequencyHz, ts1.allFftData.maxFrequencyHz));
+        //this.cells.push(getData(title3, title2, title1, ts3.allFftData.maxFrequencyHz, ts2.allFftData.maxFrequencyHz, ts1.allFftData.maxFrequencyHz));
 
         this.result = [
             {
