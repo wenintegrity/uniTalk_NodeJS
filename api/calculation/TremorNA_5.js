@@ -27,7 +27,7 @@ class TremorNA_5 {
         this.cells.push(getData(title3, title2, title1,
             ts3.allFftData.averagePowerSmth - ts3.allFftData.averagePower,
             ts2.allFftData.averagePowerSmth - ts2.allFftData.averagePower,
-            ts1.allFftData.averagePowerSmth - ts1.allFftData.averagePower));
+            ts2.allFftData.averagePowerSmth - ts2.allFftData.averagePower));
         this.cells.push(getData(title3, title2, title1, ts3.allFftData.maxFrequencyHz, ts2.allFftData.maxFrequencyHz, ts1.allFftData.maxFrequencyHz));
     }
 }
