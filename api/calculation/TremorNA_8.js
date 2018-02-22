@@ -10,8 +10,8 @@ class TremorNA_8 {
         let title2 = 'RHYTHMIC Spectral (2H PRE)';
         let title1 = 'RHYTHMIC Spectral (EARTH VIB)';
 
-        this.result = {
-            maxPowerNote: [
+        this.colls = [
+            [
                 {
                     title: title3,
                     value: ts3.maxPowerNote
@@ -25,7 +25,7 @@ class TremorNA_8 {
                     value: ts1.maxPowerNote
                 }
             ],
-            minPowerNote: [
+            [
                 {
                     title: title3,
                     value: ts3.minPowerNote
@@ -39,7 +39,7 @@ class TremorNA_8 {
                     value: ts1.minPowerNote
                 }
             ]
-        };
+        ];
     }
 }
 

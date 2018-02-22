@@ -17,25 +17,13 @@ class TremorNA_3 {
         this.cells_2.push(getData(title3, title2, title1, ts3.objSolfg.sideralDay, ts2.objSolfg.sideralDay, ts1.objSolfg.sideralDay,));
 
         this.result_1 = [
-            {
-                address: 'BN12',
-                value: getResult(this.cells_1, 0)
-            },
-            {
-                address: 'BO12',
-                value: getResult(this.cells_1, 1)
-            }
+            getResult(this.cells_1, 0),
+            getResult(this.cells_1, 1)
         ];
 
         this.result_2 = [
-            {
-                address: 'BN12',
-                value: getResult(this.cells_2, 0)
-            },
-            {
-                address: 'BO12',
-                value: getResult(this.cells_2, 1)
-            }
+            getResult(this.cells_2, 0),
+            getResult(this.cells_2, 1)
         ];
     }
 }

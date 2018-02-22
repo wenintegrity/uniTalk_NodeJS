@@ -45,25 +45,17 @@ calculation.getData = (body) => {
             data.sheet_tremorNegentropicAlgorithm.push(new TremorNA_7(data.sheet_tremorSpectrum_1, data.sheet_tremorSpectrum_2, data.sheet_tremorSpectrum_3));
             data.sheet_tremorNegentropicAlgorithm.push(new TremorNA_8(data.sheet_tremorSpectrum_1, data.sheet_tremorSpectrum_2, data.sheet_tremorSpectrum_3));
 
+            data.result = {
+                result_1: getResult(0),
+                result_2: getResult(1)
+            }
 
-            // let i = 0;
-            //
-            // function show(element) {
-            //     if(parseFloat(element.value) !== parseFloat(resultFromExcel[i])){
-            //         console.log(i);
-            //         console.log(element.value);
-            //         console.log(resultFromExcel[i]);
-            //     }
-            //     i++;
-            // }
-            //
-            // data.sheet_tremorNegentropicAlgorithm.forEach((element) => {
-            //     element.cells.forEach((element) => {
-            //         element.forEach((element) => {
-            //             show(element.line9);
-            //         })
-            //     })
-            // });
+            function getResult(index) {
+                let arrTna = data.sheet_tremorNegentropicAlgorithm;
+
+                return (arrTna[0].result[index] + arrTna[1].result[index] + ((arrTna[2].result_1[index] +
+                    arrTna[2].result_2[index]) / 2) + arrTna[5].result[index] + arrTna[6].result[index]) / 5;
+            }
 
             resolve(data);
         } catch (error) {

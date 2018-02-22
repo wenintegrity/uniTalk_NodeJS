@@ -17,14 +17,8 @@ class TremorNA_2 {
         this.cells.push(getData(title3, title2, title1, ts3.normScaled.avgPowerDifScale, ts2.normScaled.avgPowerDifScale, ts1.normScaled.avgPowerDifScale));
 
         this.result = [
-            {
-                address: 'M12',
-                value: getResult(this.cells, 1)
-            },
-            {
-                address: 'L12',
-                value: getResult(this.cells, 0)
-            }
+            getResult(this.cells, 0),
+            getResult(this.cells, 1)
         ];
     }
 }

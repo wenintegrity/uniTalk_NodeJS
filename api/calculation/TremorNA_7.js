@@ -18,14 +18,8 @@ class TremorNA_7 {
         this.cells.push(getData(title3, title2, title1, ts3.totalMusic.stDevSmthTM, ts2.totalMusic.stDevSmthTM, ts1.totalMusic.stDevSmthTM));
 
         this.result = [
-            {
-                address: 'CM12',
-                value: getResult(this.cells, 0)
-            },
-            {
-                address: 'CN12',
-                value: getResult(this.cells, 1)
-            }
+            getResult(this.cells, 0),
+            getResult(this.cells, 1)
         ];
     }
 }
