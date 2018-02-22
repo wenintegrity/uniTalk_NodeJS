@@ -34,11 +34,14 @@ module.exports = (docs) => {
             }
 
             function filterLocations() {
+                let faultLatitude = 0.000350924;
+                let faultLongitude = 0.000224951;
+
                 let isLocation = objResult[element.phone_id].locations.some(loc => {
-                    if ((loc.location.latitude + loc.location.latitude * 0.05) > element.reqBody.location.latitude &&
-                        (loc.location.latitude - loc.location.latitude * 0.05) < element.reqBody.location.latitude &&
-                        (loc.location.longitude - loc.location.longitude * 0.05) < element.reqBody.location.longitude &&
-                        (loc.location.longitude - loc.location.longitude * 0.05) < element.reqBody.location.longitude) {
+                    if ((loc.location.latitude + faultLatitude) > element.reqBody.location.latitude &&
+                        (loc.location.latitude - faultLatitude) < element.reqBody.location.latitude &&
+                        (loc.location.longitude + faultLongitude) > element.reqBody.location.longitude &&
+                        (loc.location.longitude - faultLongitude) < element.reqBody.location.longitude) {
                         loc.arr_id.push(element._id);
                         return true;
                     }
