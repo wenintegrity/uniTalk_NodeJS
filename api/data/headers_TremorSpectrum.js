@@ -1,5 +1,9 @@
 module.exports = [
     {
+        name: 'outMicM50',
+        nameCol: 'Voice Data'
+    },
+    {
         name: 'fftFreq',
         nameCol: 'FFT freq (SR=8009 NS=2048)'
     },
@@ -97,6 +101,6 @@ module.exports = [
     },
     {
         name: 'lowerAndHigherFreq_3',
-        nameCol: 'InHarmonics from Maximal Power Note'
+        nameCol: 'Harmonics from Maximal Power Note'
     }
 ];

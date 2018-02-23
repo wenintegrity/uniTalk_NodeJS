@@ -11,6 +11,7 @@ const headers_TremorSpectrum            = require('../data/headers_TremorSpectru
 class TremorSpectrum {
     constructor(data) {
         let arr = {};
+        arr.outMicM50 = data.arrOutMicM50;
         arr.fftComplex = fft(this.getSliceArr(data.arrOutMicM50, 0, 1024));
         arr.fftFreq = this.getArrFftFreq();
         arr.fftMag = this.getArrFftMag(arr.fftFreq, arr.fftComplex);
@@ -135,7 +136,7 @@ class TremorSpectrum {
 
         this.mainTable = [];
 
-        for(let i = 0; i <= 2048; i++) {
+        for(let i = 0; i <= 2047; i++) {
             let row = {};
 
             row.id = i + 1;
