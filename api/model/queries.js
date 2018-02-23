@@ -9,7 +9,7 @@ module.exports = {
             return dbConnect
                 .then(connect => {
                     let db = connect.db(dbName);
-                    const collection = db.collection('documents_2');
+                    const collection = db.collection('documents');
 
                     return collection.insertOne(data)
                         .then(() => {
@@ -27,7 +27,7 @@ module.exports = {
             return dbConnect
                 .then(connect => {
                     let db = connect.db(dbName);
-                    const collection = db.collection('documents_2');
+                    const collection = db.collection('documents');
 
                     return collection.findOne({'_id': new ObjectID(id)})
                         .then(doc => {
@@ -45,7 +45,7 @@ module.exports = {
             return dbConnect
                 .then(connect => {
                     let db = connect.db(dbName);
-                    const collection = db.collection('documents_2');
+                    const collection = db.collection('documents');
 
                     return collection.find({}).sort({_id: 1}).toArray()
                         .then(docs => {
@@ -63,7 +63,7 @@ module.exports = {
             return dbConnect
                 .then(connect => {
                     let db = connect.db(dbName);
-                    const collection = db.collection('documents_2');
+                    const collection = db.collection('documents');
 
                     return collection.find({}).toArray()
                         .then(docs => {

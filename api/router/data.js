@@ -14,7 +14,7 @@ router.post('/calculations', (req, res, next) => {
             })
                 .then((saveData) => {
                     res.set('Access-Control-Allow-Origin', '*');
-                    return res.json(saveData);
+                    return res.json(saveData.calcData.result.result_1);
                 });
         })
         .catch(next);
