@@ -80,11 +80,23 @@ module.exports = [
         nameCol: 'FFT Note'
     },
     {
+        name: 'lowerAndHigherFreq_1',
+        nameCol: 'Harmonics from Maximal Power Note'
+    },
+    {
+        name: 'lowerAndHigherFreq_2',
+        nameCol: 'InHarmonics from Maximal Power Note'
+    },
+    {
         name: 'fftMagRawSmoothed',
         nameCol: 'FFT mag Raw Smoothed (moving Avg 7)'
     },
     {
         name: 'fftMagNormalizedSmoothed',
         nameCol: 'FFT mag Normalized Smoothed '
+    },
+    {
+        name: 'lowerAndHigherFreq_3',
+        nameCol: 'InHarmonics from Maximal Power Note'
     }
 ];
