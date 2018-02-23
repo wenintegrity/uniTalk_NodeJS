@@ -48,7 +48,7 @@ calculation.getData = (body) => {
             data.result = {
                 result_1: getResult(0),
                 result_2: getResult(1)
-            }
+            };
 
             function getResult(index) {
                 let arrTna = data.sheet_tremorNegentropicAlgorithm;
