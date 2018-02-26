@@ -1,7 +1,7 @@
 const router                            = require('express').Router();
 const Calculation                       = require('../calculation');
 const queries                           = require('../model/queries');
-const db                                = require('../model/db');
+const db                                = require('../db');
 const {check, validationResult}         = require('express-validator/check');
 const validPostCalc                     = require('./validations').validPostCalc(check);
 

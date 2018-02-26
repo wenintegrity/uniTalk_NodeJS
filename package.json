@@ -1,7 +1,7 @@
 {
   "name": "health",
   "version": "0.0.1",
-  "devDependencies": {
+  "dependencies": {
     "complex": "^3.0.0",
     "summary-statistics": "^1.0.0",
     "fft-js": "^0.0.11",

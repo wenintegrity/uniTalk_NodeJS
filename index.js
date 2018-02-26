@@ -6,18 +6,15 @@ const bodyParser                  = require('body-parser');
 const compression                 = require('compression');
 
 const config                      = require('./config');
-const router                      = require('./router');
-const db                          = require('./model/db');
+const routerCalc                  = require('./router/calculations');
+const db                          = require('./db');
 
 
 db.connect()
     .then(() => {
         app.use(compression());
         app.use(bodyParser.json({limit: '2mb'}));
-
-        Object.keys(router).forEach(component => {
-            app.use('/', router[component]);
-        });
+        app.use(routerCalc);
 
         app.use(function(req, res, next) {
             let _error = new Error('Not found!');
