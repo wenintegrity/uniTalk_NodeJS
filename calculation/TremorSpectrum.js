@@ -136,12 +136,14 @@ class TremorSpectrum {
 
         this.mainTable = [];
 
-        for(let i = 0; i <= 2047; i++) {
+        for (let i = 0; i <= 2047; i++) {
             let row = {};
 
             row.id = i + 1;
             headers_TremorSpectrum.forEach(element => {
-                row[element.name] = arr[element.name][i];
+                if (arr[element.name][i]) {
+                    row[element.name] = arr[element.name][i];
+                }
             });
 
             this.mainTable.push(row);
