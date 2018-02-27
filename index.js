@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const compression = require('compression');
 
 const config = require('./config');
-const routerCalc = require('./routers/calculations.route');
+const routerCalc = require('./routers/calculation.route');
 const mongoose = require('mongoose');
 
 
