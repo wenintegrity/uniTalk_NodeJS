@@ -13,7 +13,7 @@
     "express-validator": "^4.3.0"
   },
   "scripts": {
-    "start": "set NODE_MONGO_URL=mongodb://localhost:27017/data&&node index.js"
+    "start": "NODE_MONGO_URL=mongodb://localhost:27017/data&&node index.js"
   },
   "author": "mdi",
   "license": "MIT"
