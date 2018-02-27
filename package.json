@@ -13,7 +13,7 @@
     "express-validator": "^4.3.0"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "set NODE_ENV=mongodb://localhost:27017/data&&node index.js"
   },
   "author": "mdi",
   "license": "MIT"
