@@ -10,7 +10,7 @@ const routerCalc = require('./routers/calculations.route');
 const mongoose = require('mongoose');
 
 
-mongoose.connect(process.env.NODE_ENV)
+mongoose.connect(process.env.NODE_MONGO_URL)
     .then(() => {
         app.use(compression());
         app.use(bodyParser.json({limit: '2mb'}));
