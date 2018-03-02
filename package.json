@@ -1,6 +1,9 @@
 {
   "name": "health",
   "version": "0.0.1",
+  "devDependencies": {
+    "standard": "^11.0.0"
+  },
   "dependencies": {
     "complex": "^3.0.0",
     "summary-statistics": "^1.0.0",
