@@ -23,7 +23,7 @@ router.post('/calculations', validPostCalc, (req, res, next) => {
             calcData: data
           }).save()
             .then((saveData) => {
-              return res.json(saveData.calcData.result.result_1)
+              return res.json(saveData.calcData.result)
             })
         })
     })
