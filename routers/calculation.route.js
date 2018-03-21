@@ -15,17 +15,35 @@ router.post('/calculations', validPostCalc, (req, res, next) => {
       })()
   })
     .then(() => {
-      return getCalculation(req.body.data)
-        .then((data) => {
+      return Promise.all([
+        getCalculation(req.body.data),
+        Calculations.findOne({'phone_id': req.body.id}).sort({_id: 1}).lean()
+      ])
+        .then(([data, firstData]) => {
           return new Calculations({
             phone_id: req.body.id,
             reqBody: req.body,
             calcData: data
           }).save()
             .then((saveData) => {
-              return res.json(saveData.calcData.result)
+              if (firstData) {
+                return res.json({
+                  result_1: Math.round(((saveData.calcData.result.result_1 * 100 / firstData.calcData.result.result_1) - 100) * 100) / 100,
+                  result_2: Math.round(((saveData.calcData.result.result_2 * 100 / firstData.calcData.result.result_2) - 100) * 100) / 100
+                })
+              } else {
+                return res.status(200).send('First sample saved successfully')
+              }
             })
         })
+    })
+    .catch(next)
+})
+
+router.get('/calculations/:phone_id/first', (req, res, next) => {
+  Calculations.findOne({'phone_id': req.params.phone_id}).sort({_id: 1})
+    .then((doc) => {
+      return res.json(doc.calcData.result)
     })
     .catch(next)
 })
