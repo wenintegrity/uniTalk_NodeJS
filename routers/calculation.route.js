@@ -26,16 +26,13 @@ router.post('/calculations', validPostCalc, (req, res, next) => {
             calcData: data
           }).save()
             .then((saveData) => {
-              if (firstData === null) {
+              if (firstData) {
                 return res.json({
-                  first_result_1: saveData.calcData.result.result_1,
-                  first_result_2: saveData.calcData.result.result_2
+                  result_1: Math.round(((saveData.calcData.result.result_1 * 100 / firstData.calcData.result.result_1) - 100) * 100) / 100,
+                  result_2: Math.round(((saveData.calcData.result.result_2 * 100 / firstData.calcData.result.result_2) - 100) * 100) / 100
                 })
               } else {
-                return res.json({
-                  result_1: (saveData.calcData.result.result_1 * 100 / firstData.calcData.result.result_1) - 100,
-                  result_2: (saveData.calcData.result.result_2 * 100 / firstData.calcData.result.result_2) - 100
-                })
+                return res.status(200).send('First sample saved successfully')
               }
             })
         })
