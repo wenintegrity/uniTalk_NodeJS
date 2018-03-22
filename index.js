@@ -28,6 +28,7 @@ mongoose.connect(process.env.NODE_MONGO_URL)
 
     app.use(function (err, req, res, next) {
       res.status(err.status || 500).json({error: err.message})
+      console.error(err)
     })
 
     app.listen(config.server.port, function () {
