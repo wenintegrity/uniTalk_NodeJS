@@ -31,7 +31,8 @@ router.post('/calculations', validPostCalc, (req, res, next) => {
                   result_1: Math.round(((saveData.calcData.result.result_1 * 100 / firstData.calcData.result.result_1) - 100) * 100) / 100,
                   result_2: Math.round(((saveData.calcData.result.result_2 * 100 / firstData.calcData.result.result_2) - 100) * 100) / 100
                 }
-                console.log(`Result POST /calculations result_1 = ${result.result_1} and result_2 = ${result.result_2}`)
+                console.log(`Calculation result_1 = ${saveData.calcData.result.result_1} and result_2 = ${saveData.calcData.result.result_2}`)
+                console.log(`First data result_1 = ${saveData.calcData.result.result_1} and result_2 = ${saveData.calcData.result.result_2}`)
                 return res.json(result)
               } else {
                 return res.status(200).send('First sample saved successfully')
