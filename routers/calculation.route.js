@@ -27,11 +27,13 @@ router.post('/calculations', validPostCalc, (req, res, next) => {
           }).save()
             .then((saveData) => {
               if (firstData) {
-                console.log(`Calculation result_1 = ${saveData.calcData.result.result_1} and result_2 = ${saveData.calcData.result.result_2}`)
-                console.log(`First data result_1  = ${firstData.calcData.result.result_1} and result_2 = ${firstData.calcData.result.result_2}`)
+                console.log(`
+                Calculation result_1 = ${saveData.calcData.result.result_1} and result_2 = ${saveData.calcData.result.result_2}.  
+                First data result_1  = ${firstData.calcData.result.result_1} and result_2 = ${firstData.calcData.result.result_2} 
+                Time: ` + new Date())
                 return res.json({
-                  result_1: saveData.calcData.result.result_1 * 100 / firstData.calcData.result.result_1,
-                  result_2: saveData.calcData.result.result_2 * 100 / firstData.calcData.result.result_2
+                  result_1: 100 - (saveData.calcData.result.result_1 * 100 / firstData.calcData.result.result_1),
+                  result_2: 100 - (saveData.calcData.result.result_2 * 100 / firstData.calcData.result.result_2)
                 })
               } else {
                 return res.json({
