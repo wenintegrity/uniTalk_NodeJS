@@ -67,7 +67,7 @@ router.get('/calculations/last', (req, res, next) => {
 })
 
 router.get('/calculations/all_info', (req, res, next) => {
-  Calculations.find({})
+  Calculations.find({}).select('_id phone_id reqBody.location reqBody.time')
     .then(docsAll => {
       return filterAllInfo(docsAll)
         .then((docsFiltered) => {
@@ -84,5 +84,29 @@ router.get('/calculations/:id', (req, res, next) => {
     })
     .catch(next)
 })
+
+// router.get('/calculations/all_id', (req, res, next) => {
+//   Calculations.find({}).distinct('phone_id')
+//     .then((document) => {
+//       return res.json(document)
+//     })
+//     .catch(next)
+// })
+//
+// router.get('/calculations/:phone_id/locations', (req, res, next) => {
+//   Calculations.find({'phone_id': req.params.phone_id}).select('_id phone_id reqBody.location')
+//     .then((documents) => {
+//       return res.json(documents)
+//     })
+//     .catch(next)
+// })
+//
+// router.get('/calculations/:phone_id/times', (req, res, next) => {
+//   Calculations.find({'phone_id': req.params.phone_id}).select('_id phone_id reqBody.time')
+//     .then((documents) => {
+//       return res.json(documents)
+//     })
+//     .catch(next)
+// })
 
 module.exports = router
