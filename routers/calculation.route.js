@@ -59,7 +59,7 @@ router.get('/calculations/:phone_id/first', (req, res, next) => {
 })
 
 router.get('/calculations/last', (req, res, next) => {
-  Calculations.findOne().sort({_id: -1})
+  Calculations.findOne().sort({_id: -1}).lean()
     .then((doc) => {
       return res.json(doc)
     })
@@ -81,6 +81,17 @@ router.get('/calculations/:id', (req, res, next) => {
   Calculations.findById(req.params.id)
     .then((document) => {
       return res.json(document)
+    })
+    .catch(next)
+})
+
+router.get('/calculations/:id/data/:data_id', (req, res, next) => {
+  let data_id = req.params.data_id
+  Calculations.findById(req.params.id).select(`reqBody.data.data_${data_id}`).lean()
+    .then((document) => {
+      res.setHeader('Content-disposition', `filename=data_${data_id}.csv; charset=utf-8`)
+      res.setHeader('Content-Type', 'text/csv')
+      res.send(document.reqBody.data[`data_${data_id}`].toString().split(',').join('\n'))
     })
     .catch(next)
 })
