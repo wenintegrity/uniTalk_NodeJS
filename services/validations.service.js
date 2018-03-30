@@ -1,5 +1,7 @@
+const {check, validationResult} = require('express-validator/check')
+
 module.exports = {
-  validPostCalc: (check) => {
+  validPostCalc: () => {
     return [
       check('data.data_1')
         .exists()
@@ -19,7 +21,7 @@ module.exports = {
         .custom(value => {
           return value.length === 2048
         }),
-      check('id')
+      check('user_id')
         .exists()
         .not().isEmpty(),
       check('location.latitude')
@@ -32,5 +34,16 @@ module.exports = {
         .exists()
         .not().isEmpty()
     ]
+  },
+
+  resultValidation: (req) => {
+    return new Promise((resolve, reject) => {
+      validationResult(req).isEmpty() ? resolve()
+        : (() => {
+          let _error = new Error('Input data have error')
+          _error.status = 400
+          reject(_error)
+        })()
+    })
   }
 }
