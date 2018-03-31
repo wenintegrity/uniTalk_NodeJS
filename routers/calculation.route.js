@@ -1,46 +1,51 @@
 const router = require('express').Router()
 const getCalculation = require('../calculation')
 const validPostCalc = require('../services/validations.service').validPostCalc()
-const resultValidation = require('../services/validations.service').resultValidation
+const dataValidation = require('../services/validations.service').dataValidation
+const userValidation = require('../services/validations.service').userValidation
 const Calculation = require('../models/calculation.model')
 const Session = require('../models/session.model')
 const User = require('../models/user.model')
 
 router.post('/auth', validPostCalc, (req, res, next) => {
-  Promise.all([resultValidation(req), getCalculation(req.body.data)])
-    .then(([validation, calculation]) => {
+  Promise.all([
+    userValidation(req, false),
+    dataValidation(req),
+    getCalculation(req.body.data)
+  ])
+    .then(([user, validation, calculation]) => {
       return new Calculation({user_id: req.body.user_id, req: req.body, res: calculation}).save()
-        .then(saveCalc => {
-          return new User({id: req.body.user_id, first_calc_id: saveCalc._id}).save()
-            .then(() => {
-              return res.status(201).send()
-            })
-        })
+    })
+    .then(saveCalc => {
+      return new User({id: req.body.user_id, first_calc_id: saveCalc._id}).save()
+    })
+    .then(() => {
+      return res.status(201).send()
     })
     .catch(next)
 })
 
 router.post('/calculations/:session_id?', validPostCalc, (req, res, next) => {
   Promise.all([
-    new Promise((resolve, reject) => { User.findOne({id: req.body.user_id}).then(user => { user == null ? reject() : resolve() }) }),
-    resultValidation(req),
+    userValidation(req, true),
+    dataValidation(req),
     getCalculation(req.body.data)
   ])
     .then(([user, validation, calculation]) => {
       return new Calculation({user_id: req.body.user_id, req: req.body, res: calculation}).save()
-        .then(saveCalc => {
-          if (!req.params.session_id) {
-            return new Session({user_id: req.body.user_id, calculations: [saveCalc._id]}).save()
-              .then((session) => {
-                return res.status(201).json({result: calculation.result, session_id: saveCalc._id})
-              })
-          } else {
-            return Session.update({_id: req.params.session_id}, {'$push': {'calculations': saveCalc._id}})
-              .then(() => {
-                return res.status(201).json({result: calculation.result})
-              })
-          }
-        })
+    })
+    .then(saveCalc => {
+      if (!req.params.session_id) {
+        return new Session({user_id: req.body.user_id, calculations: [saveCalc._id]}).save()
+          .then((session) => {
+            return res.status(201).json({result: saveCalc.res.result, session_id: session._id, calc_id: saveCalc._id})
+          })
+      } else {
+        return Session.update({_id: req.params.session_id}, {'$push': {'calculations': saveCalc._id}})
+          .then(() => {
+            return res.status(201).json({result: saveCalc.res.result, calc_id: saveCalc._id})
+          })
+      }
     })
     .catch(next)
 })
@@ -85,7 +90,7 @@ router.get('/session/:session_id', (req, res, next) => {
     .catch(next)
 })
 
-router.get('/session/:session_id/single/single_id', (req, res, next) => {
+router.get('/session/:session_id/single/:single_id', (req, res, next) => {
   Session.findById(req.params.session_id).lean()
     .then((document) => {
       return res.json(document.calculations[req.params.single_id])

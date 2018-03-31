@@ -1,4 +1,5 @@
 const {check, validationResult} = require('express-validator/check')
+const User = require('../models/user.model')
 
 module.exports = {
   validPostCalc: () => {
@@ -36,7 +37,7 @@ module.exports = {
     ]
   },
 
-  resultValidation: (req) => {
+  dataValidation: (req) => {
     return new Promise((resolve, reject) => {
       validationResult(req).isEmpty() ? resolve()
         : (() => {
@@ -44,6 +45,27 @@ module.exports = {
           _error.status = 400
           reject(_error)
         })()
+    })
+  },
+
+  userValidation: (req, userIs) => {
+    return new Promise((resolve, reject) => {
+      User.findOne({id: req.body.user_id})
+        .then(user => {
+          if (userIs && user === null) {
+            let _error = new Error('User with this id didn\'t find')
+            _error.status = 400
+            reject(_error)
+          } else {
+            if (!userIs && user !== null) {
+              let _error = new Error('User with this id already exist')
+              _error.status = 400
+              reject(_error)
+            } else {
+              resolve()
+            }
+          }
+        })
     })
   }
 }
