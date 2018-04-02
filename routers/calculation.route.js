@@ -98,6 +98,20 @@ router.get('/session/:session_id/single/:single_id', (req, res, next) => {
     .catch(next)
 })
 
+router.get('/calculations/:id/data/:data_id', (req, res, next) => {
+  let data_id = req.params.data_id
+  Calculation.findById(req.params.id).select(`reqBody.data.data_${data_id}`).lean()
+    .then((document) => {
+      res.setHeader('Content-disposition',
+        `filename=data_${data_id}.csv; charset=utf-8`)
+      res.setHeader('Content-Type', 'text/csv')
+      res.send(document.reqBody.data[`data_${data_id}`].toString()
+        .split(',')
+        .join('\n'))
+    })
+    .catch(next)
+})
+
 // router.get('/calculations/:user_id/first', (req, res, next) => {
 //   Calculation.findOne({'user_id': req.params.user_id})
 //     .sort({_id: 1})
@@ -124,21 +138,6 @@ router.get('/session/:session_id/single/:single_id', (req, res, next) => {
 //     .catch(next)
 // })
 //
-// router.get('/calculations/:id/data/:data_id', (req, res, next) => {
-//   let data_id = req.params.data_id
-//   Calculation.findById(req.params.id)
-//     .select(`reqBody.data.data_${data_id}`)
-//     .lean()
-//     .then((document) => {
-//       res.setHeader('Content-disposition',
-//         `filename=data_${data_id}.csv; charset=utf-8`)
-//       res.setHeader('Content-Type', 'text/csv')
-//       res.send(document.reqBody.data[`data_${data_id}`].toString()
-//         .split(',')
-//         .join('\n'))
-//     })
-//     .catch(next)
-// })
 //
 // router.get('/calculations/:user_id/sessions', (req, res, next) => {
 //   Calculation.find({'user_id': req.params.user_id})
