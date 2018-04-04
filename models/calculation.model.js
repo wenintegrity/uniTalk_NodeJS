@@ -2,7 +2,6 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const calculations = new Schema({
-  email: {type: String, required: true},
   req: {type: Object, required: true},
   res: {type: Object, required: true},
   pictures: {type: Array, required: false},

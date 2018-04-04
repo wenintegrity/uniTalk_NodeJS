@@ -32,18 +32,21 @@ router.post('/calculations/:session_id?', validPostCalc, (req, res, next) => {
     getCalculation(req.body.data)
   ])
     .then(([user, validation, calculation]) => {
-      return new Calculation({email: req.body.email, req: req.body, res: calculation}).save()
+      return new Calculation({req: req.body, res: calculation}).save()
+        .then(calculation => {
+          return [calculation, user]
+        })
     })
-    .then(saveCalc => {
+    .then(([calculation, user]) => {
       if (!req.params.session_id) {
-        return new Session({user_id: saveCalc.user_id, calculations: [saveCalc._id]}).save()
+        return new Session({user_id: user._id, calculations: [calculation._id]}).save()
           .then((session) => {
-            return res.status(201).json({result: saveCalc.res.result, session_id: session._id, calc_id: saveCalc._id})
+            return res.status(201).json({result: calculation.res.result, session_id: session._id, calc_id: calculation._id})
           })
       } else {
-        return Session.update({_id: req.params.session_id}, {'$push': {'calculations': saveCalc._id}})
+        return Session.update({_id: req.params.session_id}, {'$push': {'calculations': calculation._id}})
           .then(() => {
-            return res.status(201).json({result: saveCalc.res.result, calc_id: saveCalc._id})
+            return res.status(201).json({result: calculation.res.result, calc_id: calculation._id})
           })
       }
     })

@@ -50,7 +50,7 @@ module.exports = {
 
   userValidation: (req, userIs) => {
     return new Promise((resolve, reject) => {
-      User.findOne({email: req.body.email})
+      User.findOne({email: req.body.email}).lean()
         .then(user => {
           if (userIs && user === null) {
             let _error = new Error('User with this email didn\'t find')
@@ -62,7 +62,7 @@ module.exports = {
               _error.status = 400
               reject(_error)
             } else {
-              resolve()
+              resolve(user)
             }
           }
         })
