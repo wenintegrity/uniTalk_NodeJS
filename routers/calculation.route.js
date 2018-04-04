@@ -109,7 +109,7 @@ router.get('/users/:user_id/sessions', (req, res, next) => {
 router.get('/sessions/:session_id', (req, res, next) => {
   Session.findById(req.params.session_id).lean()
     .then((session) => {
-      return Calculation.find({'_id': {'$in': session.calculations}}).select('_id, email pictures video req.location req.time').lean()
+      return Calculation.find({'_id': {'$in': session.calculations}}).select('_id email pictures video req.location req.time').lean()
     })
     .then((calculations) => {
       res.status(200).send(calculations)
