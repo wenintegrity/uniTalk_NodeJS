@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const sessions = new Schema({
-  user_id: {type: String, required: true},
+  email: {type: String, required: true},
   calculations: {type: Array, required: true}
 }, {
   timestamps: true

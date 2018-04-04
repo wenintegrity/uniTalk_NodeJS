@@ -22,7 +22,7 @@ module.exports = {
         .custom(value => {
           return value.length === 2048
         }),
-      check('user_id')
+      check('email')
         .exists()
         .not().isEmpty(),
       check('location.latitude')
@@ -50,7 +50,7 @@ module.exports = {
 
   userValidation: (req, userIs) => {
     return new Promise((resolve, reject) => {
-      User.findOne({id: req.body.user_id})
+      User.findOne({id: req.body.email})
         .then(user => {
           if (userIs && user === null) {
             let _error = new Error('User with this id didn\'t find')

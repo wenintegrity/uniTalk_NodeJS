@@ -14,10 +14,10 @@ router.post('/auth', validPostCalc, (req, res, next) => {
     getCalculation(req.body.data)
   ])
     .then(([user, validation, calculation]) => {
-      return new Calculation({user_id: req.body.user_id, req: req.body, res: calculation}).save()
+      return new Calculation({email: req.body.email, req: req.body, res: calculation}).save()
     })
     .then(saveCalc => {
-      return new User({id: req.body.user_id, first_calc_id: saveCalc._id}).save()
+      return new User({email: req.body.email, first_calc_id: saveCalc._id}).save()
     })
     .then(() => {
       return res.status(201).send()
@@ -32,11 +32,11 @@ router.post('/calculations/:session_id?', validPostCalc, (req, res, next) => {
     getCalculation(req.body.data)
   ])
     .then(([user, validation, calculation]) => {
-      return new Calculation({user_id: req.body.user_id, req: req.body, res: calculation}).save()
+      return new Calculation({email: req.body.email, req: req.body, res: calculation}).save()
     })
     .then(saveCalc => {
       if (!req.params.session_id) {
-        return new Session({user_id: req.body.user_id, calculations: [saveCalc._id]}).save()
+        return new Session({email: req.body.email, calculations: [saveCalc._id]}).save()
           .then((session) => {
             return res.status(201).json({result: saveCalc.res.result, session_id: session._id, calc_id: saveCalc._id})
           })
@@ -81,8 +81,8 @@ router.get('/users/all', (req, res, next) => {
     .catch(next)
 })
 
-router.get('/users/:user_id/sessions', (req, res, next) => {
-  Session.find({user_id: req.params.user_id}).lean()
+router.get('/users/:email/sessions', (req, res, next) => {
+  Session.find({email: req.params.email}).lean()
     .then((documents) => {
       return res.json(documents)
     })
@@ -92,7 +92,7 @@ router.get('/users/:user_id/sessions', (req, res, next) => {
 router.get('/session/:session_id', (req, res, next) => {
   Session.findById(req.params.session_id).lean()
     .then((session) => {
-      return Calculation.find({'_id': {'$in': session.calculations}}).select('_id, user_id pictures req.location req.time').lean()
+      return Calculation.find({'_id': {'$in': session.calculations}}).select('_id, email pictures req.location req.time').lean()
     })
     .then((calculations) => {
       res.status(200).send(calculations)
