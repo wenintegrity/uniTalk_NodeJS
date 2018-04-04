@@ -50,8 +50,11 @@ router.post('/calculations/:session_id?', validPostCalc, (req, res, next) => {
     .catch(next)
 })
 
-router.post('/calculations/:calc_id/picture', (req, res, next) => {
-  Calculation.update({_id: req.params.calc_id}, {'$push': {'pictures': req.body.pictures}})
+router.post('/calculations/:calc_id/pictures', (req, res, next) => {
+  Calculation.update({_id: req.params.calc_id})
+    .then(calc => {
+      return calc({pictures: req.body.pictures}).save()
+    })
     .then(() => {
       return res.status(201).send()
     })
@@ -74,7 +77,7 @@ router.get('/calculations/:id', (req, res, next) => {
 })
 
 router.get('/users/all', (req, res, next) => {
-  User.find({}).select('id').lean()
+  User.find({}).select('email').lean()
     .then((documents) => {
       return res.json(documents)
     })

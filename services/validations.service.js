@@ -50,15 +50,15 @@ module.exports = {
 
   userValidation: (req, userIs) => {
     return new Promise((resolve, reject) => {
-      User.findOne({id: req.body.email})
+      User.findOne({email: req.body.email})
         .then(user => {
           if (userIs && user === null) {
-            let _error = new Error('User with this id didn\'t find')
+            let _error = new Error('User with this email didn\'t find')
             _error.status = 400
             reject(_error)
           } else {
             if (!userIs && user !== null) {
-              let _error = new Error('User with this id already exist')
+              let _error = new Error('User with this email already exist')
               _error.status = 400
               reject(_error)
             } else {
