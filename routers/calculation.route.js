@@ -36,7 +36,7 @@ router.post('/calculations/:session_id?', validPostCalc, (req, res, next) => {
     })
     .then(saveCalc => {
       if (!req.params.session_id) {
-        return new Session({email: req.body.email, calculations: [saveCalc._id]}).save()
+        return new Session({user_id: saveCalc.user_id, calculations: [saveCalc._id]}).save()
           .then((session) => {
             return res.status(201).json({result: saveCalc.res.result, session_id: session._id, calc_id: saveCalc._id})
           })
@@ -56,7 +56,18 @@ router.post('/calculations/:calc_id/pictures', (req, res, next) => {
       return calc({pictures: req.body.pictures}).save()
     })
     .then(() => {
-      return res.status(201).send()
+      return res.status(200).send()
+    })
+    .catch(next)
+})
+
+router.post('/calculations/:calc_id/video', (req, res, next) => {
+  Calculation.update({_id: req.params.calc_id})
+    .then(calc => {
+      return calc({video: req.body.video}).save()
+    })
+    .then(() => {
+      return res.status(200).send()
     })
     .catch(next)
 })
@@ -77,25 +88,25 @@ router.get('/calculations/:id', (req, res, next) => {
 })
 
 router.get('/users/all', (req, res, next) => {
-  User.find({}).select('email').lean()
+  User.find({}).select('_id').lean()
     .then((documents) => {
       return res.json(documents)
     })
     .catch(next)
 })
 
-router.get('/users/:email/sessions', (req, res, next) => {
-  Session.find({email: req.params.email}).lean()
+router.get('/users/:user_id/sessions', (req, res, next) => {
+  Session.find({user_id: req.params.user_id}).lean()
     .then((documents) => {
       return res.json(documents)
     })
     .catch(next)
 })
 
-router.get('/session/:session_id', (req, res, next) => {
+router.get('/sessions/:session_id', (req, res, next) => {
   Session.findById(req.params.session_id).lean()
     .then((session) => {
-      return Calculation.find({'_id': {'$in': session.calculations}}).select('_id, email pictures req.location req.time').lean()
+      return Calculation.find({'_id': {'$in': session.calculations}}).select('_id, email pictures video req.location req.time').lean()
     })
     .then((calculations) => {
       res.status(200).send(calculations)
@@ -103,7 +114,7 @@ router.get('/session/:session_id', (req, res, next) => {
     .catch(next)
 })
 
-router.get('/session/:session_id/single/:single_id', (req, res, next) => {
+router.get('/sessions/:session_id/single/:single_id', (req, res, next) => {
   Session.findById(req.params.session_id).lean()
     .then((document) => {
       return res.json(document.calculations[req.params.single_id])
