@@ -53,22 +53,16 @@ router.post('/calculations/:session_id?', validPostCalc, (req, res, next) => {
     .catch(next)
 })
 
-router.post('/calculations/:calc_id/pictures', (req, res, next) => {
-  Calculation.update({_id: req.params.calc_id})
-    .then(calc => {
-      return calc({pictures: req.body.pictures}).save()
-    })
+router.patch('/calculations/:calc_id/pictures', (req, res, next) => {
+  Calculation.update({_id: req.params.calc_id}, {pictures: req.body.pictures})
     .then(() => {
       return res.status(200).send()
     })
     .catch(next)
 })
 
-router.post('/calculations/:calc_id/video', (req, res, next) => {
-  Calculation.update({_id: req.params.calc_id})
-    .then(calc => {
-      return calc({video: req.body.video}).save()
-    })
+router.patch('/calculations/:calc_id/video', (req, res, next) => {
+  Calculation.update({_id: req.params.calc_id}, {video: req.body.video})
     .then(() => {
       return res.status(200).send()
     })
@@ -78,22 +72,22 @@ router.post('/calculations/:calc_id/video', (req, res, next) => {
 router.get('/calculations/last', (req, res, next) => {
   Calculation.findOne().sort({_id: 1}).lean()
     .then(document => {
-      return res.json(document)
+      return res.status(200).json(document)
     }).catch(next)
 })
 
 router.get('/calculations/:id', (req, res, next) => {
   Calculation.findById(req.params.id).lean()
     .then((document) => {
-      return res.json(document)
+      return res.status(200).json(document)
     })
     .catch(next)
 })
 
 router.get('/users/all', (req, res, next) => {
-  User.find({}).select('_id').lean()
+  User.find({}).select('_id email').lean()
     .then((documents) => {
-      return res.json(documents)
+      return res.status(200).json(documents)
     })
     .catch(next)
 })
@@ -101,7 +95,7 @@ router.get('/users/all', (req, res, next) => {
 router.get('/users/:user_id/sessions', (req, res, next) => {
   Session.find({user_id: req.params.user_id}).lean()
     .then((documents) => {
-      return res.json(documents)
+      return res.status(200).json(documents)
     })
     .catch(next)
 })
@@ -112,15 +106,7 @@ router.get('/sessions/:session_id', (req, res, next) => {
       return Calculation.find({'_id': {'$in': session.calculations}}).select('_id email pictures video req.location req.time').lean()
     })
     .then((calculations) => {
-      res.status(200).send(calculations)
-    })
-    .catch(next)
-})
-
-router.get('/sessions/:session_id/single/:single_id', (req, res, next) => {
-  Session.findById(req.params.session_id).lean()
-    .then((document) => {
-      return res.json(document.calculations[req.params.single_id])
+      return res.status(200).send(calculations)
     })
     .catch(next)
 })
@@ -132,7 +118,7 @@ router.get('/calculations/:id/data/:data_id', (req, res, next) => {
       res.setHeader('Content-disposition',
         `filename=data_${data_id}.csv; charset=utf-8`)
       res.setHeader('Content-Type', 'text/csv')
-      res.send(document.reqBody.data[`data_${data_id}`].toString()
+      return res.status(200).send(document.reqBody.data[`data_${data_id}`].toString()
         .split(',')
         .join('\n'))
     })
