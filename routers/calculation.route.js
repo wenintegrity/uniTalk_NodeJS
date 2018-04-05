@@ -16,8 +16,11 @@ router.post('/auth', validPostCalc, (req, res, next) => {
     .then(([user, validation, calculation]) => {
       return new Calculation({email: req.body.email, req: req.body, res: calculation}).save()
     })
-    .then(saveCalc => {
-      return new User({email: req.body.email, first_calc_id: saveCalc._id}).save()
+    .then(calculation => {
+      return new User({email: req.body.email}).save()
+        .then(user => {
+          return new Session({user_id: user._id, calculations: [calculation._id]}).save()
+        })
     })
     .then(() => {
       return res.status(201).send()
@@ -93,7 +96,7 @@ router.get('/users/all', (req, res, next) => {
 })
 
 router.get('/users/:user_id/sessions', (req, res, next) => {
-  Session.find({user_id: req.params.user_id}).lean()
+  Session.find({user_id: req.params.user_id}).sort({_id: 1}).lean()
     .then((documents) => {
       return res.status(200).json(documents)
     })
@@ -115,8 +118,7 @@ router.get('/calculations/:id/data/:data_id', (req, res, next) => {
   let data_id = req.params.data_id
   Calculation.findById(req.params.id).select(`req.data.data_${data_id}`).lean()
     .then((document) => {
-      res.setHeader('Content-disposition',
-        `filename=data_${data_id}.csv; charset=utf-8`)
+      res.setHeader('Content-disposition', `filename=data_${data_id}.csv; charset=utf-8`)
       res.setHeader('Content-Type', 'text/csv')
       return res.status(200).send(document.req.data[`data_${data_id}`].toString()
         .split(',')
