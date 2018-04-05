@@ -118,7 +118,7 @@ router.get('/calculations/:id/data/:data_id', (req, res, next) => {
       res.setHeader('Content-disposition',
         `filename=data_${data_id}.csv; charset=utf-8`)
       res.setHeader('Content-Type', 'text/csv')
-      return res.status(200).send(document.reqBody.data[`data_${data_id}`].toString()
+      return res.status(200).send(document.req.data[`data_${data_id}`].toString()
         .split(',')
         .join('\n'))
     })
