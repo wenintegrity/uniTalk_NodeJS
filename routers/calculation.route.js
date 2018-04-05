@@ -113,7 +113,7 @@ router.get('/sessions/:session_id', (req, res, next) => {
 
 router.get('/calculations/:id/data/:data_id', (req, res, next) => {
   let data_id = req.params.data_id
-  Calculation.findById(req.params.id).select(`reqBody.data.data_${data_id}`).lean()
+  Calculation.findById(req.params.id).select(`req.data.data_${data_id}`).lean()
     .then((document) => {
       res.setHeader('Content-disposition',
         `filename=data_${data_id}.csv; charset=utf-8`)
