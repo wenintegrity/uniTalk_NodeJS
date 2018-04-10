@@ -22,7 +22,7 @@ module.exports = {
         .custom(value => {
           return value.length === 2048
         }),
-      check('user_id')
+      check('email')
         .exists()
         .not().isEmpty(),
       check('location.latitude')
@@ -50,19 +50,19 @@ module.exports = {
 
   userValidation: (req, userIs) => {
     return new Promise((resolve, reject) => {
-      User.findOne({id: req.body.user_id})
+      User.findOne({email: req.body.email}).lean()
         .then(user => {
           if (userIs && user === null) {
-            let _error = new Error('User with this id didn\'t find')
+            let _error = new Error('User with this email didn\'t find')
             _error.status = 400
             reject(_error)
           } else {
             if (!userIs && user !== null) {
-              let _error = new Error('User with this id already exist')
+              let _error = new Error('User with this email already exist')
               _error.status = 400
               reject(_error)
             } else {
-              resolve()
+              resolve(user)
             }
           }
         })

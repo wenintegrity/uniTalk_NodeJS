@@ -1,18 +1,17 @@
-const fftLib                            = require('fft-js');
-const fft                               = fftLib.fft;
-const complex                           = require('complex');
-const summary                           = require('summary');
-const constants                         = require('../data/constants');
-const colorsFFTfreq                     = require('../data/colorsFFTfreq');
-const regExpColor                       = new RegExp('^(\\w{1}#?)\\d{1}$');
-const headers_TremorSpectrum            = require('../data/headers_TremorSpectrum');
-
+const fftLib = require('fft-js')
+const fft = fftLib.fft
+const complex = require('complex')
+const summary = require('summary')
+const constants = require('../data/constants')
+const colorsFFTfreq = require('../data/colorsFFTfreq')
+const regExpColor = new RegExp('^(\\w{1}#?)\\d{1}$')
+const headers_TremorSpectrum = require('../data/headers_TremorSpectrum')
 
 class TremorSpectrum {
   constructor (data) {
     let arr = {}
     arr.outMicM50 = data.arrOutMicM50
-    arr.fftComplex = fft(this.getSliceArr(data.arrOutMicM50, 0, 1024))
+    arr.fftComplex = fft(data.arrOutMicM50)
     arr.fftFreq = this.getArrFftFreq()
     arr.fftMag = this.getArrFftMag(arr.fftFreq, arr.fftComplex)
     arr.constants = constants
@@ -507,8 +506,8 @@ class TremorSpectrum {
   getArrFftMag (arrFftFreq, arrFftComplex) {
     let arrFftMag = []
 
-    for (let i = 0; i <= arrFftFreq.length - 1; i++) {
-      arrFftMag.push(2 / 1044 * new complex(arrFftComplex[i][0], arrFftComplex[i][1]).abs())
+    for (let i = 0; i <= 1024 - 1; i++) {
+      arrFftMag.push(1 / 2048 * new complex(arrFftComplex[i][0], arrFftComplex[i][1]).abs())
     }
 
     return arrFftMag

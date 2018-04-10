@@ -14,10 +14,13 @@ router.post('/auth', validPostCalc, (req, res, next) => {
     getCalculation(req.body.data)
   ])
     .then(([user, validation, calculation]) => {
-      return new Calculation({user_id: req.body.user_id, req: req.body, res: calculation}).save()
+      return new Calculation({email: req.body.email, req: req.body, res: calculation}).save()
     })
-    .then(saveCalc => {
-      return new User({id: req.body.user_id, first_calc_id: saveCalc._id}).save()
+    .then(calculation => {
+      return new User({email: req.body.email}).save()
+        .then(user => {
+          return new Session({user_id: user._id, calculations: [calculation._id]}).save()
+        })
     })
     .then(() => {
       return res.status(201).send()
@@ -32,121 +35,96 @@ router.post('/calculations/:session_id?', validPostCalc, (req, res, next) => {
     getCalculation(req.body.data)
   ])
     .then(([user, validation, calculation]) => {
-      return new Calculation({user_id: req.body.user_id, req: req.body, res: calculation}).save()
+      return new Calculation({req: req.body, res: calculation}).save()
+        .then(calculation => {
+          return [calculation, user]
+        })
     })
-    .then(saveCalc => {
+    .then(([calculation, user]) => {
       if (!req.params.session_id) {
-        return new Session({user_id: req.body.user_id, calculations: [saveCalc._id]}).save()
+        return new Session({user_id: user._id, calculations: [calculation._id]}).save()
           .then((session) => {
-            return res.status(201).json({result: saveCalc.res.result, session_id: session._id, calc_id: saveCalc._id})
+            return res.status(201).json({result: calculation.res.result, session_id: session._id, calc_id: calculation._id})
           })
       } else {
-        return Session.update({_id: req.params.session_id}, {'$push': {'calculations': saveCalc._id}})
+        return Session.update({_id: req.params.session_id}, {'$push': {'calculations': calculation._id}})
           .then(() => {
-            return res.status(201).json({result: saveCalc.res.result, calc_id: saveCalc._id})
+            return res.status(201).json({result: calculation.res.result, calc_id: calculation._id})
           })
       }
     })
     .catch(next)
 })
 
-router.post('/calculations/:calc_id/picture', (req, res, next) => {
-  Calculation.update({_id: req.params.calc_id}, {'$push': {'pictures': req.body.pictures}})
+router.patch('/calculations/:calc_id/pictures', (req, res, next) => {
+  Calculation.update({_id: req.params.calc_id}, {pictures: req.body.pictures})
     .then(() => {
-      return res.status(201).send()
+      return res.status(200).send()
     })
     .catch(next)
+})
+
+router.patch('/calculations/:calc_id/video', (req, res, next) => {
+  Calculation.update({_id: req.params.calc_id}, {video: req.body.video})
+    .then(() => {
+      return res.status(200).send()
+    })
+    .catch(next)
+})
+
+router.get('/calculations/last', (req, res, next) => {
+  Calculation.findOne().sort({_id: 1}).lean()
+    .then(document => {
+      return res.status(200).json(document)
+    }).catch(next)
 })
 
 router.get('/calculations/:id', (req, res, next) => {
   Calculation.findById(req.params.id).lean()
     .then((document) => {
-      return res.json(document)
+      return res.status(200).json(document)
     })
     .catch(next)
 })
 
 router.get('/users/all', (req, res, next) => {
-  User.find({}).select('id').lean()
+  User.find({}).select('_id email').lean()
     .then((documents) => {
-      return res.json(documents)
+      return res.status(200).json(documents)
     })
     .catch(next)
 })
 
 router.get('/users/:user_id/sessions', (req, res, next) => {
-  Session.find({user_id: req.params.user_id}).lean()
+  Session.find({user_id: req.params.user_id}).sort({_id: 1}).lean()
     .then((documents) => {
-      return res.json(documents)
+      return res.status(200).json(documents)
     })
     .catch(next)
 })
 
-router.get('/session/:session_id', (req, res, next) => {
+router.get('/sessions/:session_id', (req, res, next) => {
   Session.findById(req.params.session_id).lean()
-    .then((document) => {
-      return res.json(document)
+    .then((session) => {
+      return Calculation.find({'_id': {'$in': session.calculations}}).select('_id email pictures video req.location req.time').lean()
+    })
+    .then((calculations) => {
+      return res.status(200).send(calculations)
     })
     .catch(next)
 })
 
-router.get('/session/:session_id/single/:single_id', (req, res, next) => {
-  Session.findById(req.params.session_id).lean()
+router.get('/calculations/:id/data/:data_id', (req, res, next) => {
+  let data_id = req.params.data_id
+  Calculation.findById(req.params.id).select(`req.data.data_${data_id}`).lean()
     .then((document) => {
-      return res.json(document.calculations[req.params.single_id])
+      res.setHeader('Content-disposition', `filename=data_${data_id}.csv; charset=utf-8`)
+      res.setHeader('Content-Type', 'text/csv')
+      return res.status(200).send(document.req.data[`data_${data_id}`].toString()
+        .split(',')
+        .join('\n'))
     })
     .catch(next)
 })
-
-// router.get('/calculations/:user_id/first', (req, res, next) => {
-//   Calculation.findOne({'user_id': req.params.user_id})
-//     .sort({_id: 1})
-//     .then((doc) => {
-//       return res.json(doc.calcData.result)
-//     })
-//     .catch(next)
-// })
-//
-// router.get('/calculations/last', (req, res, next) => {
-//   Calculation.findOne().sort({_id: -1}).lean().then((doc) => {
-//     return res.json(doc)
-//   }).catch(next)
-// })
-//
-// router.get('/calculations/all_info', (req, res, next) => {
-//   Calculation.find({})
-//     .select('_id user_id reqBody.location reqBody.time')
-//     .then(docsAll => {
-//       return filterAllInfo(docsAll).then((docsFiltered) => {
-//         return res.json(docsFiltered)
-//       })
-//     })
-//     .catch(next)
-// })
-//
-// router.get('/calculations/:id/data/:data_id', (req, res, next) => {
-//   let data_id = req.params.data_id
-//   Calculation.findById(req.params.id)
-//     .select(`reqBody.data.data_${data_id}`)
-//     .lean()
-//     .then((document) => {
-//       res.setHeader('Content-disposition',
-//         `filename=data_${data_id}.csv; charset=utf-8`)
-//       res.setHeader('Content-Type', 'text/csv')
-//       res.send(document.reqBody.data[`data_${data_id}`].toString()
-//         .split(',')
-//         .join('\n'))
-//     })
-//     .catch(next)
-// })
-//
-// router.get('/calculations/:user_id/sessions', (req, res, next) => {
-//   Calculation.find({'user_id': req.params.user_id})
-//     .select('_id phone_id reqBody.location')
-//     .then((documents) => {
-//       return res.json(documents)
-//     })
-//     .catch(next)
-// })
 
 module.exports = router
