@@ -1,5 +1,5 @@
-const getData                     = require('./Tremors').getData;
-const getResult                   = require('./Tremors').getResult;
+const getData                     = require('./TremorNA').getData;
+const getResult                   = require('./TremorNA').getResult;
 
 
 class TremorNA_7 {
