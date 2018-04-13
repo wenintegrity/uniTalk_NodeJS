@@ -11,13 +11,12 @@
     "complex": "^3.0.0",
     "summary-statistics": "^1.0.0",
     "fft-js": "^0.0.11",
-    "summary": "^1.0.0",
+    "mathjs": "^4.1.1",
     "express": "^4.16.2",
     "mongoose": "^5.0.7",
     "body-parser": "^1.18.2",
     "compression": "^1.7.1",
-    "express-validator": "^4.3.0",
-    "mathjs": "^4.1.1"
+    "express-validator": "^4.3.0"
   },
   "scripts": {
     "start": "export NODE_MONGO_URL=mongodb://localhost:27017/data_new||set NODE_MONGO_URL=mongodb://localhost:27017/data_new&&node index.js"

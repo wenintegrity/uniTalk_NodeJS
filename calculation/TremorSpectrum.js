@@ -41,7 +41,7 @@ class TremorSpectrum {
 
     this.divisionQuartOnMaxFftMag = this.quartileFftMag_22_635 / this.max.fftMag
     this.division_q3_average = this.quartileFftMag_22_635 / this.average.d22_635
-    this.objSolfg = this.getArrSolfeggio(arr.fftMag)
+    this.objSolfg = this.getArrSolfeggio(arr.filteredFFTMag)
 
     this.mixVH_Hz_ofEnvir = this.objSolfg.mixSolft / this.getAverageValue(arr.fftMag.slice(360, 461))
     /* ---------------   /head file excel №1 ---------------- */
@@ -102,17 +102,17 @@ class TremorSpectrum {
 
     this.colSum = {}
     this.colSum.raw = this.getColSum(this.objColors, 'valueFftMag')
-    this.colSum.normalized = this.getColSum(this.objColors, 'valueFftNorm')
+    this.colSum.normalized = this.getColSumDependent(this.colSum.raw)
     this.colSum.smoothed = this.getColSum(this.objColors, 'valueFftMagSmoothed')
     this.colSum.smthNormed = this.getColSum(this.objColors, 'valueFftMagNormalizedSmth')
-    this.colSum.smthNorm_1 = this.getArrSumSmthNorm_1(this.colSum.smthNormed)
+    this.colSum.smthNorm_1 = this.getColSumDependent(this.colSum.smthNormed)
 
     this.totalMusic = {}
-    this.totalMusic.raw = this.colSum.raw.avgNotesMusic
-    this.totalMusic.smth = this.colSum.smthNormed.avgNotesMusic
-    this.totalMusic.rawSmth = this.totalMusic.raw - this.totalMusic.smth
+    this.totalMusic.raw = this.colSum.raw.sumNotesMusic
+    this.totalMusic.smth = this.colSum.smoothed.sumNotesMusic
+    this.totalMusic.rawSmth = Math.abs(this.totalMusic.raw - this.totalMusic.smth)
     this.totalMusic.stDevRawTM = this.colSum.raw.stDevNotesMusic
-    this.totalMusic.stDevSmthTM = this.colSum.smthNormed.stDevNotesMusic
+    this.totalMusic.stDevSmthTM = this.colSum.smoothed.stDevNotesMusic
 
     let lowerAndHigherFreq_1 = this.getLowerAndHigherFreq(arr.fftFreq, arr.fftMag, arr.fftMagNormalized, Math.pow(2, (1 / 12)))
     let lowerAndHigherFreq_2 = this.getLowerAndHigherFreq(arr.fftFreq, arr.fftMag, arr.fftMagNormalized, Math.pow(2, (1 / 11.5)))
@@ -123,11 +123,11 @@ class TremorSpectrum {
     arr.lowerAndHigherFreq_3 = lowerAndHigherFreq_3.arr
 
     this.musicalHarmonics = {}
-    this.musicalHarmonics.averageHarmonicPower = lowerAndHigherFreq_1.average
+    this.musicalHarmonics.OneDivideAverageHarmonicPower = 1 / lowerAndHigherFreq_1.average
     this.musicalHarmonics.averageInHarmonicPower = lowerAndHigherFreq_2.average
-    this.musicalHarmonics.harmonikDevideInharmonikPower = lowerAndHigherFreq_1.average / lowerAndHigherFreq_2.average
+    this.musicalHarmonics.noFormantDivideFormantHarmonicPower = lowerAndHigherFreq_2.average / lowerAndHigherFreq_1.average
     this.musicalHarmonics.averageAllFftPower = this.average.fftMag
-    this.musicalHarmonics.harmonicDevideAllFftPower = lowerAndHigherFreq_1.average / this.average.fftMag
+    this.musicalHarmonics.averageFormantMinusAllFftPower = lowerAndHigherFreq_1.average - this.average.fftMag
 
     this.allFftData = {}
     this.allFftData.maxFrequencyHz = arr.fftFreq[arr.fftMag.indexOf(Math.max.apply(null, arr.fftMag.slice(1)))]
@@ -136,9 +136,9 @@ class TremorSpectrum {
     this.allFftData.powerOfMaxRawFrequency = this.max.fftMag
     this.allFftData.maxPowerSmth = Math.max.apply(null, arr.fftMagRawSmoothed.slice(1))
     this.allFftData.maxPowerSmthNr = Math.max.apply(null, arr.fftMagNormalizedSmoothed.slice(1))
-    this.allFftData.averagePower = this.average.fftMag
-    this.allFftData.averagePowerSmth = this.getAverageValue(arr.fftMagRawSmoothed.slice(1))
-    this.allFftData.averagePowerSmthNr = this.getAverageValue(arr.fftMagNormalizedSmoothed.slice(1))
+    this.allFftData.averagePower = this.getAverageValue(arr.fftMag.slice(1, 430))
+    this.allFftData.averagePowerSmth = this.getAverageValue(arr.fftMagRawSmoothed.slice(1, 430))
+    this.allFftData.averagePowerSmthNr = this.getAverageValue(arr.fftMagNormalizedSmoothed.slice(1, 430))
 
     let maxAndMinPowerNote = this.getPowerNoteName(this.colSum.raw)
     this.maxPowerNote = maxAndMinPowerNote.max
@@ -158,6 +158,26 @@ class TremorSpectrum {
 
       this.mainTable.push(row)
     }
+  }
+
+  getColSumDependent (colSum) {
+    let result = {arr: []}
+    let arrForCalc = []
+
+    result.arr = colSum.arr.map(element => {
+      arrForCalc.push(element.value / colSum.max)
+
+      return {
+        name: element.name,
+        value: element.value / colSum.max
+      }
+    })
+
+    result.sumNotesMusic = mathjs.sum(arrForCalc)
+    result.stDevNotesMusic = this.getStanDotClone(arrForCalc)
+    result.max = Math.max.apply(null, arrForCalc)
+
+    return result
   }
 
   getMinValueWithoutNull (arr) {
@@ -245,8 +265,9 @@ class TremorSpectrum {
       arr.push(result.colors[color])
     }
 
-    result.avgNotesMusic = this.getAverageValue(arr)
+    result.sumNotesMusic = mathjs.sum(arr)
     result.stDevNotesMusic = this.getStanDotClone(arr)
+    result.max = Math.max.apply(null, arr)
 
     return result
   }
@@ -375,37 +396,8 @@ class TremorSpectrum {
         }
       })
 
-      return mathjs.mean(arrForAverage)
+      return this.getAverageValue(arrForAverage)
     })()
-
-    return result
-  }
-
-  getArrSumSmthNorm_1 (smthNorm) {
-    let maxSmthNorm = (() => {
-      let val = 0
-
-      smthNorm.arr.forEach(element => {
-        val >= element.value ? null : val = element.value
-      })
-
-      return val
-    })()
-
-    let arrResult = []
-    let result = {}
-    result.arr = []
-
-    smthNorm.arr.forEach((element) => {
-      result.arr.push({
-        name: element.name,
-        value: element.value / maxSmthNorm
-      })
-      arrResult.push(element.value)
-    })
-
-    result.avgNotesMusic = mathjs.mean(arrResult)
-    result.stDevNotesMusic = this.getStanDotClone(arrResult)
 
     return result
   }
@@ -473,16 +465,16 @@ class TremorSpectrum {
     return arrResult
   }
 
-  getArrSolfeggio (arrFftMag) {
+  getArrSolfeggio (arr) {
     let objResult = {}
 
-    objResult.sideralDay = (arrFftMag[25] + arrFftMag[50] + arrFftMag[199] + arrFftMag[398]) / 4
-    objResult.liberating = arrFftMag[101]
-    objResult.breakemo = arrFftMag[107]
-    objResult.reprLove = arrFftMag[135]
-    objResult.connect = arrFftMag[163]
-    objResult.intuition = arrFftMag[189]
-    objResult.spirorder = arrFftMag[218]
+    objResult.sideralDay = this.getAverageValue([12, 25, 50, 100, 199, 398].map(index => arr[index]))
+    objResult.liberating = this.getAverageValue([13, 51, 101, 202, 405].map(index => arr[index]))
+    objResult.breakemo = this.getAverageValue([27, 53, 107, 213, 426].map(index => arr[index]))
+    objResult.reprLove = this.getAverageValue([34, 67, 135, 270, 539].map(index => arr[index]))
+    objResult.connect = this.getAverageValue([10, 20, 46, 82, 163, 326].map(index => arr[index]))
+    objResult.intuition = this.getAverageValue([12, 24, 47, 95, 189, 379].map(index => arr[index]))
+    objResult.spirorder = this.getAverageValue([14, 27, 54, 109, 218, 435].map(index => arr[index]))
     objResult.mixSolft = (objResult.liberating + objResult.breakemo + objResult.reprLove + objResult.connect + objResult.intuition + objResult.spirorder) / 6
 
     return objResult
