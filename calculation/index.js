@@ -53,9 +53,9 @@ calculation.getData = (body) => {
         'Other',
         'Other',
         'Other',
-        [ts_1.norm.avgPowerHigherOctaves, ts_2.norm.avgPowerHigherOctaves, ts_3.norm.avgPowerHigherOctaves],
+        [ts_1.norm.avgPowerHigherOctavesRaw, ts_2.norm.avgPowerHigherOctavesRaw, ts_3.norm.avgPowerHigherOctavesRaw],
         [ts_1.norm.avgPowerDifScale, ts_2.norm.avgPowerDifScale, ts_3.norm.avgPowerDifScale],
-        [ts_1.norm.avgPowerDifDifNo, ts_2.norm.avgPowerDifDifNo, ts_3.norm.avgPowerDifDifNo],
+        [ts_1.normScaled.avgPowerDifDifNo, ts_2.normScaled.avgPowerDifDifNo, ts_3.normScaled.avgPowerDifDifNo],
         [ts_1.norm.avgPowerDifDifNoMore_1, ts_2.norm.avgPowerDifDifNoMore_1, ts_3.norm.avgPowerDifDifNoMore_1]
       ))
 
