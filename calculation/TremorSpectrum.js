@@ -129,16 +129,36 @@ class TremorSpectrum {
     this.musicalHarmonics.averageAllFftPower = this.average.fftMag
     this.musicalHarmonics.averageFormantMinusAllFftPower = lowerAndHigherFreq_1.average - this.average.fftMag
 
-    this.allFftData = {}
-    this.allFftData.maxFrequencyHz = arr.fftFreq[arr.fftMag.indexOf(Math.max.apply(null, arr.fftMag.slice(1)))]
-    this.allFftData.maxFrequencySmth = arr.fftFreq[arr.fftMagRawSmoothed.indexOf(Math.max.apply(null, arr.fftMagRawSmoothed))]
-    this.allFftData.maxFrequencySmthNr = arr.fftFreq[arr.fftMagNormalizedSmoothed.indexOf(Math.max.apply(null, arr.fftMagNormalizedSmoothed))]
-    this.allFftData.powerOfMaxRawFrequency = this.max.fftMag
-    this.allFftData.maxPowerSmth = Math.max.apply(null, arr.fftMagRawSmoothed.slice(1))
-    this.allFftData.maxPowerSmthNr = Math.max.apply(null, arr.fftMagNormalizedSmoothed.slice(1))
-    this.allFftData.averagePower = this.getAverageValue(arr.fftMag.slice(1, 430))
-    this.allFftData.averagePowerSmth = this.getAverageValue(arr.fftMagRawSmoothed.slice(1, 430))
-    this.allFftData.averagePowerSmthNr = this.getAverageValue(arr.fftMagNormalizedSmoothed.slice(1, 430))
+    this.allFftData = {raw: {}, smth: {}, smthNr: {}}
+    this.allFftData.raw.maxFrequency = arr.fftFreq[arr.fftMag.indexOf(Math.max.apply(null, arr.fftMag.slice(1)))]
+    this.allFftData.smth.maxFrequency = arr.fftFreq[arr.fftMagRawSmoothed.indexOf(Math.max.apply(null, arr.fftMagRawSmoothed))]
+    this.allFftData.smthNr.maxFrequency = arr.fftFreq[arr.fftMagNormalizedSmoothed.indexOf(Math.max.apply(null, arr.fftMagNormalizedSmoothed))]
+    this.allFftData.raw.maxPower = this.max.fftMag
+    this.allFftData.smth.maxPower = Math.max.apply(null, arr.fftMagRawSmoothed.slice(1))
+    this.allFftData.smthNr.maxPower = Math.max.apply(null, arr.fftMagNormalizedSmoothed.slice(1))
+    this.allFftData.raw.averagePower = this.getAverageValue(arr.fftMag.slice(1, 430))
+    this.allFftData.smth.averagePower = this.getAverageValue(arr.fftMagRawSmoothed.slice(1, 430))
+    this.allFftData.smthNr.averagePower = this.getAverageValue(arr.fftMagNormalizedSmoothed.slice(1, 430))
+
+    this.allFftData.raw.maxNote = this.getNoteForAllFFTDAta(
+      arr.fftMag, arr.fftNote, Math.max.apply(null, arr.fftMag.slice(1, 430))
+    )
+    this.allFftData.smth.maxNote = this.getNoteForAllFFTDAta(
+      arr.fftMagRawSmoothed, arr.fftNote, Math.max.apply(null, arr.fftMagRawSmoothed.slice(1, 430))
+    )
+    this.allFftData.smthNr.maxNote = this.getNoteForAllFFTDAta(
+      arr.fftMagNormalizedSmoothed, arr.fftNote, Math.max.apply(null, arr.fftMagNormalizedSmoothed.slice(1, 430))
+    )
+
+    this.allFftData.raw.minNote = this.getNoteForAllFFTDAta(
+      arr.fftMag, arr.fftNote, Math.min.apply(null, arr.fftMag.slice(1, 430))
+    )
+    this.allFftData.smth.minNote = this.getNoteForAllFFTDAta(
+      arr.fftMagRawSmoothed, arr.fftNote, Math.min.apply(null, arr.fftMagRawSmoothed.slice(7, 430))
+    )
+    this.allFftData.smthNr.minNote = this.getNoteForAllFFTDAta(
+      arr.fftMagNormalizedSmoothed, arr.fftNote, Math.min.apply(null, arr.fftMagNormalizedSmoothed.slice(7, 430))
+    )
 
     let maxAndMinPowerNote = this.getPowerNoteName(this.colSum.raw)
     this.maxPowerNote = maxAndMinPowerNote.max
@@ -158,6 +178,10 @@ class TremorSpectrum {
 
       this.mainTable.push(row)
     }
+  }
+
+  getNoteForAllFFTDAta (arrSearch, arrSearchResult, value) {
+    return arrSearchResult.slice(1, 430)[arrSearch.slice(1, 430).indexOf(value)]
   }
 
   getColSumDependent (colSum) {
@@ -230,9 +254,7 @@ class TremorSpectrum {
   }
 
   getColSum (objColor, valueName) {
-    let result = {}
-    result.colors = {}
-    result.arr = []
+    let result = {colors: {}, arr: []}
     let arrForResult = {}
     let arr = []
 
