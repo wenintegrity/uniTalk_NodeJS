@@ -16,8 +16,8 @@ class TremorSpectrum {
 
     arr.outMicM50 = arrOutMicM50
     arr.fftComplex = fft(arrOutMicM50)
-    arr.fftFreq = this.getArrFftFreq()
-    arr.fftMag = this.getArrFftMag(arr.fftFreq, arr.fftComplex)
+    arr.fftFreq = this.arrFftFreq = this.getArrFftFreq()
+    arr.fftMag = this.arrFftMag = this.getArrFftMag(arr.fftFreq, arr.fftComplex)
     this.quartileFftMag_22_635 = mathjs.quantileSeq(arr.fftMag.slice(1, 615), 0.75)
     arr.filteredFFTMag = this.getFilteredFFTMag(arr.fftMag, this.quartileFftMag_22_635)
     arr.constants = constants
@@ -49,7 +49,7 @@ class TremorSpectrum {
     this.max.filteredFFTMag = Math.max.apply(null, arr.filteredFFTMag.slice(1))
     this.min.filteredFFTMag = this.getMinValueWithoutNull(arr.filteredFFTMag.slice(1))
 
-    arr.freqMagScaleNormalizedData = this.getFreqMagScaleNormalizedData(arr.filteredFFTMag, this.min.filteredFFTMag, this.max.filteredFFTMag)
+    arr.freqMagScaleNormalizedData = this.arrFreqMagScaleNormalizedData = this.getFreqMagScaleNormalizedData(arr.filteredFFTMag, this.min.filteredFFTMag, this.max.filteredFFTMag)
     arr.constAbsDifHarmoniNormalLess_1 = this.getArrDivElOnVal(arr.constABSDifHarmoniLess_1, this.max.consts)
     arr.constAbsDifHarmoniNormalMore_1 = this.getArrDivElOnVal(arr.constABSDifHarmoniMore_1, this.max.consts)
     arr.freqMagNormalMore_1 = this.getArrDivElOnVal(arr.freqMagInDifMore_1, this.average.freqMagInDifMore_1)

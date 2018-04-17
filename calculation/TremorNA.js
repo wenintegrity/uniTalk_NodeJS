@@ -1,11 +1,11 @@
 class TremorNA {
-  constructor (table_name, title_1, title_2, title_3, ...parametrs) {
+  constructor (table_name, ...parametrs) {
     this.table_name = table_name
 
     this.cells = []
 
     parametrs.forEach(element => {
-      this.cells.push(this.getData(title_1, title_2, title_3, element[0], element[1], element[2]))
+      this.cells.push(this.getData(element[0], element[1], element[2]))
     })
 
     this.result = [
@@ -14,10 +14,10 @@ class TremorNA {
     ]
   }
 
-  getData (title_1, title_2, title_3, data_1, data_2, data_3) {
+  getData (data_1, data_2, data_3) {
     return [
       {
-        title: title_3,
+        title: null,
         line9: {
           value: data_3
         },
@@ -26,7 +26,7 @@ class TremorNA {
         }
       },
       {
-        title: title_2,
+        title: null,
         line9: {
           value: data_2
         },
@@ -35,7 +35,7 @@ class TremorNA {
         }
       },
       {
-        title: title_1,
+        title: null,
         line9: {
           value: data_1
         },

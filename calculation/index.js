@@ -3,7 +3,6 @@ const TremorSpectrum = require('./TremorSpectrum')
 const TremorSpectrum_part_2 = require('./TremorSpectrum_part_2')
 const TremorNA = require('./TremorNA')
 const timeData = require('../data/timeData')
-const constants = require('../data/constants')
 const headers_TremorSpectrum = require('../data/headers_TremorSpectrum')
 
 let calculation = {}
@@ -21,9 +20,9 @@ calculation.getData = (body) => {
       let ts_2 = data.tremorSpectrum_2 = new TremorSpectrum(data.data_2.arrOutMicM50)
       let ts_3 = data.tremorSpectrum_3 = new TremorSpectrum(data.data_3.arrOutMicM50)
 
-      // data.tremorSpectrum_1_part_2 = new TremorSpectrum_part_2(constants, ts_1.arrFftFreq, ts_1.arrFreqMagScaleNormalizedData)
-      // data.tremorSpectrum_2_part_2 = new TremorSpectrum_part_2(constants, ts_2.arrFftFreq, ts_2.arrFreqMagScaleNormalizedData)
-      // data.tremorSpectrum_3_part_2 = new TremorSpectrum_part_2(constants, ts_3.arrFftFreq, ts_3.arrFreqMagScaleNormalizedData)
+      data.tremorSpectrum_1_part_2 = new TremorSpectrum_part_2(ts_1.arrFftFreq, ts_1.arrFreqMagScaleNormalizedData, ts_1.arrFftMag)
+      data.tremorSpectrum_2_part_2 = new TremorSpectrum_part_2(ts_2.arrFftFreq, ts_2.arrFreqMagScaleNormalizedData, ts_2.arrFftMag)
+      data.tremorSpectrum_3_part_2 = new TremorSpectrum_part_2(ts_3.arrFftFreq, ts_3.arrFreqMagScaleNormalizedData, ts_3.arrFftMag)
 
       data.rawSmooth = {
         ts1: ts_1.colSum.raw.sumNotesMusic - ts_1.colSum.smoothed.sumNotesMusic,
@@ -36,9 +35,6 @@ calculation.getData = (body) => {
       data.tremorNegentropicAlgorithm = []
       data.tremorNegentropicAlgorithm.push(new TremorNA(
         'Variability of Raw FFT Spectrum',
-        'RHYTHMIC Spectral (EARTH VIB)',
-        'RHYTHMIC Spectral (2H PRE)',
-        'RHYTHMIC Spectral (2H AFTER)',
         [ts_1.average.d22_635, ts_2.average.d22_635, ts_3.average.d22_635],
         [ts_1.average.filteredFFTMag, ts_2.average.filteredFFTMag, ts_3.average.filteredFFTMag],
         [
@@ -49,10 +45,7 @@ calculation.getData = (body) => {
       ))
 
       data.tremorNegentropicAlgorithm.push(new TremorNA(
-        'TableName',
-        'Other',
-        'Other',
-        'Other',
+        '7.83Hz & Higher Octaves in FFT Ranges (Normalized Scaled to proximity to 7.83 Hz Eq Temp Musical Notes)',
         [ts_1.norm.avgPowerHigherOctavesRaw, ts_2.norm.avgPowerHigherOctavesRaw, ts_3.norm.avgPowerHigherOctavesRaw],
         [ts_1.norm.avgPowerDifScale, ts_2.norm.avgPowerDifScale, ts_3.norm.avgPowerDifScale],
         [ts_1.normScaled.avgPowerDifDifNo, ts_2.normScaled.avgPowerDifDifNo, ts_3.normScaled.avgPowerDifDifNo],
@@ -60,18 +53,12 @@ calculation.getData = (body) => {
       ))
 
       data.tremorNegentropicAlgorithm.push(new TremorNA(
-        'TableName',
-        'Other',
-        'Other',
-        'Other',
+        'Solfeggio Scale In Raw FFT ',
         [ts_1.objSolfg.mixSolft, ts_2.objSolfg.mixSolft, ts_3.objSolfg.mixSolft]
       ))
 
       data.tremorNegentropicAlgorithm.push(new TremorNA(
-        'TableName',
-        'Other',
-        'Other',
-        'Other',
+        'Single Solfeggio Notes in Raw FFT',
         [ts_1.objSolfg.liberating, ts_2.objSolfg.liberating, ts_3.objSolfg.liberating],
         [ts_1.objSolfg.breakemo, ts_2.objSolfg.breakemo, ts_3.objSolfg.breakemo],
         [ts_1.objSolfg.reprLove, ts_2.objSolfg.reprLove, ts_3.objSolfg.reprLove],
@@ -81,19 +68,20 @@ calculation.getData = (body) => {
       ))
 
       data.tremorNegentropicAlgorithm.push(new TremorNA(
-        'TableName',
-        'Other',
-        'Other',
-        'Other',
+        'FFT (7.83 Hz Sampling) Power Raw & Normalized Data',
         [ts_1.allFftData.averagePower, ts_2.allFftData.averagePower, ts_3.allFftData.averagePower],
         [ts_1.allFftData.averagePowerSmth, ts_2.allFftData.averagePowerSmth, ts_3.allFftData.averagePowerSmth]
       ))
 
       data.tremorNegentropicAlgorithm.push(new TremorNA(
+        'Formant 1 &2 shift and Inter F interval (Dif Data)',
+        [],
+        [],
+        []
+      ))
+
+      data.tremorNegentropicAlgorithm.push(new TremorNA(
         'TableName',
-        'Other',
-        'Other',
-        'Other',
         [ts_1.musicalHarmonics.OneDivideAverageHarmonicPower, ts_2.musicalHarmonics.OneDivideAverageHarmonicPower, ts_3.musicalHarmonics.OneDivideAverageHarmonicPower],
         [ts_1.musicalHarmonics.noFormantDivideFormantHarmonicPower, ts_2.musicalHarmonics.noFormantDivideFormantHarmonicPower, ts_3.allFftData.averagePowerSmth],
         [
@@ -103,13 +91,26 @@ calculation.getData = (body) => {
       ))
 
       data.tremorNegentropicAlgorithm.push(new TremorNA(
-        'TableName',
-        'Other',
-        'Other',
-        'Other',
+        'Summation Harmonic Notes 7.83 Hz Equal Temp Musical Scale',
         [ts_1.totalMusic.raw, ts_2.totalMusic.raw, ts_3.totalMusic.raw],
         [ts_1.totalMusic.smth, ts_2.totalMusic.smth, ts_3.totalMusic.smth]
       ))
+
+      data.tremorNegentropicAlgorithm.push({
+        table_name: 'Max/Min Pwr Notes in CUMULATIVE FFT Music FORMANT',
+        cells: [
+          [
+            {line9: {value: ts_3.maxPowerNote}, line10: {value: ts_3.allFftData.raw.maxNote}, title: 'Maximal Power Note Raw Data'},
+            {line9: {value: ts_2.maxPowerNote}, line10: {value: ts_2.allFftData.raw.maxNote}, title: 'Maximal Power Note Raw Data'},
+            {line9: {value: ts_1.maxPowerNote}, line10: {value: ts_1.allFftData.raw.maxNote}, title: 'Maximal Power Note Raw Data'}
+          ],
+          [
+            {line9: {value: ts_3.minPowerNote}, line10: {value: ts_3.allFftData.raw.minNote}, title: 'Minimal Power Note Raw Data'},
+            {line9: {value: ts_2.minPowerNote}, line10: {value: ts_2.allFftData.raw.minNote}, title: 'Minimal Power Note Raw Data'},
+            {line9: {value: ts_1.minPowerNote}, line10: {value: ts_1.allFftData.raw.minNote}, title: 'Minimal Power Note Raw Data'}
+          ]
+        ]
+      })
 
       // data.result = {
       //   result_1: getResult(0),
