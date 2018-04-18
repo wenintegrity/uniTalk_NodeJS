@@ -3,47 +3,89 @@ const mathjs = require('mathjs')
 
 class TremorSpectrum_part_2 {
   constructor (arrFftFreq, arrFreqMagScaleNormalizedData, arrFftMag) {
-    this.table_1 = {
+    this.tables = []
+    this.tables.push(this.getTable_1(arrFftFreq, arrFreqMagScaleNormalizedData))
+    this.tables.push(this.getTable(0, 4, this.tables[0].ctnt_1_Normalized.arr, this.tables[0].freqMagScaleNormalizedData.arr))
+    this.tables.push(this.getTable(0, 7, this.tables[0].ctnt_1_Normalized.arr, this.tables[0].freqMagScaleNormalizedData.arr))
+    this.tables.push(this.getTable(0, 11, this.tables[0].ctnt_1_Normalized.arr, this.tables[0].freqMagScaleNormalizedData.arr))
+
+    this.arrDiferentialFftMag = this.getarrDiferentialFftMag(arrFftMag)
+
+    this.row = {
+      peak_1: arrFftFreq.indexOf(arrFftFreq[this.arrDiferentialFftMag.indexOf(Math.max.apply(null, this.arrDiferentialFftMag))])
+    }
+
+    this.formant = {f1: this.getFormant_f1(arrFftFreq, this.arrDiferentialFftMag)}
+
+    this.row.delta_2 = this.row.peak_1 + 20
+    this.row.delta_1st_2 = this.row.peak_1 + this.row.delta_2
+    let [f2, peak_2] = this.getFormantAndPeak(arrFftFreq, this.arrDiferentialFftMag, this.row.delta_1st_2, this.row.delta_2)
+    this.formant.f2 = f2
+    this.row.peak_2 = peak_2
+
+    this.row.delta_3 = this.row.peak_2 + 20
+    this.row.delta_1st_3 = this.row.peak_1 + this.row.delta_3
+    let [f3, peak_3] = this.getFormantAndPeak(arrFftFreq, this.arrDiferentialFftMag, this.row.delta_1st_3, this.row.delta_3)
+    this.formant.f3 = f3
+    this.row.peak_3 = peak_3
+
+    this.row.delta_4 = this.row.peak_3 + 20
+    this.row.delta_1st_4 = this.row.peak_1 + this.row.delta_4
+    let [f4, peak_4] = this.getFormantAndPeak(arrFftFreq, this.arrDiferentialFftMag, this.row.delta_1st_4, this.row.delta_4)
+    this.formant.f3 = f4
+    this.row.peak_3 = peak_4
+
+    this.formDif = {
+      f2_f1: this.formant.f2 - this.formant.f1,
+      f3_f2: this.formant.f3 - this.formant.f2,
+      f4_f3: this.formant.f4 - this.formant.f3
+    }
+
+    this.medianF = mathjs.median(this.formDif.f2_f1, this.formDif.f3_f2, this.formDif.f4_f3)
+  }
+
+  getTable_1 (arrFftFreq, arrFreqMagScaleNormalizedData) {
+    let result = {
       constants: {arr: constants_2},
       fftFreq: {arr: arrFftFreq.slice(1)},
       freqMagScaleNormalizedData: {arr: arrFreqMagScaleNormalizedData.slice(1)}
     }
 
-    this.getMinCountMax(this.table_1.constants)
-    this.getMinCountMax(this.table_1.fftFreq)
-    this.getMinCountMax(this.table_1.freqMagScaleNormalizedData)
+    this.getMinCountMax(result.constants)
+    this.getMinCountMax(result.fftFreq)
+    this.getMinCountMax(result.freqMagScaleNormalizedData)
 
-    this.table_1.rectified = {arr: this.getArrCtntDifFFT_MusicHarmoniRectified(this.table_1.constants.arr, this.table_1.constants.min)}
-    this.getMinCountMax(this.table_1.rectified)
+    result.rectified = {arr: this.getArrCtntDifFFT_MusicHarmoniRectified(result.constants.arr, result.constants.min)}
+    this.getMinCountMax(result.rectified)
 
-    this.table_1.normalized = {arr: this.getArrCtntDifFFT_MusicHarmoniNormalized(this.table_1.rectified.arr, this.table_1.rectified.max)}
-    this.getMinCountMax(this.table_1.normalized)
+    result.normalized = {arr: this.getArrCtntDifFFT_MusicHarmoniNormalized(result.rectified.arr, result.rectified.max)}
+    this.getMinCountMax(result.normalized)
 
-    this.table_1.ctnt_1_Normalized = {arr: this.getArrCtnt_1_DifFFT_MusicHarmoniNormalized(this.table_1.normalized.arr)}
-    this.getMinCountMax(this.table_1.ctnt_1_Normalized)
+    result.ctnt_1_Normalized = {arr: this.getArrCtnt_1_DifFFT_MusicHarmoniNormalized(result.normalized.arr)}
+    this.getMinCountMax(result.ctnt_1_Normalized)
 
-    this.table_2 = this.getTable(0, 4, this.table_1.ctnt_1_Normalized.arr, this.table_1.freqMagScaleNormalizedData.arr)
-    this.table_3 = this.getTable(0, 7, this.table_1.ctnt_1_Normalized.arr, this.table_1.freqMagScaleNormalizedData.arr)
-    this.table_4 = this.getTable(0, 11, this.table_1.ctnt_1_Normalized.arr, this.table_1.freqMagScaleNormalizedData.arr)
+    result.correlation = this.getCorrelation(result.freqMagScaleNormalizedData.arr.slice(0, 429), result.ctnt_1_Normalized.arr.slice(0, 429))
 
-    this.arrDiferentialFftMag = this.getarrDiferentialFftMag(arrFftMag)
+    return result
+  }
 
-    console.log(arrFftFreq[this.arrDiferentialFftMag.indexOf(Math.max.apply(null, this.arrDiferentialFftMag))])
-    this.row = {
-      peak_1: arrFftFreq.indexOf(arrFftFreq[this.arrDiferentialFftMag.indexOf(Math.max.apply(null, this.arrDiferentialFftMag))])
-    }
+  getFormantAndPeak (arrFftFreq, arrDiferentialFftMag, delta_1st, delta) {
+    let arrDiferential_slice = arrDiferentialFftMag.slice(delta, delta_1st)
+    let arrFftFreq_slice = arrFftFreq.slice(delta, delta_1st)
+    let rowMax = arrDiferential_slice.indexOf(Math.max.apply(null, arrDiferential_slice))
 
-    this.row.delta_2 = this.row.peak_1 + 20
-    this.row.delta_1st_2 = this.row.peak_1 + this.row.delta_2
+    return [
+      arrFftFreq_slice[rowMax],
+      arrFftFreq.indexOf(arrFftFreq_slice[rowMax])
+    ]
+  }
 
-    let arrFftFreqSlice = arrFftFreq.slice(this.row.delta_2, this.row.delta_1st_2)
-    this.row.peak_2 = arrFftFreqSlice[arrFftFreqSlice.indexOf(Math.max.apply(null, arrFftFreqSlice))]
-
-    console.log('')
+  getFormant_f1 (arrFftFreq, arrDiferentialFftMag) {
+    return arrFftFreq[arrDiferentialFftMag.indexOf(Math.max.apply(null, arrDiferentialFftMag.slice(1, 430)))]
   }
 
   getarrDiferentialFftMag (arrFftMag) {
-    let arrResult = []
+    let arrResult = [null]
 
     for (let i = 1; i <= arrFftMag.length - 1; i++) {
       if (i !== arrFftMag.length - 1) {
@@ -64,8 +106,6 @@ class TremorSpectrum_part_2 {
     result.dataSmoothed = this.getArrAvaregeValues(start, step, arr_2)
     result.dataSmoothNrm = this.getDivisionOfDifferenceValues(result.dataSmoothed)
 
-    result.rectifiedCorr = result.normSmooth[16] - result.smoothNorm[16] + 1
-
     result.correlation = this.getCorrelation(result.smoothNorm.arr.slice(step - 1, 429), result.dataSmoothNrm.arr.slice(step - 1, 429))
 
     return result
@@ -75,7 +115,7 @@ class TremorSpectrum_part_2 {
     let x = [], y = [], xy = [], x2 = [], y2 = []
 
     for (let i = 0; i <= arr_2.length - 1; i++) {
-      if (arr_2[i] !== null) {
+      if (arr_2[i] !== null && arr_1[i] !== null) {
         x.push(arr_1[i])
         y.push(arr_2[i])
       }

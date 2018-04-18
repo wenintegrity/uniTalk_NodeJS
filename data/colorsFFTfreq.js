@@ -1,6 +1,6 @@
 module.exports = [
   {
-    moreOrEqually: 122,
+    moreOrEqually: 118,
     less: 125,
     name: 'B2'
   },

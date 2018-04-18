@@ -20,6 +20,10 @@ module.exports = [
     nameCol: 'Constant Abs Dif of 7.83 Hz Harmoni'
   },
   {
+    name: 'filteredFFTMag',
+    nameCol: 'Filtered FFT Mag 7.83 Hz <0.001 Raw Data'
+  },
+  {
     name: 'freqMagScaleNormalizedData',
     nameCol: 'Freq Mag 7.83  Hz Scale Normalized (0-1) Data'
   },

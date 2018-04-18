@@ -379,7 +379,7 @@ class TremorSpectrum {
       })
     }
 
-    for (let i = 38; result.arr.length < 73; i++) {
+    for (let i = 38; result.arr.length < 101; i++) {
       let freq = result.arr[i].freq * constDelta
 
       result.arr.push({

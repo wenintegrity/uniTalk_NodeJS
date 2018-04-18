@@ -1,6 +1,7 @@
 const Data = require('./Data')
 const TremorSpectrum = require('./TremorSpectrum')
 const TremorSpectrum_part_2 = require('./TremorSpectrum_part_2')
+  const tremorSpectrum_part_3 = require('./TremorSpectrum_part_3')
 const TremorNA = require('./TremorNA')
 const timeData = require('../data/timeData')
 const headers_TremorSpectrum = require('../data/headers_TremorSpectrum')
@@ -20,15 +21,11 @@ calculation.getData = (body) => {
       let ts_2 = data.tremorSpectrum_2 = new TremorSpectrum(data.data_2.arrOutMicM50)
       let ts_3 = data.tremorSpectrum_3 = new TremorSpectrum(data.data_3.arrOutMicM50)
 
-      data.tremorSpectrum_1_part_2 = new TremorSpectrum_part_2(ts_1.arrFftFreq, ts_1.arrFreqMagScaleNormalizedData, ts_1.arrFftMag)
-      data.tremorSpectrum_2_part_2 = new TremorSpectrum_part_2(ts_2.arrFftFreq, ts_2.arrFreqMagScaleNormalizedData, ts_2.arrFftMag)
-      data.tremorSpectrum_3_part_2 = new TremorSpectrum_part_2(ts_3.arrFftFreq, ts_3.arrFreqMagScaleNormalizedData, ts_3.arrFftMag)
+      let ts_1_2 = data.tremorSpectrum_1_part_2 = new TremorSpectrum_part_2(ts_1.arrFftFreq, ts_1.arrFreqMagScaleNormalizedData, ts_1.arrFftMag)
+      let ts_2_2 = data.tremorSpectrum_2_part_2 = new TremorSpectrum_part_2(ts_2.arrFftFreq, ts_2.arrFreqMagScaleNormalizedData, ts_2.arrFftMag)
+      let ts_3_2 = data.tremorSpectrum_3_part_2 = new TremorSpectrum_part_2(ts_3.arrFftFreq, ts_3.arrFreqMagScaleNormalizedData, ts_3.arrFftMag)
 
-      data.rawSmooth = {
-        ts1: ts_1.colSum.raw.sumNotesMusic - ts_1.colSum.smoothed.sumNotesMusic,
-        ts2: ts_2.colSum.raw.sumNotesMusic - ts_2.colSum.smoothed.sumNotesMusic,
-        ts3: ts_3.colSum.raw.sumNotesMusic - ts_3.colSum.smoothed.sumNotesMusic
-      }
+      tremorSpectrum_part_3(ts_1_2, ts_2_2, ts_3_2)
 
       data.headers_tremorSpectrum = headers_TremorSpectrum
 
@@ -69,21 +66,21 @@ calculation.getData = (body) => {
 
       data.tremorNegentropicAlgorithm.push(new TremorNA(
         'FFT (7.83 Hz Sampling) Power Raw & Normalized Data',
-        [ts_1.allFftData.averagePower, ts_2.allFftData.averagePower, ts_3.allFftData.averagePower],
-        [ts_1.allFftData.averagePowerSmth, ts_2.allFftData.averagePowerSmth, ts_3.allFftData.averagePowerSmth]
+        [ts_1.allFftData.raw.averagePower, ts_2.allFftData.raw.averagePower, ts_3.allFftData.raw.averagePower],
+        [ts_1.allFftData.smth.averagePower, ts_2.allFftData.smth.averagePower, ts_3.allFftData.smth.averagePower]
       ))
 
       data.tremorNegentropicAlgorithm.push(new TremorNA(
         'Formant 1 &2 shift and Inter F interval (Dif Data)',
-        [],
-        [],
-        []
+        [ts_1_2.formant.f1, ts_2_2.formant.f1, ts_3_2.formant.f1],
+        [ts_1_2.formant.f2, ts_2_2.formant.f2, ts_3_2.formant.f2]
+        //[ts_1_2.medianF, ts_3_2.medianF, ts_3_2.medianF]
       ))
 
       data.tremorNegentropicAlgorithm.push(new TremorNA(
         'TableName',
         [ts_1.musicalHarmonics.OneDivideAverageHarmonicPower, ts_2.musicalHarmonics.OneDivideAverageHarmonicPower, ts_3.musicalHarmonics.OneDivideAverageHarmonicPower],
-        [ts_1.musicalHarmonics.noFormantDivideFormantHarmonicPower, ts_2.musicalHarmonics.noFormantDivideFormantHarmonicPower, ts_3.allFftData.averagePowerSmth],
+        [ts_1.musicalHarmonics.noFormantDivideFormantHarmonicPower, ts_2.musicalHarmonics.noFormantDivideFormantHarmonicPower, ts_3.musicalHarmonics.noFormantDivideFormantHarmonicPower],
         [
           1 / ts_1.musicalHarmonics.averageFormantMinusAllFftPower,
           1 / ts_2.musicalHarmonics.averageFormantMinusAllFftPower,
@@ -112,16 +109,30 @@ calculation.getData = (body) => {
         ]
       })
 
-      // data.result = {
-      //   result_1: getResult(0),
-      //   result_2: getResult(1)
-      // }
+      data.tremorNegentropicAlgorithm.push(new TremorNA(
+        'Cross Correlation FFT Musical Scale (Dif) ',
+        [ts_1_2.tables[0].rectifiedCorr, ts_2_2.tables[0].rectifiedCorr, ts_3_2.tables[0].rectifiedCorr],
+        [ts_1_2.tables[1].rectifiedCorr, ts_2_2.tables[1].rectifiedCorr, ts_3_2.tables[1].rectifiedCorr]
+      ))
+
+      data.tremorNegentropicAlgorithm[data.tremorNegentropicAlgorithm.length - 1].result = [
+        data.tremorNegentropicAlgorithm[data.tremorNegentropicAlgorithm.length - 1].cells[1][0].line10.value - 100,
+        data.tremorNegentropicAlgorithm[data.tremorNegentropicAlgorithm.length - 1].cells[0][1].line10.value - 100
+      ]
+
+      data.result = {
+        result_1: getResult(0),
+        result_2: getResult(1)
+      }
 
       function getResult (index) {
-        let arrTna = data.sheet_tremorNegentropicAlgorithm
+        let arrTna = data.tremorNegentropicAlgorithm
 
-        return (arrTna[0].result[index] + arrTna[1].result[index] + ((arrTna[2].result_1[index] +
-                    arrTna[2].result_2[index]) / 2) + arrTna[5].result[index] + arrTna[6].result[index]) / 5
+        if (index === 0) {
+          return (arrTna[0].result[index] + arrTna[1].result[index] + arrTna[2].result[index] + arrTna[4].result[index] + arrTna[5].result[index] + arrTna[6].result[index] + arrTna[7].result[index] + arrTna[9].result[index]) / 8
+        } else {
+          return (arrTna[0].result[index] + arrTna[1].result[index] + arrTna[4].result[index] + arrTna[6].result[index] + arrTna[7].result[index]) / 5
+        }
       }
 
       resolve(data)
