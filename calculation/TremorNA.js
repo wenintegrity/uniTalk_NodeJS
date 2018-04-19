@@ -4,8 +4,8 @@ class TremorNA {
 
     this.cells = []
 
-    parametrs.forEach(element => {
-      this.cells.push(this.getData(element[0], element[1], element[2]))
+    parametrs.forEach(values => {
+      this.cells.push(this.getData(values))
     })
 
     this.result = [
@@ -14,33 +14,33 @@ class TremorNA {
     ]
   }
 
-  getData (data_1, data_2, data_3) {
+  getData ([value_1, value_2, value_3, title]) {
     return [
       {
-        title: null,
+        title: title,
         line9: {
-          value: data_3
+          value: value_3
         },
         line10: {
-          value: data_3 / data_2 * 100
+          value: value_3 / value_2 * 100
         }
       },
       {
-        title: null,
+        title: title,
         line9: {
-          value: data_2
+          value: value_2
         },
         line10: {
-          value: data_2 / data_1 * 100
+          value: value_2 / value_1 * 100
         }
       },
       {
-        title: null,
+        title: title,
         line9: {
-          value: data_1
+          value: value_1
         },
         line10: {
-          value: data_1 / data_1 * 100
+          value: value_1 / value_1 * 100
         }
       }
     ]
