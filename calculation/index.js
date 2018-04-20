@@ -5,6 +5,7 @@ const tremorSpectrum_part_3 = require('./TremorSpectrum_part_3')
 const TremorNA = require('./TremorNA')
 const timeData = require('../data/timeData')
 const headers_TremorSpectrum = require('../data/headers_TremorSpectrum')
+const headers_TremorSpectrum_part_2 = require('../data/headers_TremorSpectrum_part_2')
 
 let calculation = {}
 
@@ -28,6 +29,7 @@ calculation.getData = (body) => {
       tremorSpectrum_part_3(ts_1_2, ts_2_2, ts_3_2)
 
       data.headers_tremorSpectrum = headers_TremorSpectrum
+      data.headers_tremorSpectrum_part_2 = headers_TremorSpectrum_part_2
 
       data.tremorNegentropicAlgorithm = []
       data.tremorNegentropicAlgorithm.push(new TremorNA(
