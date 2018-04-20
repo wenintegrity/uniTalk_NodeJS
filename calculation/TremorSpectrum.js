@@ -1,86 +1,96 @@
 const fftLib = require('fft-js')
 const fft = fftLib.fft
 const complex = require('complex')
-const summary = require('summary')
+const mathjs = require('mathjs')
 const constants = require('../data/constants')
 const colorsFFTfreq = require('../data/colorsFFTfreq')
 const regExpColor = new RegExp('^(\\w{1}#?)\\d{1}$')
 const headers_TremorSpectrum = require('../data/headers_TremorSpectrum')
 
 class TremorSpectrum {
-  constructor (data) {
-    let arr = {}
-    arr.outMicM50 = data.arrOutMicM50
-    arr.fftComplex = fft(data.arrOutMicM50)
-    arr.fftFreq = this.getArrFftFreq()
-    arr.fftMag = this.getArrFftMag(arr.fftFreq, arr.fftComplex)
-    arr.constants = constants
-    this.getFreqMagAndConst(arr, constants, arr.fftMag)
-
+  constructor (arrOutMicM50) {
     this.max = {}
-    this.max.consts = Math.max.apply(null, this.getSliceArr(constants, 3, 615))
-    this.max.fftMag = Math.max.apply(null, this.getSliceArr(arr.fftMag, 1, 615))
-    this.max.freqMagLess_1 = Math.max.apply(null, this.getSliceArr(arr.freqMagInDifLess_1, 3, 365))
-    this.max.freqMag_NO = Math.max.apply(null, this.getSliceArr(arr.freqMag_NO, 3, 615))
-
+    this.min = {}
     this.average = {}
-    this.average.freqMagMore_1 = this.getAverageValue(this.getSliceArr(arr.freqMagInDifMore_1, 3, 615))
-    this.average.fftMag = this.getAverageValue(this.getSliceArr(arr.fftMag, 1, 615))
+    let arr = {}
+
+    arr.outMicM50 = arrOutMicM50
+    arr.fftComplex = fft(arrOutMicM50)
+    arr.fftFreq = this.arrFftFreq = this.getArrFftFreq()
+    arr.fftMag = this.arrFftMag = this.getArrFftMag(arr.fftFreq, arr.fftComplex)
+    this.quartileFftMag_22_635 = mathjs.quantileSeq(arr.fftMag.slice(1, 615), 0.75)
+    arr.filteredFFTMag = this.getFilteredFFTMag(arr.fftMag, this.quartileFftMag_22_635)
+    arr.constants = constants
+    this.getFreqMagAndConst(arr, constants, arr.filteredFFTMag)
+
+    this.max.consts = Math.max.apply(null, constants.slice(1, 615))
+    this.max.fftMag = Math.max.apply(null, arr.fftMag.slice(1, 615))
+    this.max.freqMagInDifMore_1 = Math.max.apply(null, arr.freqMagInDifMore_1.slice(1, 615))
+    this.max.freqMagInDifLess_1 = Math.max.apply(null, arr.freqMagInDifLess_1.slice(1, 615))
+    this.max.freqMag_NO = Math.max.apply(null, arr.freqMag_NO.slice(1, 615))
+
+    this.average.freqMagInDifMore_1 = this.getAverageValue(arr.freqMagInDifMore_1.slice(1, 615))
+    this.average.freqMagInDifLess_1 = this.getAverageValue(arr.freqMagInDifLess_1.slice(1, 615))
+    this.average.fftMag = this.getAverageValue(arr.fftMag.slice(1, 615))
 
     /* ---------------   head file excel №1 ---------------- */
-    this.average.d23_635 = summary(this.getSliceArr(arr.fftMag, 2)).mean()
-    this.stanDotClone = this.getStanDotClone(this.getSliceArr(arr.fftMag, 2, 615))
+    this.average.d22_635 = this.getAverageValue(arr.fftMag.slice(1))
+    this.stanDotClone = this.getStanDotClone(arr.fftMag.slice(1, 615))
     this.divisionAverageValuesFftMag_23_404_405_635 = this.getdivisionAverageValuesFftMag_23_404_405_635(arr.fftMag)
     this.divisionAverageValuesFftMag_23_329_329_635 = this.getdivisionAverageValuesFftMag_23_329_329_635(arr.fftMag)
-    this.quartileFftMag_23_635 = this.getQuartile(arr.fftMag, 2, 615)
-    this.divisionQuartOnMaxFftMag = this.quartileFftMag_23_635.q3 / this.quartileFftMag_23_635.max
-    this.division_q3_average = this.quartileFftMag_23_635.q3 / this.average.d23_635
-    this.objSolfg = this.getArrSolfeggio(arr.fftMag)
 
-    this.mixVH_Hz_ofEnvir = this.objSolfg.mixSolft / this.getAverageValue(this.getSliceArr(arr.fftMag, 360, 461))
+    this.divisionQuartOnMaxFftMag = this.quartileFftMag_22_635 / this.max.fftMag
+    this.division_q3_average = this.quartileFftMag_22_635 / this.average.d22_635
+    this.objSolfg = this.getArrSolfeggio(arr.filteredFFTMag)
+
+    this.mixVH_Hz_ofEnvir = this.objSolfg.mixSolft / this.getAverageValue(arr.fftMag.slice(360, 461))
     /* ---------------   /head file excel №1 ---------------- */
 
-    arr.freqMagScaleNormalizedData = this.getArrDivElOnVal(arr.fftMag, this.max.fftMag)
+    this.max.filteredFFTMag = Math.max.apply(null, arr.filteredFFTMag.slice(1))
+    this.min.filteredFFTMag = this.getMinValueWithoutNull(arr.filteredFFTMag.slice(1))
 
+    arr.freqMagScaleNormalizedData = this.arrFreqMagScaleNormalizedData = this.getFreqMagScaleNormalizedData(arr.filteredFFTMag, this.min.filteredFFTMag, this.max.filteredFFTMag)
     arr.constAbsDifHarmoniNormalLess_1 = this.getArrDivElOnVal(arr.constABSDifHarmoniLess_1, this.max.consts)
     arr.constAbsDifHarmoniNormalMore_1 = this.getArrDivElOnVal(arr.constABSDifHarmoniMore_1, this.max.consts)
-    arr.freqMagNormalMore_1 = this.getarrFreqMagNormalMore_1(arr.freqMagInDifMore_1, this.average.freqMagMore_1)
-    arr.freqMagNormalLess_1 = this.getArrDivElOnVal(arr.freqMagInDifLess_1, this.max.freqMagLess_1)
+    arr.freqMagNormalMore_1 = this.getArrDivElOnVal(arr.freqMagInDifMore_1, this.average.freqMagInDifMore_1)
+    arr.freqMagNormalLess_1 = this.getArrDivElOnVal(arr.freqMagInDifLess_1, this.max.freqMagInDifLess_1)
     arr.freqMagInDifLess_12_More_8 = this.getArrDivElOnVal(arr.freqMag_NO, this.max.freqMag_NO)
     arr.freqMagDifDiffLess_1 = this.getFreqMagDiffAnd_NO(arr.freqMagNormalLess_1, arr.constAbsDifHarmoniNormalLess_1)
     arr.freqMagDifDiff_NO = this.getFreqMagDiffAnd_NO(arr.freqMagInDifLess_12_More_8, arr.constAbsDifHarmoniNormalMore_1)
 
-    this.max.freqMagDifDiffLess_1 = Math.max.apply(null, this.getSliceArr(arr.freqMagDifDiffLess_1, 3, 615))
-    this.max.freqMagDiff_NO = Math.max.apply(null, this.getSliceArr(arr.freqMagDifDiff_NO, 3, 615))
+    this.max.freqMagDifDiffLess_1 = Math.max.apply(null, arr.freqMagDifDiffLess_1.slice(3, 615))
+    this.max.freqMagDiff_NO = Math.max.apply(null, arr.freqMagDifDiff_NO.slice(3, 615))
 
     arr.freqMagDifDiffNormal = this.getArrDivElOnVal(arr.freqMagDifDiffLess_1, this.max.freqMagDifDiffLess_1)
     arr.freqMagDifDiffNormal_NO = this.getArrDivElOnVal(arr.freqMagDifDiff_NO, this.max.freqMagDiff_NO)
 
-    this.average.freqMagScaleNormalizedData = this.getAverageValue(this.getSliceArr(arr.freqMagScaleNormalizedData, 3, 615))
-    this.average.freqMagNormalMore_1 = this.getAverageValue(this.getSliceArr(arr.freqMagNormalMore_1, 3, 615))
-    this.average.freqMagNormalLess_1 = this.getAverageValue(this.getSliceArr(arr.freqMagNormalLess_1, 3, 615))
-    this.average.freqMagInDifLess_12_More_8 = this.getAverageValue(this.getSliceArr(arr.freqMagInDifLess_12_More_8, 3, 615))
-    this.average.freqMagDifDiffNormal = this.getAverageValue(this.getSliceArr(arr.freqMagDifDiffNormal, 3, 615))
-    this.average.freqMagDifDiffNormal_NO = this.getAverageValue(this.getSliceArr(arr.freqMagDifDiffNormal_NO, 3, 615))
+    this.average.freqMagScaleNormalizedData = this.getAverageValue(arr.freqMagScaleNormalizedData.slice(1, 615))
+    this.average.freqMagNormalMore_1 = this.getAverageValue(arr.freqMagNormalMore_1.slice(1, 615))
+    this.average.freqMagNormalLess_1 = this.getAverageValue(arr.freqMagNormalLess_1.slice(1, 615))
+    this.average.freqMagInDifLess_12_More_8 = this.getAverageValue(arr.freqMagInDifLess_12_More_8.slice(1, 615))
+    this.average.freqMagDifDiffNormal = this.getAverageValue(arr.freqMagDifDiffNormal.slice(1, 615))
+    this.average.freqMagDifDiffNormal_NO = this.getAverageValue(arr.freqMagDifDiffNormal_NO.slice(1, 615))
+    this.average.filteredFFTMag = this.getAverageValue(arr.filteredFFTMag.slice(1, 615))
 
     /* ---------------   head file excel №2 --------------------- */
     this.norm = {}
-    this.norm.avgPowerHigherOctaves = this.getNormAvgOrNormScaledAvg(arr.freqMagNormalLess_1)
+    this.norm.avgPowerHigherOctaves = this.getAverageValue([2, 4, 8, 16, 32, 64, 128, 256, 512].map(index => arr.freqMagNormalLess_1[index]))
     this.norm.avgPowerOctNo = this.norm.avgPowerHigherOctaves / this.average.freqMagInDifLess_12_More_8
-    this.norm.avgPowerDifScale = this.average.freqMagNormalLess_1
+    this.norm.avgPowerHigherOctavesRaw = this.getAverageValue([2, 4, 8, 16, 32, 64, 128, 256, 512].map(index => arr.filteredFFTMag[index]))
+    this.norm.avgPowerDifScale = this.average.freqMagInDifLess_1
     this.norm.avgPowerDifDifNoMore_1 = this.average.freqMagNormalLess_1 / this.average.freqMagNormalMore_1
     this.norm.avgPowerDifDifNo = this.average.freqMagNormalLess_1 / this.average.freqMagInDifLess_12_More_8
     this.norm.avgPowerDifAllScale = this.average.freqMagNormalLess_1 / this.average.freqMagScaleNormalizedData
 
     this.normScaled = {}
-    this.normScaled.avgPowerHigherOctaves = this.getNormAvgOrNormScaledAvg(arr.freqMagDifDiffNormal)
+    this.normScaled.avgPowerHigherOctaves = this.getAverageValue([2, 4, 8, 16, 32, 64, 128, 256, 512].map(index => arr.freqMagDifDiffNormal[index]))
     this.normScaled.avgPowerOctNo = this.normScaled.avgPowerHigherOctaves / this.average.freqMagDifDiffNormal_NO
     this.normScaled.avgPowerDifScale = this.average.freqMagDifDiffNormal
     this.normScaled.avgPowerDifDifNo = this.average.freqMagDifDiffNormal / this.average.freqMagDifDiffNormal_NO
     /* ---------------   /head file excel №2 -------------------- */
 
     /* ---------------- calculation tables after read line ------- */
-    this.max.fftMagNormalized = Math.max.apply(null, this.getSliceArr(arr.fftMag, 1, 615))
+    this.max.fftMagNormalized = Math.max.apply(null, arr.fftMag.slice(1, 615))
 
     arr.fftMagNormalized = this.getFftMagNormalized(this.max.fftMagNormalized, arr.fftMag)
     arr.fftMagRawSmoothed = this.getArrFftMagRawSmoothed(arr.fftMag)
@@ -92,17 +102,17 @@ class TremorSpectrum {
 
     this.colSum = {}
     this.colSum.raw = this.getColSum(this.objColors, 'valueFftMag')
-    this.colSum.normalized = this.getColSum(this.objColors, 'valueFftNorm')
+    this.colSum.normalized = this.getColSumDependent(this.colSum.raw)
     this.colSum.smoothed = this.getColSum(this.objColors, 'valueFftMagSmoothed')
     this.colSum.smthNormed = this.getColSum(this.objColors, 'valueFftMagNormalizedSmth')
-    this.colSum.smthNorm_1 = this.getArrSumSmthNorm_1(this.colSum.smthNormed)
+    this.colSum.smthNorm_1 = this.getColSumDependent(this.colSum.smthNormed)
 
     this.totalMusic = {}
-    this.totalMusic.raw = this.colSum.raw.avgNotesMusic
-    this.totalMusic.smth = this.colSum.smthNormed.avgNotesMusic
-    this.totalMusic.rawSmth = this.totalMusic.raw - this.totalMusic.smth
+    this.totalMusic.raw = this.colSum.raw.sumNotesMusic
+    this.totalMusic.smth = this.colSum.smoothed.sumNotesMusic
+    this.totalMusic.rawSmth = Math.abs(this.totalMusic.raw - this.totalMusic.smth)
     this.totalMusic.stDevRawTM = this.colSum.raw.stDevNotesMusic
-    this.totalMusic.stDevSmthTM = this.colSum.smthNormed.stDevNotesMusic
+    this.totalMusic.stDevSmthTM = this.colSum.smoothed.stDevNotesMusic
 
     let lowerAndHigherFreq_1 = this.getLowerAndHigherFreq(arr.fftFreq, arr.fftMag, arr.fftMagNormalized, Math.pow(2, (1 / 12)))
     let lowerAndHigherFreq_2 = this.getLowerAndHigherFreq(arr.fftFreq, arr.fftMag, arr.fftMagNormalized, Math.pow(2, (1 / 11.5)))
@@ -113,22 +123,42 @@ class TremorSpectrum {
     arr.lowerAndHigherFreq_3 = lowerAndHigherFreq_3.arr
 
     this.musicalHarmonics = {}
-    this.musicalHarmonics.averageHarmonicPower = lowerAndHigherFreq_1.average
+    this.musicalHarmonics.OneDivideAverageHarmonicPower = 1 / lowerAndHigherFreq_1.average
     this.musicalHarmonics.averageInHarmonicPower = lowerAndHigherFreq_2.average
-    this.musicalHarmonics.harmonikDevideInharmonikPower = lowerAndHigherFreq_1.average / lowerAndHigherFreq_2.average
+    this.musicalHarmonics.noFormantDivideFormantHarmonicPower = lowerAndHigherFreq_2.average / lowerAndHigherFreq_1.average
     this.musicalHarmonics.averageAllFftPower = this.average.fftMag
-    this.musicalHarmonics.harmonicDevideAllFftPower = lowerAndHigherFreq_1.average / this.average.fftMag
+    this.musicalHarmonics.averageFormantMinusAllFftPower = lowerAndHigherFreq_1.average - this.average.fftMag
 
-    this.allFftData = {}
-    this.allFftData.maxFrequencyHz = arr.fftFreq[arr.fftMag.indexOf(Math.max.apply(null, this.getSliceArr(arr.fftMag, 1)))]
-    this.allFftData.maxFrequencySmth = arr.fftFreq[arr.fftMagRawSmoothed.indexOf(Math.max.apply(null, arr.fftMagRawSmoothed))]
-    this.allFftData.maxFrequencySmthNr = arr.fftFreq[arr.fftMagNormalizedSmoothed.indexOf(Math.max.apply(null, arr.fftMagNormalizedSmoothed))]
-    this.allFftData.powerOfMaxRawFrequency = this.max.fftMag
-    this.allFftData.maxPowerSmth = Math.max.apply(null, this.getSliceArr(arr.fftMagRawSmoothed, 1))
-    this.allFftData.maxPowerSmthNr = Math.max.apply(null, this.getSliceArr(arr.fftMagNormalizedSmoothed, 1))
-    this.allFftData.averagePower = this.average.fftMag
-    this.allFftData.averagePowerSmth = this.getAverageValue(this.getSliceArr(arr.fftMagRawSmoothed, 1))
-    this.allFftData.averagePowerSmthNr = this.getAverageValue(this.getSliceArr(arr.fftMagNormalizedSmoothed, 1))
+    this.allFftData = {raw: {}, smth: {}, smthNr: {}}
+    this.allFftData.raw.maxFrequency = arr.fftFreq[arr.fftMag.indexOf(Math.max.apply(null, arr.fftMag.slice(1)))]
+    this.allFftData.smth.maxFrequency = arr.fftFreq[arr.fftMagRawSmoothed.indexOf(Math.max.apply(null, arr.fftMagRawSmoothed))]
+    this.allFftData.smthNr.maxFrequency = arr.fftFreq[arr.fftMagNormalizedSmoothed.indexOf(Math.max.apply(null, arr.fftMagNormalizedSmoothed))]
+    this.allFftData.raw.maxPower = this.max.fftMag
+    this.allFftData.smth.maxPower = Math.max.apply(null, arr.fftMagRawSmoothed.slice(1))
+    this.allFftData.smthNr.maxPower = Math.max.apply(null, arr.fftMagNormalizedSmoothed.slice(1))
+    this.allFftData.raw.averagePower = this.getAverageValue(arr.fftMag.slice(1, 430))
+    this.allFftData.smth.averagePower = this.getAverageValue(arr.fftMagRawSmoothed.slice(1, 430))
+    this.allFftData.smthNr.averagePower = this.getAverageValue(arr.fftMagNormalizedSmoothed.slice(1, 430))
+
+    this.allFftData.raw.maxNote = this.getNoteForAllFFTDAta(
+      arr.fftMag, arr.fftNote, Math.max.apply(null, arr.fftMag.slice(1, 430))
+    )
+    this.allFftData.smth.maxNote = this.getNoteForAllFFTDAta(
+      arr.fftMagRawSmoothed, arr.fftNote, Math.max.apply(null, arr.fftMagRawSmoothed.slice(1, 430))
+    )
+    this.allFftData.smthNr.maxNote = this.getNoteForAllFFTDAta(
+      arr.fftMagNormalizedSmoothed, arr.fftNote, Math.max.apply(null, arr.fftMagNormalizedSmoothed.slice(1, 430))
+    )
+
+    this.allFftData.raw.minNote = this.getNoteForAllFFTDAta(
+      arr.fftMag, arr.fftNote, Math.min.apply(null, arr.fftMag.slice(1, 430))
+    )
+    this.allFftData.smth.minNote = this.getNoteForAllFFTDAta(
+      arr.fftMagRawSmoothed, arr.fftNote, Math.min.apply(null, arr.fftMagRawSmoothed.slice(7, 430))
+    )
+    this.allFftData.smthNr.minNote = this.getNoteForAllFFTDAta(
+      arr.fftMagNormalizedSmoothed, arr.fftNote, Math.min.apply(null, arr.fftMagNormalizedSmoothed.slice(7, 430))
+    )
 
     let maxAndMinPowerNote = this.getPowerNoteName(this.colSum.raw)
     this.maxPowerNote = maxAndMinPowerNote.max
@@ -150,6 +180,61 @@ class TremorSpectrum {
     }
   }
 
+  getNoteForAllFFTDAta (arrSearch, arrSearchResult, value) {
+    return arrSearchResult.slice(1, 430)[arrSearch.slice(1, 430).indexOf(value)]
+  }
+
+  getColSumDependent (colSum) {
+    let result = {arr: []}
+    let arrForCalc = []
+
+    result.arr = colSum.arr.map(element => {
+      arrForCalc.push(element.value / colSum.max)
+
+      return {
+        name: element.name,
+        value: element.value / colSum.max
+      }
+    })
+
+    result.sumNotesMusic = mathjs.sum(arrForCalc)
+    result.stDevNotesMusic = this.getStanDotClone(arrForCalc)
+    result.max = Math.max.apply(null, arrForCalc)
+
+    return result
+  }
+
+  getMinValueWithoutNull (arr) {
+    let result = 1
+
+    arr.forEach(element => {
+      element != null && result > element ? result = element : null
+    })
+
+    return result
+  }
+
+  getFreqMagScaleNormalizedData (filteredFFTMag, min, max) {
+    let result = [null]
+
+    for (let i = 1; i <= 614; i++) {
+      let val = (filteredFFTMag[i] - min) / (max - min)
+      result.push(val && val > 0 ? val : null)
+    }
+
+    return result
+  }
+
+  getFilteredFFTMag (arrFftMag, qartile) {
+    let result = [null]
+
+    for (let i = 1; i <= 614; i++) {
+      result.push(arrFftMag[i] < (qartile + 0.4 * qartile) ? arrFftMag[i] : null)
+    }
+
+    return result
+  }
+
   getPowerNoteName (colSumRaw) {
     let min = colSumRaw.arr[0]
     let max = colSumRaw.arr[0]
@@ -169,9 +254,7 @@ class TremorSpectrum {
   }
 
   getColSum (objColor, valueName) {
-    let result = {}
-    result.colors = {}
-    result.arr = []
+    let result = {colors: {}, arr: []}
     let arrForResult = {}
     let arr = []
 
@@ -204,8 +287,9 @@ class TremorSpectrum {
       arr.push(result.colors[color])
     }
 
-    result.avgNotesMusic = this.getAverageValue(arr)
+    result.sumNotesMusic = mathjs.sum(arr)
     result.stDevNotesMusic = this.getStanDotClone(arr)
+    result.max = Math.max.apply(null, arr)
 
     return result
   }
@@ -273,9 +357,9 @@ class TremorSpectrum {
   }
 
   getLowerAndHigherFreq (arrFftFreq, arrFftMag, arrFftMagNormalized, constDelta) {
-    let arrMag = this.getSliceArr(arrFftMag, 1)
-    let arrFreq = this.getSliceArr(arrFftFreq, 1)
-    let arrNorm = this.getSliceArr(arrFftMagNormalized, 1)
+    let arrMag = arrFftMag.slice(1)
+    let arrFreq = arrFftFreq.slice(1)
+    let arrNorm = arrFftMagNormalized.slice(1)
     let maxFftMag = {
       freq: arrFreq[arrMag.indexOf(Math.max.apply(null, arrMag))],
       power: Math.max.apply(null, arrNorm),
@@ -295,7 +379,7 @@ class TremorSpectrum {
       })
     }
 
-    for (let i = 38; result.arr.length < 73; i++) {
+    for (let i = 38; result.arr.length < 101; i++) {
       let freq = result.arr[i].freq * constDelta
 
       result.arr.push({
@@ -334,43 +418,14 @@ class TremorSpectrum {
         }
       })
 
-      return summary(arrForAverage).mean()
+      return this.getAverageValue(arrForAverage)
     })()
-
-    return result
-  }
-
-  getArrSumSmthNorm_1 (smthNorm) {
-    let maxSmthNorm = (() => {
-      let val = 0
-
-      smthNorm.arr.forEach(element => {
-        val >= element.value ? null : val = element.value
-      })
-
-      return val
-    })()
-
-    let arrResult = []
-    let result = {}
-    result.arr = []
-
-    smthNorm.arr.forEach((element) => {
-      result.arr.push({
-        name: element.name,
-        value: element.value / maxSmthNorm
-      })
-      arrResult.push(element.value)
-    })
-
-    result.avgNotesMusic = summary(arrResult).mean()
-    result.stDevNotesMusic = this.getStanDotClone(arrResult)
 
     return result
   }
 
   getArrFftMagNormalizedSmoothed (arr) {
-    let maxValArr = Math.max.apply(null, this.getSliceArr(arr, 7, 615))
+    let maxValArr = Math.max.apply(null, arr.slice(7, 615))
     let arrForResult = []
 
     arr.forEach((element) => {
@@ -388,7 +443,7 @@ class TremorSpectrum {
     let arrForResult = [null, null, null, null, null, null, null]
 
     for (let i = 1, c = 8; c <= arrFftMag.length; i++, c++) {
-      arrForResult.push(this.getAverageValue(this.getSliceArr(arrFftMag, i, c)))
+      arrForResult.push(this.getAverageValue(arrFftMag.slice(i, c)))
     }
 
     return arrForResult
@@ -404,33 +459,12 @@ class TremorSpectrum {
     return arrResult
   }
 
-  getNormAvgOrNormScaledAvg (arr) {
-    return (Number(arr[2]) + Number(arr[4]) + Number(arr[8]) + Number(arr[16]) + Number(arr[32]) + Number(arr[64]) + Number(arr[128]) + Number(arr[256]) + Number(arr[512])) / 9
-  }
-
   getFreqMagDiffAnd_NO (arr_1, arr_2) {
     let arrResult = []
 
     for (let i = 0; i <= arr_1.length - 1; i++) {
       if (arr_1[i] * (1 - arr_2[i])) {
         arrResult.push(arr_1[i] * (1 - arr_2[i]))
-      } else {
-        arrResult.push(null)
-      }
-    }
-
-    return arrResult
-  }
-
-  getarrFreqMagNormalMore_1 (arr, val) {
-    let arrForResult = this.getSliceArr(arr, 0, 612)
-    arrForResult.unshift(val)
-    let average = this.getAverageValue(arrForResult)
-    let arrResult = []
-
-    for (let i = 0; i <= arr.length - 1; i++) {
-      if (arr[i] / average && arr[i] !== null) {
-        arrResult.push(arr[i] / average)
       } else {
         arrResult.push(null)
       }
@@ -453,43 +487,33 @@ class TremorSpectrum {
     return arrResult
   }
 
-  getArrSolfeggio (arrFftMag) {
+  getArrSolfeggio (arr) {
     let objResult = {}
 
-    objResult.sideralDay = (arrFftMag[25] + arrFftMag[50] + arrFftMag[199] + arrFftMag[398]) / 4
-    objResult.liberating = arrFftMag[101]
-    objResult.breakemo = arrFftMag[107]
-    objResult.reprLove = arrFftMag[135]
-    objResult.connect = arrFftMag[163]
-    objResult.intuition = arrFftMag[189]
-    objResult.spirorder = arrFftMag[218]
+    objResult.sideralDay = this.getAverageValue([12, 25, 50, 100, 199, 398].map(index => arr[index]))
+    objResult.liberating = this.getAverageValue([13, 51, 101, 202, 405].map(index => arr[index]))
+    objResult.breakemo = this.getAverageValue([27, 53, 107, 213, 426].map(index => arr[index]))
+    objResult.reprLove = this.getAverageValue([34, 67, 135, 270, 539].map(index => arr[index]))
+    objResult.connect = this.getAverageValue([10, 20, 46, 82, 163, 326].map(index => arr[index]))
+    objResult.intuition = this.getAverageValue([12, 24, 47, 95, 189, 379].map(index => arr[index]))
+    objResult.spirorder = this.getAverageValue([14, 27, 54, 109, 218, 435].map(index => arr[index]))
     objResult.mixSolft = (objResult.liberating + objResult.breakemo + objResult.reprLove + objResult.connect + objResult.intuition + objResult.spirorder) / 6
 
     return objResult
   }
 
-  getQuartile (arr, from, to) {
-    let arrForResult = this.getSliceArr(arr, from, to)
-    let data = summary(arrForResult)
-
-    return {
-      q3: data.quartile(0.75),
-      max: data.max()
-    }
-  }
-
   getdivisionAverageValuesFftMag_23_404_405_635 (arrFftMag) {
-    let arrFftMag_23_404 = this.getSliceArr(arrFftMag, 2, 384)
-    let arrFftMag_405_635 = this.getSliceArr(arrFftMag, 384, 615)
+    let arrFftMag_23_404 = arrFftMag.slice(2, 384)
+    let arrFftMag_405_635 = arrFftMag.slice(384, 615)
 
-    return summary(arrFftMag_23_404).mean() / summary(arrFftMag_405_635).mean()
+    return mathjs.mean(arrFftMag_23_404) / mathjs.mean(arrFftMag_405_635)
   }
 
   getdivisionAverageValuesFftMag_23_329_329_635 (arrFftMag) {
-    let arrFftMag_23_329 = this.getSliceArr(arrFftMag, 2, 309)
-    let arrFftMag_329_635 = this.getSliceArr(arrFftMag, 308, 615)
+    let arrFftMag_23_329 = arrFftMag.slice(2, 309)
+    let arrFftMag_329_635 = arrFftMag.slice(308, 615)
 
-    return summary(arrFftMag_23_329).mean() / summary(arrFftMag_329_635).mean()
+    return mathjs.mean(arrFftMag_23_329) / mathjs.mean(arrFftMag_329_635)
   }
 
   getArrFftFreq () {
@@ -506,15 +530,11 @@ class TremorSpectrum {
   getArrFftMag (arrFftFreq, arrFftComplex) {
     let arrFftMag = []
 
-    for (let i = 0; i <= 1024 - 1; i++) {
-      arrFftMag.push(1 / 2048 * new complex(arrFftComplex[i][0], arrFftComplex[i][1]).abs())
+    for (let i = 0; i <= 615 - 1; i++) {
+      arrFftMag.push(2 / 2048 * new complex(arrFftComplex[i][0], arrFftComplex[i][1]).abs())
     }
 
     return arrFftMag
-  }
-
-  getSliceArr (arr, from, to) {
-    return arr.slice(from, to)
   }
 
   getAverageValue (arr) {
@@ -551,7 +571,7 @@ class TremorSpectrum {
     return Math.sqrt(sumNumerators / (arrForResult.length - 1))
   }
 
-  getFreqMagAndConst (arr, arrConst, arrFftMag) {
+  getFreqMagAndConst (arr, arrConst, arrFilteredFFTMag) {
     arr.freqMagInDifLess_1 = []
     arr.freqMagInDifMore_1 = []
 
@@ -562,15 +582,15 @@ class TremorSpectrum {
 
     for (let i = 0; i <= arrConst.length - 1; i++) {
       if (arrConst[i] >= 1) {
-        arr.freqMagInDifMore_1.push(arrFftMag[i])
+        arr.freqMagInDifMore_1.push(arrFilteredFFTMag[i])
         arr.freqMagInDifLess_1.push(null)
 
         arr.constABSDifHarmoniMore_1.push(arrConst[i])
         arr.constABSDifHarmoniLess_1.push(null)
 
-        arrConst[i] >= 8 && arrConst[i] <= 12 ? arr.freqMag_NO.push(arrFftMag[i]) : arr.freqMag_NO.push(null)
+        arrConst[i] >= 8 && arrConst[i] <= 12 ? arr.freqMag_NO.push(arrFilteredFFTMag[i]) : arr.freqMag_NO.push(null)
       } else {
-        arr.freqMagInDifLess_1.push(arrFftMag[i])
+        arr.freqMagInDifLess_1.push(arrFilteredFFTMag[i])
         arr.freqMagInDifMore_1.push(null)
 
         arr.constABSDifHarmoniLess_1.push(arrConst[i])

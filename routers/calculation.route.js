@@ -73,7 +73,7 @@ router.patch('/calculations/:calc_id/video', (req, res, next) => {
 })
 
 router.get('/calculations/last', (req, res, next) => {
-  Calculation.findOne().sort({_id: 1}).lean()
+  Calculation.findOne().sort({_id: -1}).lean()
     .then(document => {
       return res.status(200).json(document)
     }).catch(next)

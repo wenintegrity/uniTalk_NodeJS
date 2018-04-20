@@ -11,7 +11,7 @@
     "complex": "^3.0.0",
     "summary-statistics": "^1.0.0",
     "fft-js": "^0.0.11",
-    "summary": "^1.0.0",
+    "mathjs": "^4.1.1",
     "express": "^4.16.2",
     "mongoose": "^5.0.7",
     "body-parser": "^1.18.2",
