@@ -46,7 +46,10 @@ class TremorSpectrum_part_2 {
     this.arrResult = []
 
     for (let i = 0; i <= 613; i++) {
-      let row = {arrDiferentialFftMag: arrDiferentialFftMag[i]}
+      let row = {
+        id: i,
+        arrDiferentialFftMag: arrDiferentialFftMag[i]
+      }
       this.tables.forEach((el, index) => {
         for (let key in el) {
           el[key].arr ? row[key + '_' + index] = el[key].arr[i] : null
