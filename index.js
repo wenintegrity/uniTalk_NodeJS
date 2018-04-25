@@ -6,7 +6,9 @@ const bodyParser = require('body-parser')
 const compression = require('compression')
 
 const config = require('./config')
-const routerCalc = require('./routers/calculation.route')
+const routerCalculation = require('./routers/calculation.route')
+const routerSession = require('./routers/session.route')
+const routerUser = require('./routers/user.route')
 const mongoose = require('mongoose')
 
 mongoose.connect(process.env.NODE_MONGO_URL)
@@ -18,7 +20,10 @@ mongoose.connect(process.env.NODE_MONGO_URL)
       res.header('Access-Control-Allow-Origin', '*')
       next()
     })
-    app.use(routerCalc)
+
+    app.use(routerCalculation)
+    app.use(routerSession)
+    app.use(routerUser)
 
     app.use(function (req, res, next) {
       let _error = new Error('Not found!')
