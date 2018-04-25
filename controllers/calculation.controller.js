@@ -4,23 +4,6 @@ const CalculationModel = require('../models/calculation.model')
 const SessionModel = require('../models/session.model')
 
 module.exports = {
-  firstCalc: (req, res, next) => {
-    return userAndReqValidation(req)
-      .then(user => {
-        return getCalculation(req.body.data)
-          .then(calc => {
-            return new CalculationModel({user_id: user._id, req: req.body, res: calc}).save()
-          })
-          .then(saveCalc => {
-            return new SessionModel({user_id: user._id, calculations: [saveCalc._id]}).save()
-          })
-          .then(() => {
-            return res.status(201).send()
-          })
-      })
-      .catch(next)
-  },
-
   calculation: (req, res, next) => {
     return userAndReqValidation(req)
       .then(user => {

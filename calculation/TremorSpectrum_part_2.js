@@ -144,8 +144,8 @@ class TremorSpectrum_part_2 {
     }
 
     for (let i = 0; i <= x.length - 1; i++) {
-      x2.push(Math.pow(x[i], 2))
-      y2.push(Math.pow(y[i], 2))
+      x2.push(x[i] ** 2)
+      y2.push(y[i] ** 2)
       xy.push((x[i] * y[i]))
     }
 
@@ -158,7 +158,7 @@ class TremorSpectrum_part_2 {
     }
 
     return (x.length * sum.xy - sum.x * sum.y) /
-          Math.sqrt(Math.abs(x.length * sum.x2 - Math.pow(sum.x, 2)) * Math.abs(x.length * sum.y2 - Math.pow(sum.y, 2)))
+          Math.sqrt(Math.abs(x.length * sum.x2 - sum.x ** 2) * Math.abs(x.length * sum.y2 - sum.y ** 2))
   }
 
   getDivisionOfDifferenceValues (obj) {

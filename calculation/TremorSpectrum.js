@@ -114,9 +114,9 @@ class TremorSpectrum {
     this.totalMusic.stDevRawTM = this.colSum.raw.stDevNotesMusic
     this.totalMusic.stDevSmthTM = this.colSum.smoothed.stDevNotesMusic
 
-    let lowerAndHigherFreq_1 = this.getLowerAndHigherFreq(arr.fftFreq, arr.fftMag, arr.fftMagNormalized, Math.pow(2, (1 / 12)))
-    let lowerAndHigherFreq_2 = this.getLowerAndHigherFreq(arr.fftFreq, arr.fftMag, arr.fftMagNormalized, Math.pow(2, (1 / 11.5)))
-    let lowerAndHigherFreq_3 = this.getLowerAndHigherFreq(arr.fftFreq, arr.fftMagNormalizedSmoothed, arr.fftMagNormalizedSmoothed, Math.pow(2, (1 / 12)))
+    let lowerAndHigherFreq_1 = this.getLowerAndHigherFreq(arr.fftFreq, arr.fftMag, arr.fftMagNormalized, 2 ** (1 / 12))
+    let lowerAndHigherFreq_2 = this.getLowerAndHigherFreq(arr.fftFreq, arr.fftMag, arr.fftMagNormalized, 2 ** (1 / 11.5))
+    let lowerAndHigherFreq_3 = this.getLowerAndHigherFreq(arr.fftFreq, arr.fftMagNormalizedSmoothed, arr.fftMagNormalizedSmoothed, 2 ** (1 / 12))
 
     arr.lowerAndHigherFreq_1 = lowerAndHigherFreq_1.arr
     arr.lowerAndHigherFreq_2 = lowerAndHigherFreq_2.arr
@@ -565,7 +565,7 @@ class TremorSpectrum {
     let sumNumerators = 0
 
     arrForResult.forEach((value) => {
-      sumNumerators += Math.pow(value - meanX, 2)
+      sumNumerators += (value - meanX) ** 2
     })
 
     return Math.sqrt(sumNumerators / (arrForResult.length - 1))

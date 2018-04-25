@@ -2,8 +2,6 @@ const router = require('express').Router()
 const validPostCalc = require('../services/validations.service').validPostCalc()
 const CalculationController = require('../controllers/calculation.controller')
 
-router.post('/calculations/first', validPostCalc, CalculationController.firstCalc)
-
 router.post('/calculations/:session_id?', validPostCalc, CalculationController.calculation)
 
 router.patch('/calculations/:calc_id/pictures', CalculationController.addPicture)
