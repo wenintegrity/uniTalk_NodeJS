@@ -6,6 +6,7 @@ const userValidation = require('../services/validations.service').userValidation
 const Calculation = require('../models/calculation.model')
 const Session = require('../models/session.model')
 const User = require('../models/user.model')
+const VideoModel = require('../models/video.model')
 
 router.post('/auth', validPostCalc, (req, res, next) => {
   Promise.all([
@@ -23,7 +24,10 @@ router.post('/auth', validPostCalc, (req, res, next) => {
         })
     })
     .then(() => {
-      return res.status(201).send()
+      return VideoModel.findOne({}).lean()
+    })
+    .then(video => {
+      return res.status(201).json({video: video.video[0]})
     })
     .catch(next)
 })
@@ -35,21 +39,31 @@ router.post('/calculations/:session_id?', validPostCalc, (req, res, next) => {
     getCalculation(req.body.data)
   ])
     .then(([user, validation, calculation]) => {
-      return new Calculation({req: req.body, res: calculation}).save()
-        .then(calculation => {
-          return [calculation, user]
-        })
+      return Promise.all([
+        new Calculation({req: req.body, res: calculation}).save(),
+        VideoModel.findOne({}).lean(),
+        user
+      ])
     })
-    .then(([calculation, user]) => {
+    .then(([calculation, video, user]) => {
       if (!req.params.session_id) {
         return new Session({user_id: user._id, calculations: [calculation._id]}).save()
           .then((session) => {
-            return res.status(201).json({result: calculation.res.result, session_id: session._id, calc_id: calculation._id})
+            return res.status(201).json({
+              result: calculation.res.result,
+              session_id: session._id,
+              calc_id: calculation._id,
+              video: video.video[1]
+            })
           })
       } else {
         return Session.update({_id: req.params.session_id}, {'$push': {'calculations': calculation._id}})
           .then(() => {
-            return res.status(201).json({result: calculation.res.result, calc_id: calculation._id})
+            return res.status(201).json({
+              result: calculation.res.result,
+              calc_id: calculation._id,
+              video: video.video[2]
+            })
           })
       }
     })
