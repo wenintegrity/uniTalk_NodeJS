@@ -12,7 +12,7 @@ module.exports = {
             return new CalculationModel({user_id: user._id, req: req.body, res: calc}).save()
           })
           .then(saveCalc => {
-            return {id: saveCalc._id, result: saveCalc.res.result}
+            return {calcId: saveCalc._id, calcResult: saveCalc.res.result}
           })
           .then(({calcId, calcResult}) => {
             if (!req.params.session_id) {
