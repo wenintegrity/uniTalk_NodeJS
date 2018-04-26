@@ -12,15 +12,18 @@ module.exports = {
             return new CalculationModel({user_id: user._id, req: req.body, res: calc}).save()
           })
           .then(saveCalc => {
+            return {id: saveCalc._id, result: saveCalc.res.result}
+          })
+          .then(({calcId, calcResult}) => {
             if (!req.params.session_id) {
-              return new SessionModel({user_id: user._id, calculations: [saveCalc._id]}).save()
+              return new SessionModel({user_id: user._id, calculations: [calcId]}).save()
                 .then(session => {
-                  return res.status(201).json({result: saveCalc.res.result, session_id: session._id, calc_id: saveCalc._id})
+                  return res.status(201).json({result: calcResult, session_id: session._id, calc_id: calcId})
                 })
             } else {
-              return SessionModel.update({_id: req.params.session_id}, {'$push': {'calculations': saveCalc._id}})
+              return SessionModel.update({_id: req.params.session_id}, {'$push': {'calculations': calcId}})
                 .then(() => {
-                  return res.status(201).json({result: saveCalc.res.result, calc_id: saveCalc._id})
+                  return res.status(201).json({result: calcResult, calc_id: calcId})
                 })
             }
           })
