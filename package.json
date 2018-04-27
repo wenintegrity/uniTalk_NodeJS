@@ -20,7 +20,7 @@
     "request": "^2.85.0"
   },
   "scripts": {
-    "start": "export NODE_MONGO_URL=mongodb://localhost:27017/data_new||set NODE_MONGO_URL=mongodb://localhost:27017/data_new&&node index.js"
+    "start": "export NODE_MONGO_URL=mongodb://localhost:27017/test||set NODE_MONGO_URL=mongodb://localhost:27017/test&&node index.js"
   },
   "author": "mdi",
   "license": "MIT"
