@@ -4,19 +4,63 @@ let count = 0
 
 let request_calc = () => {
   return request.post({
-    url: 'http://192.168.2.142:3006/calculations/5ae195c29202ffb099331536',
+    url: 'http://192.168.2.142:3006/calculations/5ae2ffea4e8546c4356790f4',
     body: json,
     json: true
   }, function (err, res, body) {
     if (!err) {
-      console.log(body)
+      console.log(count++)
     } else {
       console.error(err)
     }
   })
 }
 
-Promise.all(
+Promise.all([
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
+  request_calc(),
   request_calc(),
   request_calc(),
   request_calc(),
@@ -106,4 +150,4 @@ Promise.all(
   request_calc(),
   request_calc(),
   request_calc()
-)
+])
