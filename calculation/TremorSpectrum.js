@@ -19,9 +19,8 @@ class TremorSpectrum {
           let arr = {}
 
           arr.outMicM50 = arrOutMicM50
-          arr.fftComplex = fft(arrOutMicM50)
-          arr.fftFreq = this.arrFftFreq = this.getArrFftFreq()
-          arr.fftMag = this.arrFftMag = this.getArrFftMag(arr.fftFreq, arr.fftComplex)
+          arr.fftComplex = fft(arrOutMicM50);
+          [arr.fftFreq, arr.fftMag] = [this.arrFftFreq, this.arrFftMag] = this.getArrFft_FreqAndMag(arr.fftComplex)
           this.quartileFftMag_22_635 = mathjs.quantileSeq(arr.fftMag.slice(1, 615), 0.75)
           arr.filteredFFTMag = this.getFilteredFFTMag(arr.fftMag, this.quartileFftMag_22_635)
           arr.constants = constants
@@ -35,16 +34,14 @@ class TremorSpectrum {
               this.max.freqMag_NO = Math.max.apply(null, arr.freqMag_NO.slice(1, 615))
             })
             .then(() => {
-              return Promise.all([
-                this.getAverageValueAsync(arr.freqMagInDifMore_1.slice(1, 615)),
-                this.getAverageValueAsync(arr.freqMagInDifLess_1.slice(1, 615)),
-                this.getAverageValueAsync(arr.fftMag.slice(1, 615)),
-                this.getAverageValueAsync(arr.fftMag.slice(1))
-              ]).then(averages => {
+              return this.getAverageValueAsync(
+                arr.freqMagInDifMore_1.slice(1, 615),
+                arr.freqMagInDifLess_1.slice(1, 615),
+                arr.fftMag.slice(1)
+              ).then(averages => {
                 this.average.freqMagInDifMore_1 = averages[0]
                 this.average.freqMagInDifLess_1 = averages[1]
-                this.average.fftMag = averages[2]
-                this.average.d22_635 = averages[3]
+                this.average.fftMag = this.average.d22_635 = averages[2]
               })
             })
             .then(() => {
@@ -65,13 +62,13 @@ class TremorSpectrum {
               arr.freqMagScaleNormalizedData = this.arrFreqMagScaleNormalizedData = this.getFreqMagScaleNormalizedData(arr.filteredFFTMag, this.min.filteredFFTMag, this.max.filteredFFTMag)
             })
             .then(() => {
-              return Promise.all([
-                this.getArrDivElOnVal(arr.constABSDifHarmoniLess_1, this.max.consts),
-                this.getArrDivElOnVal(arr.constABSDifHarmoniMore_1, this.max.consts),
-                this.getArrDivElOnVal(arr.freqMagInDifMore_1, this.average.freqMagInDifMore_1),
-                this.getArrDivElOnVal(arr.freqMagInDifLess_1, this.max.freqMagInDifLess_1),
-                this.getArrDivElOnVal(arr.freqMag_NO, this.max.freqMag_NO)
-              ])
+              return this.getArrDivElOnVal(
+                {arr: arr.constABSDifHarmoniLess_1, val: this.max.consts},
+                {arr: arr.constABSDifHarmoniMore_1, val: this.max.consts},
+                {arr: arr.freqMagInDifMore_1, val: this.average.freqMagInDifMore_1},
+                {arr: arr.freqMagInDifLess_1, val: this.max.freqMagInDifLess_1},
+                {arr: arr.freqMag_NO, val: this.max.freqMag_NO}
+              )
                 .then(divElOnEval => {
                   arr.constAbsDifHarmoniNormalLess_1 = divElOnEval[0]
                   arr.constAbsDifHarmoniNormalMore_1 = divElOnEval[1]
@@ -81,10 +78,10 @@ class TremorSpectrum {
                 })
             })
             .then(() => {
-              return Promise.all([
-                this.getFreqMagDiffAnd_NO(arr.freqMagNormalLess_1, arr.constAbsDifHarmoniNormalLess_1),
-                this.getFreqMagDiffAnd_NO(arr.freqMagInDifLess_12_More_8, arr.constAbsDifHarmoniNormalMore_1)
-              ])
+              return this.getFreqMagDiffAnd_NO(
+                {arr_1: arr.freqMagNormalLess_1, arr_2: arr.constAbsDifHarmoniNormalLess_1},
+                {arr_1: arr.freqMagInDifLess_12_More_8, arr_2: arr.constAbsDifHarmoniNormalMore_1}
+              )
                 .then(freqMagDiffAnd_NO => {
                   arr.freqMagDifDiffLess_1 = freqMagDiffAnd_NO[0]
                   arr.freqMagDifDiff_NO = freqMagDiffAnd_NO[1]
@@ -95,25 +92,25 @@ class TremorSpectrum {
               this.max.freqMagDiff_NO = Math.max.apply(null, arr.freqMagDifDiff_NO.slice(3, 615))
             })
             .then(() => {
-              return Promise.all([
-                this.getArrDivElOnVal(arr.freqMagDifDiffLess_1, this.max.freqMagDifDiffLess_1),
-                this.getArrDivElOnVal(arr.freqMagDifDiff_NO, this.max.freqMagDiff_NO)
-              ])
+              return this.getArrDivElOnVal(
+                {arr: arr.freqMagDifDiffLess_1, val: this.max.freqMagDifDiffLess_1},
+                {arr: arr.freqMagDifDiff_NO, val: this.max.freqMagDiff_NO}
+              )
                 .then(divElOnVal => {
                   arr.freqMagDifDiffNormal = divElOnVal[0]
                   arr.freqMagDifDiffNormal_NO = divElOnVal[1]
                 })
             })
             .then(() => {
-              return Promise.all([
-                this.getAverageValueAsync(arr.freqMagScaleNormalizedData.slice(1, 615)),
-                this.getAverageValueAsync(arr.freqMagNormalMore_1.slice(1, 615)),
-                this.getAverageValueAsync(arr.freqMagNormalLess_1.slice(1, 615)),
-                this.getAverageValueAsync(arr.freqMagInDifLess_12_More_8.slice(1, 615)),
-                this.getAverageValueAsync(arr.freqMagDifDiffNormal.slice(1, 615)),
-                this.getAverageValueAsync(arr.freqMagDifDiffNormal_NO.slice(1, 615)),
-                this.getAverageValueAsync(arr.filteredFFTMag.slice(1, 615))
-              ]).then(averages => {
+              return this.getAverageValueAsync(
+                arr.freqMagScaleNormalizedData.slice(1, 615),
+                arr.freqMagNormalMore_1.slice(1, 615),
+                arr.freqMagNormalLess_1.slice(1, 615),
+                arr.freqMagInDifLess_12_More_8.slice(1, 615),
+                arr.freqMagDifDiffNormal.slice(1, 615),
+                arr.freqMagDifDiffNormal_NO.slice(1, 615),
+                arr.filteredFFTMag.slice(1, 615)
+              ).then(averages => {
                 this.average.freqMagScaleNormalizedData = averages[0]
                 this.average.freqMagNormalMore_1 = averages[1]
                 this.average.freqMagNormalLess_1 = averages[2]
@@ -188,10 +185,19 @@ class TremorSpectrum {
               this.allFftData.raw.maxPower = this.max.fftMag
               this.allFftData.smth.maxPower = Math.max.apply(null, arr.fftMagRawSmoothed.slice(1))
               this.allFftData.smthNr.maxPower = Math.max.apply(null, arr.fftMagNormalizedSmoothed.slice(1))
-              this.allFftData.raw.averagePower = this.getAverageValue(arr.fftMag.slice(1, 430))
-              this.allFftData.smth.averagePower = this.getAverageValue(arr.fftMagRawSmoothed.slice(1, 430))
-              this.allFftData.smthNr.averagePower = this.getAverageValue(arr.fftMagNormalizedSmoothed.slice(1, 430))
-
+            })
+            .then(() => {
+              return this.getAverageValueAsync(
+                arr.fftMag.slice(1, 430),
+                arr.fftMagRawSmoothed.slice(1, 430),
+                arr.fftMagNormalizedSmoothed.slice(1, 430)
+              ).then(averages => {
+                this.allFftData.raw.averagePower = averages[0]
+                this.allFftData.smth.averagePower = averages[1]
+                this.allFftData.smthNr.averagePower = averages[2]
+              })
+            })
+            .then(() => {
               this.allFftData.raw.maxNote = this.getNoteForAllFFTDAta(
                 arr.fftMag, arr.fftNote, Math.max.apply(null, arr.fftMag.slice(1, 430))
               )
@@ -522,36 +528,38 @@ class TremorSpectrum {
     return arrResult
   }
 
-  getFreqMagDiffAnd_NO (arr_1, arr_2) {
-    let arrResult = []
-
-    return arr_1.reduce((promise, val, i) => {
+  getFreqMagDiffAnd_NO (...arrs) {
+    return arrs[0].arr_1.reduce((promise, el, i) => {
       return promise
-        .then(() => {
-          if (arr_1[i] * (1 - arr_2[i])) {
-            arrResult.push(arr_1[i] * (1 - arr_2[i]))
-          } else {
-            arrResult.push(null)
-          }
+        .then(result => {
+          return result.map((arr, arr_i) => {
+            if (arrs[arr_i].arr_1[i] * (1 - arrs[arr_i].arr_2[i])) {
+              arr.push(arrs[arr_i].arr_1[i] * (1 - arrs[arr_i].arr_2[i]))
+              return arr
+            } else {
+              arr.push(null)
+              return arr
+            }
+          })
         })
-    }, Promise.resolve())
-      .then(() => arrResult)
+    }, Promise.resolve(arrs.map(() => [])))
   }
 
-  getArrDivElOnVal (arr, val) {
-    let arrResult = []
-
-    return arr.reduce((promise, el, i) => {
+  getArrDivElOnVal (...arrs) {
+    return arrs[0].arr.reduce((promise, el, i) => {
       return promise
-        .then(() => {
-          if (arr[i] / val && arr[i] !== null) {
-            arrResult.push(arr[i] / val)
-          } else {
-            arrResult.push(null)
-          }
+        .then(result => {
+          return result.map((arr, arr_i) => {
+            if (arrs[arr_i].arr[i] / arrs[arr_i].val && arrs[arr_i].arr[i] !== null) {
+              arr.push(arrs[arr_i].arr[i] / arrs[arr_i].val)
+              return arr
+            } else {
+              arr.push(null)
+              return arr
+            }
+          })
         })
-    }, Promise.resolve())
-      .then(() => arrResult)
+    }, Promise.resolve(arrs.map(() => [])))
   }
 
   getArrSolfeggio (arr) {
@@ -583,41 +591,40 @@ class TremorSpectrum {
     return mathjs.mean(arrFftMag_23_329) / mathjs.mean(arrFftMag_329_635)
   }
 
-  getArrFftFreq () {
+  getArrFft_FreqAndMag (arrFftComplex) {
     let constForArr = 8018 / 2048
-    let arrFftFreq = [0, constForArr, constForArr + constForArr]
-
-    for (let i = 3; i <= 615 - 1; i++) {
-      arrFftFreq.push(arrFftFreq[i - 1] + constForArr)
-    }
-
-    return arrFftFreq
-  }
-
-  getArrFftMag (arrFftFreq, arrFftComplex) {
-    let arrFftMag = []
+    let arrs = [[0, constForArr, constForArr + constForArr], []]
 
     for (let i = 0; i <= 615 - 1; i++) {
-      arrFftMag.push(2 / 2048 * new complex(arrFftComplex[i][0], arrFftComplex[i][1]).abs())
+      if (i > 2) {
+        arrs[0].push(arrs[0][i - 1] + constForArr)
+        arrs[1].push(2 / 2048 * new complex(arrFftComplex[i][0], arrFftComplex[i][1]).abs())
+      } else {
+        arrs[1].push(2 / 2048 * new complex(arrFftComplex[i][0], arrFftComplex[i][1]).abs())
+      }
     }
 
-    return arrFftMag
+    return arrs
   }
 
-  getAverageValueAsync (arr) {
-    let result = 0
-    let index = 0
-
-    return arr.reduce((promise, val, i) => {
+  getAverageValueAsync (...arrs) {
+    return arrs[0].reduce((promise, el, i) => {
       return promise
-        .then(() => {
-          if (arr[i] !== null && arr[i] !== '') {
-            result = result + arr[i]
-            index++
-          }
+        .then(result => {
+          return result.map((obj, arrs_i) => {
+            if (arrs[arrs_i][i] !== '' && arrs[arrs_i][i] !== null) {
+              return {sum: obj.sum + arrs[arrs_i][i], index: obj.index + 1}
+            } else {
+              return obj
+            }
+          })
         })
-    }, Promise.resolve())
-      .then(() => result / index)
+    }, Promise.resolve(arrs.map(() => { return {sum: 0, index: 0} })))
+      .then(result =>
+        result.map(obj => {
+          return obj.sum / obj.index
+        })
+      )
   }
 
   getAverageValue (arr) {
