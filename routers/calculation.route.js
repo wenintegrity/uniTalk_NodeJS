@@ -11,11 +11,13 @@ const VideoModel = require('../models/video.model')
 router.post('/auth', validPostCalc, (req, res, next) => {
   Promise.all([
     userValidation(req, false),
-    dataValidation(req),
-    getCalculation(req.body.data)
+    dataValidation(req)
   ])
-    .then(([user, validation, calculation]) => {
-      return new Calculation({email: req.body.email, req: req.body, res: calculation}).save()
+    .then(() => {
+      return getCalculation(req.body.data)
+        .then(calculation => {
+          return new Calculation({email: req.body.email, req: req.body, res: calculation}).save()
+        })
     })
     .then(calculation => {
       return new User({email: req.body.email}).save()
@@ -35,15 +37,17 @@ router.post('/auth', validPostCalc, (req, res, next) => {
 router.post('/calculations/:session_id?', validPostCalc, (req, res, next) => {
   Promise.all([
     userValidation(req, true),
-    dataValidation(req),
-    getCalculation(req.body.data)
+    dataValidation(req)
   ])
-    .then(([user, validation, calculation]) => {
-      return Promise.all([
-        new Calculation({req: req.body, res: calculation}).save(),
-        VideoModel.findOne({}).lean(),
-        user
-      ])
+    .then(([user, validation]) => {
+      return getCalculation(req.body.data)
+        .then(calculation => {
+          return Promise.all([
+            new Calculation({req: req.body, res: calculation}).save(),
+            VideoModel.findOne({}).lean(),
+            user
+          ])
+        })
     })
     .then(([calculation, video, user]) => {
       if (!req.params.session_id) {

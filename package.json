@@ -20,7 +20,7 @@
   },
   "scripts": {
     "seeders": "export NODE_MONGO_URL=mongodb://localhost:27017/data||set NODE_MONGO_URL=mongodb://localhost:27017/data&&node seeders.js",
-    "start": "export NODE_MONGO_URL=mongodb://localhost:27017/data||set NODE_MONGO_URL=mongodb://localhost:27017/data&&node index.js"
+    "start": "npm run seeders&&export NODE_MONGO_URL=mongodb://localhost:27017/data||set NODE_MONGO_URL=mongodb://localhost:27017/data&&node index.js"
   },
   "author": "mdi",
   "license": "MIT"
