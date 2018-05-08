@@ -151,9 +151,9 @@ class TremorSpectrum {
 
               this.colSum = {}
               this.colSum.raw = this.getColSum(this.objColors, 'valueFftMag')
-              this.colSum.normalized = this.getColSumDependent(this.colSum.raw)
               this.colSum.smoothed = this.getColSum(this.objColors, 'valueFftMagSmoothed')
               this.colSum.smthNormed = this.getColSum(this.objColors, 'valueFftMagNormalizedSmth')
+              this.colSum.normalized = this.getColSumDependent(this.colSum.raw)
               this.colSum.smthNorm_1 = this.getColSumDependent(this.colSum.smthNormed)
 
               this.totalMusic = {}

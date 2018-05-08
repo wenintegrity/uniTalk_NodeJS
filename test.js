@@ -4,7 +4,7 @@ let count = 0
 
 let request_calc = () => {
   return request.post({
-    url: 'http://localhost:3007/calculations',
+    url: 'http://192.168.2.142:3007/calculations',
     body: json,
     json: true
   }, function (err, res, body) {
