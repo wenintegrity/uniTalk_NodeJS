@@ -3,67 +3,74 @@ const mathjs = require('mathjs')
 
 class TremorSpectrum_part_2 {
   constructor (arrFftFreq, arrFreqMagScaleNormalizedData, arrFftMag) {
-    this.tables = []
-    this.tables.push(this.getTable_1(arrFftFreq, arrFreqMagScaleNormalizedData))
-    this.tables.push(this.getTable(0, 4, this.tables[0].ctnt_1_Normalized.arr, this.tables[0].freqMagScaleNormalizedData.arr))
-    this.tables.push(this.getTable(0, 7, this.tables[0].ctnt_1_Normalized.arr, this.tables[0].freqMagScaleNormalizedData.arr))
-    this.tables.push(this.getTable(0, 11, this.tables[0].ctnt_1_Normalized.arr, this.tables[0].freqMagScaleNormalizedData.arr))
+    this.generate = () => {
+      return new Promise((resolve, reject) => {
+        try {
+          this.tables = []
+          this.tables.push(this.getTable_1(arrFftFreq, arrFreqMagScaleNormalizedData))
+          this.tables.push(this.getTable(0, 4, this.tables[0].ctnt_1_Normalized.arr, this.tables[0].freqMagScaleNormalizedData.arr))
+          this.tables.push(this.getTable(0, 7, this.tables[0].ctnt_1_Normalized.arr, this.tables[0].freqMagScaleNormalizedData.arr))
+          this.tables.push(this.getTable(0, 11, this.tables[0].ctnt_1_Normalized.arr, this.tables[0].freqMagScaleNormalizedData.arr))
 
-    let arrDiferentialFftMag = this.getarrDiferentialFftMag(arrFftMag)
+          let arrDiferentialFftMag = this.getarrDiferentialFftMag(arrFftMag)
 
-    this.row = {
-      peak_1: arrFftFreq.indexOf(arrFftFreq[arrDiferentialFftMag.indexOf(Math.max.apply(null, arrDiferentialFftMag))])
-    }
+          this.row = {
+            peak_1: arrFftFreq.indexOf(arrFftFreq[arrDiferentialFftMag.indexOf(Math.max.apply(null, arrDiferentialFftMag))])
+          }
 
-    this.formant = {f1: this.getFormant_f1(arrFftFreq, arrDiferentialFftMag)}
+          this.formant = {f1: this.getFormant_f1(arrFftFreq, arrDiferentialFftMag)}
 
-    this.row.delta_2 = this.row.peak_1 + 20
-    this.row.delta_1st_2 = this.row.peak_1 + this.row.delta_2
-    let [f2, peak_2] = this.getFormantAndPeak(arrFftFreq, arrDiferentialFftMag, this.row.delta_1st_2, this.row.delta_2)
-    this.formant.f2 = f2
-    this.row.peak_2 = peak_2
+          this.row.delta_2 = this.row.peak_1 + 20
+          this.row.delta_1st_2 = this.row.peak_1 + this.row.delta_2
+          let [f2, peak_2] = this.getFormantAndPeak(arrFftFreq, arrDiferentialFftMag, this.row.delta_1st_2, this.row.delta_2)
+          this.formant.f2 = f2
+          this.row.peak_2 = peak_2
 
-    this.row.delta_3 = this.row.peak_2 + 20
-    this.row.delta_1st_3 = this.row.peak_1 + this.row.delta_3
-    let [f3, peak_3] = this.getFormantAndPeak(arrFftFreq, arrDiferentialFftMag, this.row.delta_1st_3, this.row.delta_3)
-    this.formant.f3 = f3
-    this.row.peak_3 = peak_3
+          this.row.delta_3 = this.row.peak_2 + 20
+          this.row.delta_1st_3 = this.row.peak_1 + this.row.delta_3
+          let [f3, peak_3] = this.getFormantAndPeak(arrFftFreq, arrDiferentialFftMag, this.row.delta_1st_3, this.row.delta_3)
+          this.formant.f3 = f3
+          this.row.peak_3 = peak_3
 
-    this.row.delta_4 = this.row.peak_3 + 20
-    this.row.delta_1st_4 = this.row.peak_1 + this.row.delta_4
-    let [f4, peak_4] = this.getFormantAndPeak(arrFftFreq, arrDiferentialFftMag, this.row.delta_1st_4, this.row.delta_4)
-    this.formant.f4 = f4
-    this.row.peak_4 = peak_4
+          this.row.delta_4 = this.row.peak_3 + 20
+          this.row.delta_1st_4 = this.row.peak_1 + this.row.delta_4
+          let [f4, peak_4] = this.getFormantAndPeak(arrFftFreq, arrDiferentialFftMag, this.row.delta_1st_4, this.row.delta_4)
+          this.formant.f4 = f4
+          this.row.peak_4 = peak_4
 
-    this.formDif = {
-      f2_f1: this.formant.f2 - this.formant.f1,
-      f3_f2: this.formant.f3 - this.formant.f2,
-      f4_f3: this.formant.f4 - this.formant.f3
-    }
+          this.formDif = {
+            f2_f1: this.formant.f2 - this.formant.f1,
+            f3_f2: this.formant.f3 - this.formant.f2,
+            f4_f3: this.formant.f4 - this.formant.f3
+          }
 
-    this.medianF = mathjs.median(this.formDif.f2_f1, this.formDif.f3_f2, this.formDif.f4_f3)
+          this.medianF = mathjs.median(this.formDif.f2_f1, this.formDif.f3_f2, this.formDif.f4_f3)
 
-    this.arrResult = []
+          this.arrResult = []
 
-    for (let i = 0; i <= 614; i++) {
-      let row = {
-        id: i,
-        arrDiferentialFftMag: arrDiferentialFftMag[i]
-      }
-      this.tables.forEach((el, index) => {
-        for (let key in el) {
-          el[key].arr ? row[key + '_' + index] = el[key].arr[i] : null
-        }
+          for (let i = 0; i <= 614; i++) {
+            let row = {
+              id: i,
+              arrDiferentialFftMag: arrDiferentialFftMag[i]
+            }
+            this.tables.forEach((el, index) => {
+              for (let key in el) {
+                el[key].arr ? row[key + '_' + index] = el[key].arr[i] : null
+              }
+            })
+
+            this.arrResult.push(row)
+          }
+
+          this.tables.forEach((el, index) => {
+            for (let key in el) {
+              el[key].arr ? delete el[key].arr : null
+            }
+          })
+        } catch (error) { reject(error) }
+        resolve(this)
       })
-
-      this.arrResult.push(row)
     }
-
-    this.tables.forEach((el, index) => {
-      for (let key in el) {
-        el[key].arr ? delete el[key].arr : null
-      }
-    })
   }
 
   getTable_1 (arrFftFreq, arrFreqMagScaleNormalizedData) {

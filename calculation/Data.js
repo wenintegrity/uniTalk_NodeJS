@@ -2,27 +2,33 @@ const summaryStatistics = require('summary-statistics')
 
 class Data {
   constructor (timeData, iPadData) {
-    this.lengthRow = 2048
-    this.arrElements = this.createElementsData(timeData, iPadData)
-    this.quartileForIPad = this.getQuartileForIPad(iPadData)
-    this.arrOutMicM50 = []
-    this.getOutMic0edAndQuartile()
-    this.getOutMicFilteredAndQuartile()
-    this.getOutMicNrmalz()
-    this.getOutMicM50()
+    this.generate = () => {
+      return new Promise((resolve, reject) => {
+        try {
+          this.lengthRow = 2048
+          this.arrElements = this.createElementsData(timeData, iPadData)
+          this.quartileForIPad = this.getQuartileForIPad(iPadData)
+          this.arrOutMicM50 = []
+          this.getOutMic0edAndQuartile()
+          this.getOutMicFilteredAndQuartile()
+          this.getOutMicNrmalz()
+          this.getOutMicM50()
+        } catch (error) { reject(error) }
+        resolve(this)
+      })
+    }
   }
 
   createElementsData (timeData, iPadData) {
     let arrElements = []
 
     for (let i = 0; i <= this.lengthRow - 1; i++) {
-      let newEl = {
-        'id': i + 1,
-        'time': timeData[i],
-        'iPad': iPadData[i]
-      }
-
-      arrElements.push(newEl)
+      arrElements.push(
+        {
+          'id': i + 1,
+          'time': timeData[i],
+          'iPad': iPadData[i]
+        })
     }
     return arrElements
   }

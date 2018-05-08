@@ -4,7 +4,7 @@ let count = 0
 
 let request_calc = () => {
   return request.post({
-    url: 'http://192.168.2.142:3006/calculations/5ae2ffea4e8546c4356790f4',
+    url: 'http://192.168.2.142:3007/calculations',
     body: json,
     json: true
   }, function (err, res, body) {
@@ -17,39 +17,6 @@ let request_calc = () => {
 }
 
 Promise.all([
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
-  request_calc(),
   request_calc(),
   request_calc(),
   request_calc(),
