@@ -23,13 +23,12 @@ class Data {
     let arrElements = []
 
     for (let i = 0; i <= this.lengthRow - 1; i++) {
-      let newEl = {
-        'id': i + 1,
-        'time': timeData[i],
-        'iPad': iPadData[i]
-      }
-
-      arrElements.push(newEl)
+      arrElements.push(
+        {
+          'id': i + 1,
+          'time': timeData[i],
+          'iPad': iPadData[i]
+        })
     }
     return arrElements
   }

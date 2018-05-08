@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 const Data = require('./Data')
 const TremorSpectrum = require('./TremorSpectrum')
 const TremorSpectrum_part_2 = require('./TremorSpectrum_part_2')
@@ -7,27 +8,22 @@ const timeData = require('../data/timeData')
 const headers_TremorSpectrum = require('../data/headers_TremorSpectrum')
 const headers_TremorSpectrum_part_2 = require('../data/headers_TremorSpectrum_part_2')
 
-let calculation = {}
+module.exports = (body) => {
+  const data = {}
 
-calculation.getData = (body) => {
-  const data = [1, 2, 3].map(i => new Data(timeData, body[`data_${i}`]))
-
-  return Promise.all(data.map(data_i => data_i.generate()))
-    .then(([data_1, data_2, data_3]) => {
-      return {data_1: data_1, data_2: data_2, data_3: data_3}
-    })
-    .then(data => {
-      const tremorS = [1, 2, 3].map(i => new TremorSpectrum(data[`data_${i}`].arrOutMicM50))
-      return Promise.all(tremorS.map(ts_i => ts_i.generate()))
-        .then(([ts_1, ts_2, ts_3]) => {
-          data.tremorSpectrum_1 = ts_1
-          data.tremorSpectrum_2 = ts_2
-          data.tremorSpectrum_3 = ts_3
-
-          return data
+  return Promise.all([1, 2, 3].map(i => new Data(timeData, body[`data_${i}`]).generate()))
+    .then(data_sheets => {
+      data.data_1 = data_sheets[0]
+      data.data_2 = data_sheets[1]
+      data.data_3 = data_sheets[2]
+      return Promise.all([1, 2, 3].map(i => new TremorSpectrum(data[`data_${i}`].arrOutMicM50).generate()))
+        .then(ts_sheets => {
+          data.tremorSpectrum_1 = ts_sheets[0]
+          data.tremorSpectrum_2 = ts_sheets[1]
+          data.tremorSpectrum_3 = ts_sheets[2]
         })
     })
-    .then(data => {
+    .then(() => {
       const tremorS_part_2 = [1, 2, 3].map(i => new TremorSpectrum_part_2(
         data[`tremorSpectrum_${i}`].arrFftFreq,
         data[`tremorSpectrum_${i}`].arrFreqMagScaleNormalizedData,
@@ -179,5 +175,3 @@ calculation.getData = (body) => {
         })
     })
 }
-
-module.exports = calculation.getData
