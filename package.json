@@ -19,7 +19,8 @@
     "express-validator": "^4.3.0"
   },
   "scripts": {
-    "start": "export NODE_MONGO_URL=mongodb://localhost:27017/data_new||set NODE_MONGO_URL=mongodb://localhost:27017/data_new&&node index.js"
+    "seeders": "export NODE_MONGO_URL=mongodb://localhost:27017/data||set NODE_MONGO_URL=mongodb://localhost:27017/data&&node seeders.js",
+    "start": "npm run seeders&&export NODE_MONGO_URL=mongodb://localhost:27017/data||set NODE_MONGO_URL=mongodb://localhost:27017/data&&node index.js"
   },
   "author": "mdi",
   "license": "MIT"
