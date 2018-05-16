@@ -5,7 +5,8 @@
     "chai": "^4.1.2",
     "chai-http": "^3.0.0",
     "mocha": "^5.0.1",
-    "standard": "^11.0.0"
+    "standard": "^11.0.0",
+    "request": "^2.85.0"
   },
   "dependencies": {
     "complex": "^3.0.0",
@@ -16,11 +17,10 @@
     "mongoose": "^5.0.7",
     "body-parser": "^1.18.2",
     "compression": "^1.7.1",
-    "express-validator": "^4.3.0",
-    "request": "^2.85.0"
+    "express-validator": "^4.3.0"
   },
   "scripts": {
-    "start": "export NODE_MONGO_URL=mongodb://localhost:27017/test||set NODE_MONGO_URL=mongodb://localhost:27017/test&&node index.js"
+    "start": "export NODE_MONGO_URL=mongodb://localhost:27017/test||set NODE_MONGO_URL=mongodb://localhost:27017/test && node index.js"
   },
   "author": "mdi",
   "license": "MIT"

@@ -144,11 +144,15 @@ class TremorSpectrum {
               arr.fftMagNormalized = this.getFftMagNormalized(this.max.fftMagNormalized, arr.fftMag)
               arr.fftMagRawSmoothed = this.getArrFftMagRawSmoothed(arr.fftMag)
               arr.fftMagNormalizedSmoothed = this.getArrFftMagNormalizedSmoothed(arr.fftMagRawSmoothed)
-
-              let colorNote = this.getArrFfftNote(arr.fftFreq, arr.fftMag, arr.fftMagNormalized, arr.fftMagRawSmoothed, arr.fftMagNormalizedSmoothed)
-              arr.fftNote = colorNote.arrFftNote
-              this.objColors = colorNote.objColors
-
+            })
+            .then(() => {
+              return this.getArrFfftNoteAsync(arr.fftFreq, arr.fftMag, arr.fftMagNormalized, arr.fftMagRawSmoothed, arr.fftMagNormalizedSmoothed)
+                .then(colorNote => {
+                  arr.fftNote = colorNote.arrFftNote
+                  this.objColors = colorNote.objColors
+                })
+            })
+            .then(() => {
               this.colSum = {}
               this.colSum.raw = this.getColSum(this.objColors, 'valueFftMag')
               this.colSum.smoothed = this.getColSum(this.objColors, 'valueFftMagSmoothed')
@@ -323,37 +327,20 @@ class TremorSpectrum {
   }
 
   getColSum (objColor, valueName) {
-    let result = {colors: {}, arr: []}
-    let arrForResult = {}
     let arr = []
+    let result = { arr: [], colors: {} }
 
     for (let mainColor in objColor) {
-      arrForResult[mainColor] = {}
-
+      let obj = {
+        name: mainColor,
+        value: 0
+      }
       for (let secondColor in objColor[mainColor]) {
-        if (secondColor !== 'countOfPeriod') {
-          arrForResult[mainColor][secondColor] = []
-
-          objColor[mainColor][secondColor].forEach(element => {
-            arrForResult[mainColor][secondColor].push(element[valueName])
-          })
-        }
+        secondColor !== 'countOfPeriod' ? obj.value += objColor[mainColor][secondColor].mean[valueName] : null
       }
-    }
-
-    for (let mainColor in arrForResult) {
-      for (let secondColor in arrForResult[mainColor]) {
-        result.colors[mainColor] !== undefined ? result.colors[mainColor] += this.getAverageValue(arrForResult[mainColor][secondColor])
-          : result.colors[mainColor] = this.getAverageValue(arrForResult[mainColor][secondColor])
-      }
-    }
-
-    for (let color in result.colors) {
-      result.arr.push({
-        name: color,
-        value: result.colors[color]
-      })
-      arr.push(result.colors[color])
+      result.colors[obj.name] = obj.value
+      arr.push(obj.value)
+      result.arr.push(obj)
     }
 
     result.sumNotesMusic = mathjs.sum(arr)
@@ -363,65 +350,64 @@ class TremorSpectrum {
     return result
   }
 
-  getArrFfftNote (arr, arrFftMag, arrFftNormalized, arrFftMagSmoothed, arrFftMagNormalizedSmth) {
-    let arrFftNote = []
-    let objColors = {}
-
-    arr.forEach((elFft, indexEl) => {
-      colorsFFTfreq.forEach((elColor, indexCol) => {
-        if (elFft >= elColor.moreOrEqually && elFft < elColor.less) {
-          arrFftNote.push(elColor.name)
-          addColor(elColor, elFft, indexEl)
+  getArrFfftNoteAsync (arr, arrFftMag, arrFftNormalized, arrFftMagSmoothed, arrFftMagNormalizedSmth) {
+    return arr.reduce((promise, elFft, indexEl) => {
+      return promise.then(result => {
+        if (elFft >= colorsFFTfreq[0].moreOrEqually && elFft <
+          colorsFFTfreq[colorsFFTfreq.length - 1].less) {
+          colorsFFTfreq.find((elColor, indexCol) => {
+            if (elFft >= elColor.moreOrEqually && elFft < elColor.less) {
+              result.arrFftNote.push(elColor.name)
+              addColor(elColor, elFft, indexEl, result.objColors)
+              return true
+            }
+          })
         } else {
-          if (colorsFFTfreq.length - 1 === indexCol && indexEl === arrFftNote.length) {
-            arrFftNote.push(null)
+          result.arrFftNote.push(null)
+        }
+
+        return result
+      })
+    }, Promise.resolve({arrFftNote: [], objColors: {}}))
+
+    function addColor(elColor, elFft, indexEl, objColors) {
+      let mainColor = regExpColor.exec(elColor.name)[1]
+      let new_obj = {
+        valueFftFreq: elFft,
+        valueFftMag: arrFftMag[indexEl],
+        valueFftNorm: arrFftNormalized[indexEl],
+        valueFftMagSmoothed: arrFftMagSmoothed[indexEl],
+        valueFftMagNormalizedSmth: arrFftMagNormalizedSmth[indexEl]
+      }
+
+      mainColor in objColors ? addValue() : addNewValue()
+
+      function addValue() {
+        elColor.name in objColors[mainColor]
+          ? objColors[mainColor][elColor.name].arr.push(new_obj)
+          : objColors[mainColor][elColor.name] = {arr: [new_obj], mean: new_obj}
+
+        if (objColors[mainColor][elColor.name].arr.length > 1) {
+          for (let key in objColors[mainColor][elColor.name].mean) {
+            let secondColor = objColors[mainColor][elColor.name]
+            secondColor.mean[key] = (secondColor.mean[key] *
+              (secondColor.arr.length - 1) + new_obj[key]) /
+              secondColor.arr.length
           }
         }
-      })
-    })
-
-    function addColor (elColor, elFft, indexEl) {
-      let mainColor = regExpColor.exec(elColor.name)
-
-      mainColor[1] in objColors ? addValue(mainColor[1]) : addNewValue(mainColor[1])
-
-      function addValue (mainColor) {
-        elColor.name in objColors[mainColor]
-          ? objColors[mainColor][elColor.name].push({
-            valueFftFreq: elFft,
-            valueFftMag: arrFftMag[indexEl],
-            valueFftNorm: arrFftNormalized[indexEl],
-            valueFftMagSmoothed: arrFftMagSmoothed[indexEl],
-            valueFftMagNormalizedSmth: arrFftMagNormalizedSmth[indexEl]
-          })
-          : objColors[mainColor][elColor.name] = [{
-            valueFftFreq: elFft,
-            valueFftMag: arrFftMag[indexEl],
-            valueFftNorm: arrFftNormalized[indexEl],
-            valueFftMagSmoothed: arrFftMagSmoothed[indexEl],
-            valueFftMagNormalizedSmth: arrFftMagNormalizedSmth[indexEl]
-          }]
 
         objColors[mainColor].countOfPeriod++
       }
 
-      function addNewValue (mainColor) {
+      function addNewValue() {
         objColors[mainColor] = {
           countOfPeriod: 1,
-          [elColor.name]: [{
-            valueFftFreq: elFft,
-            valueFftMag: arrFftMag[indexEl],
-            valueFftNorm: arrFftNormalized[indexEl],
-            valueFftMagSmoothed: arrFftMagSmoothed[indexEl],
-            valueFftMagNormalizedSmth: arrFftMagNormalizedSmth[indexEl]
-          }]
+          [elColor.name]: {
+            arr: [new_obj],
+            mean: new_obj
+          }
         }
       }
-    }
-
-    return {
-      arrFftNote: arrFftNote,
-      objColors: objColors
     }
   }
 
