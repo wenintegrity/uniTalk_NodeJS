@@ -72,6 +72,7 @@ class TremorSpectrum {
     this.average.freqMagDifDiffNormal_NO = this.getAverageValue(arr.freqMagDifDiffNormal_NO.slice(1, 615))
     this.average.filteredFFTMag = this.getAverageValue(arr.filteredFFTMag.slice(1, 615))
 
+    this.freqMagNormDivisionNOHz = this.average.freqMagDifDiffNormal / (this.average.freqMagDifDiffNormal +  this.average.freqMagDifDiffNormal_NO)
     /* ---------------   head file excel №2 --------------------- */
     this.norm = {}
     this.norm.avgPowerHigherOctaves = this.getAverageValue([2, 4, 8, 16, 32, 64, 128, 256, 512].map(index => arr.freqMagNormalLess_1[index]))
@@ -219,7 +220,7 @@ class TremorSpectrum {
 
     for (let i = 1; i <= 614; i++) {
       let val = (filteredFFTMag[i] - min) / (max - min)
-      result.push(val && val > 0 ? val : null)
+      result.push(Number(val) >= 0 ? val : null)
     }
 
     return result
