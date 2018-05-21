@@ -121,7 +121,8 @@ class TremorSpectrum {
               })
             })
             .then(() => {
-            /* ---------------   head file excel №2 --------------------- */
+              this.freqMagNormDivisionNOHz = this.average.freqMagDifDiffNormal / (this.average.freqMagDifDiffNormal + this.average.freqMagDifDiffNormal_NO)
+              /* ---------------   head file excel №2 --------------------- */
               this.norm = {}
               this.norm.avgPowerHigherOctaves = this.getAverageValue([2, 4, 8, 16, 32, 64, 128, 256, 512].map(index => arr.freqMagNormalLess_1[index]))
               this.norm.avgPowerOctNo = this.norm.avgPowerHigherOctaves / this.average.freqMagInDifLess_12_More_8
@@ -292,7 +293,7 @@ class TremorSpectrum {
 
     for (let i = 1; i <= 614; i++) {
       let val = (filteredFFTMag[i] - min) / (max - min)
-      result.push(val && val > 0 ? val : null)
+      result.push(Number(val) >= 0 ? val : null)
     }
 
     return result
@@ -370,7 +371,7 @@ class TremorSpectrum {
       })
     }, Promise.resolve({arrFftNote: [], objColors: {}}))
 
-    function addColor(elColor, elFft, indexEl, objColors) {
+    function addColor (elColor, elFft, indexEl, objColors) {
       let mainColor = regExpColor.exec(elColor.name)[1]
       let new_obj = {
         valueFftFreq: elFft,
@@ -382,7 +383,7 @@ class TremorSpectrum {
 
       mainColor in objColors ? addValue() : addNewValue()
 
-      function addValue() {
+      function addValue () {
         elColor.name in objColors[mainColor]
           ? objColors[mainColor][elColor.name].arr.push(new_obj)
           : objColors[mainColor][elColor.name] = {arr: [new_obj], mean: new_obj}
@@ -399,7 +400,7 @@ class TremorSpectrum {
         objColors[mainColor].countOfPeriod++
       }
 
-      function addNewValue() {
+      function addNewValue () {
         objColors[mainColor] = {
           countOfPeriod: 1,
           [elColor.name]: {
