@@ -30,7 +30,7 @@ class TremorSpectrum_part_2 {
     this.row.peak_3 = peak_3
 
     this.row.delta_4 = this.row.peak_3 + 20
-    this.row.delta_1st_4 = this.row.peak_1 + this.row.delta_4
+    this.row.delta_1st_4 = this.row.peak_1 + this.row.delta_4 + 21
     let [f4, peak_4] = this.getFormantAndPeak(arrFftFreq, arrDiferentialFftMag, this.row.delta_1st_4, this.row.delta_4)
     this.formant.f4 = f4
     this.row.peak_4 = peak_4
