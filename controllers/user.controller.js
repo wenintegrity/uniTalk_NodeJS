@@ -10,10 +10,14 @@ module.exports = {
   },
 
   new: (req, res, next) => {
-    return new UserModel({email: req.body.email}).save()
-      .then(() => {
-        return res.status(201).send()
+    return UserModel.findOne({email: req.body.email})
+      .then(user => {
+        console.log(user)
       })
       .catch(next)
+    // return new UserModel({email: req.body.email}).save()
+    //   .then(() => {
+    //     return res.status(201).send()
+    //   })
   }
 }
