@@ -12,12 +12,15 @@ module.exports = {
   new: (req, res, next) => {
     return UserModel.findOne({email: req.body.email})
       .then(user => {
-        console.log(user)
+        if (user === null) {
+          return new UserModel({email: req.body.email}).save()
+            .then(() => {
+              return res.status(201).send()
+            })
+        } else {
+          return res.status(200).send({message: 'This user already exist'})
+        }
       })
       .catch(next)
-    // return new UserModel({email: req.body.email}).save()
-    //   .then(() => {
-    //     return res.status(201).send()
-    //   })
   }
 }
